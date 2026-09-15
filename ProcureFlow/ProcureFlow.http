@@ -1,0 +1,6 @@
+@ProcureFlow_HostAddress = http://localhost:5244
+
+GET {{ProcureFlow_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
