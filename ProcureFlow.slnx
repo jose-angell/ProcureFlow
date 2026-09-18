@@ -1,3 +1,7 @@
 <Solution>
-  <Project Path="ProcureFlow/ProcureFlow.csproj" />
+  <Project Path="ProcureFlow.Api/ProcureFlow.Api.csproj" Id="9952fb5b-3af0-4d95-909d-e8d8cb2c4192" />
+  <Project Path="ProcureFlow.Application/ProcureFlow.Application.csproj" Id="650dc5c6-9aa5-4885-a173-23465fb24bad" />
+  <Project Path="ProcureFlow.Domain/ProcureFlow.Domain.csproj" Id="5c5fec2d-1610-4d2d-a32d-5e2615e2b001" />
+  <Project Path="ProcureFlow.Infrastructure/ProcureFlow.Infrastructure.csproj" Id="85bbce29-be8a-49ee-b48e-6830d5ad2774" />
+  <Project Path="ProcureFlow.Tests/ProcureFlow.Tests.csproj" Id="19ba3594-7d24-46b0-908a-4b9843d1dab4" />
 </Solution>

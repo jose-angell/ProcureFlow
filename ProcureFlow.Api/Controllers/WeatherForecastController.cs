@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace ProcureFlow.Controllers
+namespace ProcureFlow.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]

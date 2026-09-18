@@ -1,4 +1,4 @@
-namespace ProcureFlow
+namespace ProcureFlow.Api
 {
     public class WeatherForecast
     {
