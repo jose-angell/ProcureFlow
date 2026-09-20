@@ -1,13 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProcureFlow.Application.Abstractions.Persistence;
 using ProcureFlow.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ProcureFlow.Infrastructure.Persistence
 {
-    public class AppDbContext: DbContext, IApplicationDbContext
+    public class AppDbContext : DbContext, IApplicationDbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -18,9 +15,9 @@ namespace ProcureFlow.Infrastructure.Persistence
         public DbSet<ApprovalDecision> ApprovalDecisions => Set<ApprovalDecision>();
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

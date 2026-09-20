@@ -21,7 +21,8 @@ namespace ProcureFlow.Domain.Entities
 
         public User RequestedByUser { get; private set; } = null!;
         public Department Department { get; private set; } = null!;
-        public ICollection<PurchaseRequestItem> Items { get; } = new List<PurchaseRequestItem>();
+        private readonly List<PurchaseRequestItem> _items = new();
+        public IReadOnlyCollection<PurchaseRequestItem> Items => _items;
         public ApprovalDecision? ApprovalDecision { get; private set; }
         private PurchaseRequest() { }
         public PurchaseRequest(string requestNumber, Guid requestedByUserId, Guid departmentId, PurchaseRequestPriority priority, string justification)
@@ -52,24 +53,24 @@ namespace ProcureFlow.Domain.Entities
             if (Status != PurchaseRequestStatus.Draft)
                 throw new DomainException("Solo se pueden agregar items a solicitudes en estado borrador.");
             var item = new PurchaseRequestItem(Id, description, quantity, unitPrice);
-            Items.Add(item);
+            _items.Add(item);
             RecalculateTotal();
         }
         public void RemoveItem(Guid itemId)
         {
             if (Status != PurchaseRequestStatus.Draft)
                 throw new DomainException("Solo se pueden eliminar items de solicitudes en estado borrador.");
-            var item = Items.FirstOrDefault(i => i.Id == itemId);
+            var item = _items.FirstOrDefault(i => i.Id == itemId);
             if (item == null)
                 throw new DomainException("El item no existe en la solicitud.");
-            Items.Remove(item);
+            _items.Remove(item);
             RecalculateTotal();
         }
         public void UpdateItem(Guid itemId, string description, int quantity, decimal estimatedUnitPrice)
         {
             if (Status != PurchaseRequestStatus.Draft)
                 throw new DomainException("Solo se pueden actualizar items de solicitudes en estado borrador.");
-            var item = Items.FirstOrDefault(i => i.Id == itemId);
+            var item = _items.FirstOrDefault(i => i.Id == itemId);
             if (item == null)
                 throw new DomainException("El item no existe en la solicitud.");
             item.Update(description, quantity, estimatedUnitPrice);

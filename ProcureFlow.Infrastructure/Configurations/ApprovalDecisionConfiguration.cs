@@ -22,7 +22,12 @@ namespace ProcureFlow.Infrastructure.Configurations
                 .IsRequired();
             builder.HasOne(decision => decision.PurchaseRequest)
                 .WithOne(request => request.ApprovalDecision)
-                .HasForeignKey<ApprovalDecision>(decision => decision.PurchaseRequestId);
+                .HasForeignKey<ApprovalDecision>(decision => decision.PurchaseRequestId)
+                .OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(decision => decision.ApproverUser)
+                .WithMany()
+                .HasForeignKey(decision => decision.ApproverUserId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

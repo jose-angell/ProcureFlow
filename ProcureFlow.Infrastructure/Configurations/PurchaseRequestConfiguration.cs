@@ -49,23 +49,15 @@ namespace ProcureFlow.Infrastructure.Configurations
 
             builder.Property(pr => pr.CancelledAt);
 
-            builder.HasOne(user => user.RequestedByUser)
+            builder.HasOne(request => request.RequestedByUser)
                 .WithMany()
-                .HasForeignKey(pr => pr.RequestedByUserId);
+                .HasForeignKey(request => request.RequestedByUserId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(department => department.Department)
+            builder.HasOne(request => request.Department)
                 .WithMany()
-                .HasForeignKey(pr => pr.DepartmentId);
-
-            builder.HasMany(pr => pr.Items)
-                .WithOne()
-                .HasForeignKey(item => item.PurchaseRequestId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.HasOne(pr => pr.ApprovalDecision)
-                .WithOne()
-                .HasForeignKey<ApprovalDecision>(ad => ad.PurchaseRequestId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(request => request.DepartmentId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -39,9 +39,10 @@ namespace ProcureFlow.Infrastructure.Configurations
             builder.Property(user => user.CreatedAt)
                 .IsRequired();
 
-            builder.HasOne(department => department.Department)
+            builder.HasOne(user => user.Department)
                 .WithMany()
-                .HasForeignKey(user => user.DepartmentId);
+                .HasForeignKey(user => user.DepartmentId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

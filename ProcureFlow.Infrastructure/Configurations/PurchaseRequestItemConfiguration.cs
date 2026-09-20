@@ -23,10 +23,11 @@ namespace ProcureFlow.Infrastructure.Configurations
             builder.Property(item => item.UnitPrice)
                 .IsRequired()
                 .HasColumnType("decimal(18,2)");
-            
+
             builder.HasOne(item => item.PurchaseRequest)
-                .WithMany(request => request.Items)
-                .HasForeignKey(item => item.PurchaseRequestId);
+                 .WithMany(request => request.Items)
+                 .HasForeignKey(item => item.PurchaseRequestId)
+                 .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
