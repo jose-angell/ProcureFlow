@@ -31,7 +31,10 @@ namespace ProcureFlow.Domain.Entities
         private void Validate(Guid purchaseRequestId, string description, int quantity, decimal estimatedUnitPrice)
         {
             if (purchaseRequestId == Guid.Empty) throw new DomainException("El id de la solicitud de compra no puede ser vacio.");
-            if (string.IsNullOrWhiteSpace(description)) throw new DomainException("La descripción no puede ser null o estar vacia.");
+            if (string.IsNullOrWhiteSpace(description)) 
+                throw new DomainException("La descripción no puede ser null o estar vacia.");
+            else if(description.Length > 500)
+                throw new DomainException("La descripción no puede tener más de 500 caracteres.");
             if (quantity <= 0) throw new DomainException("La cantidad debe ser mayor a cero.");
             if (estimatedUnitPrice < 0) throw new DomainException("El precio unitario estimado no puede ser negativo.");
         }

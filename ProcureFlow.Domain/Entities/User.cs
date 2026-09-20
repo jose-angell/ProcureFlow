@@ -54,9 +54,18 @@ namespace ProcureFlow.Domain.Entities
         }
         private void Validate(string fullName, string email, string passwordHash, UserRole role, Guid departmentId)
         {
-            if (String.IsNullOrWhiteSpace(fullName)) throw new DomainException("El nombre no puede ser null o estar vacio.");
-            if (String.IsNullOrWhiteSpace(email)) throw new DomainException("El correo no puede ser null o estar vacio.");
-            if (String.IsNullOrWhiteSpace(passwordHash)) throw new DomainException("La contraseña no puede ser null o estar vacia.");
+            if (String.IsNullOrWhiteSpace(fullName)) 
+                throw new DomainException("El nombre no puede ser null o estar vacio.");
+            else if(fullName.Length > 150)
+                throw new DomainException("El nombre no puede tener mas de 150 caracteres.");
+            if (String.IsNullOrWhiteSpace(email)) 
+                throw new DomainException("El correo no puede ser null o estar vacio.");
+            else if (email.Length > 200)
+                throw new DomainException("El correo no puede tener mas de 200 caracteres.");
+            if (String.IsNullOrWhiteSpace(passwordHash)) 
+                throw new DomainException("La contraseña no puede ser null o estar vacia.");
+            else if(passwordHash.Length > 500)
+                throw new DomainException("La contraseña no puede tener mas de 500 caracteres.");
             if (!Enum.IsDefined(typeof(UserRole), role)) throw new DomainException("El role no es valido.");
             if (departmentId == Guid.Empty) throw new DomainException("El id del departamento no puede ser vacio.");
         }

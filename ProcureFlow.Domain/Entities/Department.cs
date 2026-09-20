@@ -13,9 +13,10 @@ namespace ProcureFlow.Domain.Entities
         public Department(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
-            {
-                throw new DomainException("Department name cannot be null or empty.");
-            }
+                throw new DomainException("El nombre del departamento no puede estar vacío.");
+            else if(name.Length > 100)
+                throw new DomainException("El nombre del departamento no puede exceder 100 caracteres.");
+
             Id = Guid.NewGuid();
             Name = name;
             IsActive = true;
@@ -23,9 +24,10 @@ namespace ProcureFlow.Domain.Entities
         public void UpdateName(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
-            {
-                throw new DomainException("Department name cannot be null or empty.");
-            }
+                throw new DomainException("El nombre del departamento no puede estar vacío.");
+            else if(name.Length > 100)
+                throw new DomainException("El nombre del departamento no puede exceder 100 caracteres.");
+
             Name = name;
         }
         public void Activate()

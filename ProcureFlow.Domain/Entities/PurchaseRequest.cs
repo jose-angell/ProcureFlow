@@ -1,8 +1,5 @@
 ﻿using ProcureFlow.Domain.Enums;
 using ProcureFlow.Domain.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ProcureFlow.Domain.Entities
 {
@@ -21,15 +18,15 @@ namespace ProcureFlow.Domain.Entities
         public DateTime? ApprovedAt { get; private set; }
         public DateTime? RejectedAt { get; private set; }
         public DateTime? CancelledAt { get; private set; }
-        
+
         public User RequestedByUser { get; private set; } = null!;
         public Department Department { get; private set; } = null!;
-        public ICollection<PurchaseRequestItem> Items { get; private set; } = new List<PurchaseRequestItem>();
+        public ICollection<PurchaseRequestItem> Items { get; } = new List<PurchaseRequestItem>();
         public ApprovalDecision? ApprovalDecision { get; private set; }
         private PurchaseRequest() { }
-        public PurchaseRequest(string requestNumber, Guid requestedByUserId, Guid departmentId, PurchaseRequestPriority priority, string justification, decimal totalAmount)
+        public PurchaseRequest(string requestNumber, Guid requestedByUserId, Guid departmentId, PurchaseRequestPriority priority, string justification)
         {
-            Validate(requestNumber, requestedByUserId, departmentId, priority, justification, totalAmount);
+            Validate(requestNumber, requestedByUserId, departmentId, priority, justification);
             Id = Guid.NewGuid();
             RequestNumber = requestNumber;
             RequestedByUserId = requestedByUserId;
@@ -37,53 +34,94 @@ namespace ProcureFlow.Domain.Entities
             Priority = priority;
             Status = PurchaseRequestStatus.Draft;
             Justification = justification;
-            TotalAmount = totalAmount;
+            TotalAmount = 0m;
             CreatedAt = DateTime.UtcNow;
         }
-        public void Update(string requestNumber, Guid departmentId, PurchaseRequestPriority priority, string justification, decimal totalAmount)
+        public void Update(PurchaseRequestPriority priority, string justification)
         {
-            Validate(requestNumber, RequestedByUserId, departmentId, priority, justification, totalAmount);
-            RequestNumber = requestNumber;
-            DepartmentId = departmentId;
+            if (Status != PurchaseRequestStatus.Draft)
+                throw new DomainException("Solo se pueden actualizar solicitudes en estado borrador.");
+
+            Validate(RequestNumber, RequestedByUserId, DepartmentId, priority, justification);
             Priority = priority;
             Justification = justification;
-            TotalAmount = totalAmount;
+            TotalAmount = Items.Sum(i => i.Quantity * i.EstimatedUnitPrice);
+        }
+        public void AddItem(string description, int quantity, decimal estimatedUnitPrice)
+        {
+            if (Status != PurchaseRequestStatus.Draft)
+                throw new DomainException("Solo se pueden agregar items a solicitudes en estado borrador.");
+            var item = new PurchaseRequestItem(Id, description, quantity, estimatedUnitPrice);
+            Items.Add(item);
+            RecalculateTotal();
+        }
+        public void RemoveItem(Guid itemId)
+        {
+            if (Status != PurchaseRequestStatus.Draft)
+                throw new DomainException("Solo se pueden eliminar items de solicitudes en estado borrador.");
+            var item = Items.FirstOrDefault(i => i.Id == itemId);
+            if (item == null)
+                throw new DomainException("El item no existe en la solicitud.");
+            Items.Remove(item);
+            RecalculateTotal();
+        }
+        public void UpdateItem(Guid itemId, string description, int quantity, decimal estimatedUnitPrice)
+        {
+            if (Status != PurchaseRequestStatus.Draft)
+                throw new DomainException("Solo se pueden actualizar items de solicitudes en estado borrador.");
+            var item = Items.FirstOrDefault(i => i.Id == itemId);
+            if (item == null)
+                throw new DomainException("El item no existe en la solicitud.");
+            item.Update(description, quantity, estimatedUnitPrice);
+            RecalculateTotal();
         }
         public void Submit()
         {
             if (Status != PurchaseRequestStatus.Draft)
                 throw new DomainException("Solo se pueden enviar solicitudes en estado borrador.");
+            if (!Items.Any())
+                throw new DomainException("No se puede enviar una solicitud sin items.");
+            if (TotalAmount <= 0)
+                throw new DomainException("No se puede enviar una solicitud con monto total menor o igual a cero.");
             Status = PurchaseRequestStatus.Submitted;
             SubmittedAt = DateTime.UtcNow;
         }
-        public void Reject()
+        public void Reject(Guid approverUserId, string comment)
         {
             if (Status != PurchaseRequestStatus.Submitted)
                 throw new DomainException("Solo se pueden rechazar solicitudes en estado enviado.");
+            if (string.IsNullOrWhiteSpace(comment))
+                throw new DomainException("El comentario es obligatorio para rechazar la solicitud.");
+
+            var decision = new ApprovalDecision(Id, approverUserId, ApprovalDecisionType.Rejected, comment);
             Status = PurchaseRequestStatus.Rejected;
             RejectedAt = DateTime.UtcNow;
+            ApprovalDecision = decision;
         }
-        public void Approve()
+        public void Approve(Guid approverUserId, string? comment)
         {
             if (Status != PurchaseRequestStatus.Submitted)
                 throw new DomainException("Solo se pueden aprobar solicitudes en estado enviado.");
+
+            var decision = new ApprovalDecision(Id, approverUserId, ApprovalDecisionType.Approved, comment);
             Status = PurchaseRequestStatus.Approved;
             ApprovedAt = DateTime.UtcNow;
+            ApprovalDecision = decision;
         }
         public void Cancel()
         {
-            if (Status != PurchaseRequestStatus.Submitted)
-                throw new DomainException("Solo se pueden cancelar solicitudes en estado enviado.");
+            if (Status != PurchaseRequestStatus.Draft && Status != PurchaseRequestStatus.Submitted)
+                throw new DomainException("Solo se pueden cancelar solicitudes en estado borrador o enviado.");
             Status = PurchaseRequestStatus.Cancelled;
             CancelledAt = DateTime.UtcNow;
         }
-        
-        private void Validate(string requestNumber, Guid requestedByUserId, Guid departmentId, PurchaseRequestPriority priority, string justification, decimal totalAmount)
+
+        private void Validate(string requestNumber, Guid requestedByUserId, Guid departmentId, PurchaseRequestPriority priority, string justification)
         {
 
             if (string.IsNullOrWhiteSpace(requestNumber)) throw new DomainException("El número de solicitud es obligatorio.");
-            else if (requestNumber.Length > 50)
-                throw new DomainException("El número de solicitud no puede superar los 50 caracteres.");
+            else if (requestNumber.Length > 30)
+                throw new DomainException("El número de solicitud no puede superar los 30 caracteres.");
 
             if (requestedByUserId == Guid.Empty)
                 throw new DomainException("El identificador del usuario solicitante es inválido.");
@@ -91,7 +129,7 @@ namespace ProcureFlow.Domain.Entities
             if (departmentId == Guid.Empty)
                 throw new DomainException("El identificador del departamento es inválido.");
 
-            if (!Enum.IsDefined(typeof(PurchaseRequestPriority), Priority))
+            if (!Enum.IsDefined(typeof(PurchaseRequestPriority), priority))
                 throw new DomainException("La prioridad de la solicitud es inválida.");
 
             if (string.IsNullOrWhiteSpace(justification))
@@ -99,10 +137,10 @@ namespace ProcureFlow.Domain.Entities
             else if (justification.Length > 1000)
                 throw new DomainException("La justificación no puede superar los 1000 caracteres.");
 
-            if (totalAmount <= 0m)
-                throw new DomainException("El monto total debe ser mayor que cero.");
-            else if (totalAmount > 1_000_000_000m)
-                throw new DomainException("El monto total excede el límite permitido.");
+        }
+        private void RecalculateTotal()
+        {
+            TotalAmount = Items.Sum(i => i.Quantity * i.EstimatedUnitPrice);
         }
     }
 }
