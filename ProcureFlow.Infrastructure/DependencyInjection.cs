@@ -1,5 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ProcureFlow.Application.Abstractions.Persistence;
+using ProcureFlow.Infrastructure.Persistence;
 
 namespace ProcureFlow.Infrastructure
 {
@@ -9,12 +12,12 @@ namespace ProcureFlow.Infrastructure
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            //services.AddDbContext<AppDbContext>(options =>
-            //    options.UseNpgsql(
-            //        configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<AppDbContext>(options =>
+                options.UseNpgsql(
+                    configuration.GetConnectionString("DefaultConnection")));
 
-            //services.AddScoped<IApplicationDbContext>(provider =>
-            //    provider.GetRequiredService<AppDbContext>());
+            services.AddScoped<IApplicationDbContext>(provider =>
+                provider.GetRequiredService<AppDbContext>());
 
             // services.AddScoped<IPasswordHashService, PasswordHashService>();
             //services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();

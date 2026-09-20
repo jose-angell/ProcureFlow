@@ -45,13 +45,13 @@ namespace ProcureFlow.Domain.Entities
             Validate(RequestNumber, RequestedByUserId, DepartmentId, priority, justification);
             Priority = priority;
             Justification = justification;
-            TotalAmount = Items.Sum(i => i.Quantity * i.EstimatedUnitPrice);
+            TotalAmount = Items.Sum(i => i.Quantity * i.UnitPrice);
         }
-        public void AddItem(string description, int quantity, decimal estimatedUnitPrice)
+        public void AddItem(string description, int quantity, decimal unitPrice)
         {
             if (Status != PurchaseRequestStatus.Draft)
                 throw new DomainException("Solo se pueden agregar items a solicitudes en estado borrador.");
-            var item = new PurchaseRequestItem(Id, description, quantity, estimatedUnitPrice);
+            var item = new PurchaseRequestItem(Id, description, quantity, unitPrice);
             Items.Add(item);
             RecalculateTotal();
         }
@@ -140,7 +140,7 @@ namespace ProcureFlow.Domain.Entities
         }
         private void RecalculateTotal()
         {
-            TotalAmount = Items.Sum(i => i.Quantity * i.EstimatedUnitPrice);
+            TotalAmount = Items.Sum(i => i.Quantity * i.UnitPrice);
         }
     }
 }

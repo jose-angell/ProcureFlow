@@ -8,27 +8,28 @@ namespace ProcureFlow.Domain.Entities
         public Guid PurchaseRequestId { get; private set; }
         public string Description { get; private set; } = null!;
         public int Quantity { get; private set; }
-        public decimal EstimatedUnitPrice { get; private set; }
+        public decimal UnitPrice { get; private set; }
 
+        public PurchaseRequest PurchaseRequest { get; private set; } = null!;
         private PurchaseRequestItem() { }
 
-        public PurchaseRequestItem(Guid purchaseRequestId, string description, int quantity, decimal estimatedUnitPrice)
+        public PurchaseRequestItem(Guid purchaseRequestId, string description, int quantity, decimal unitPrice)
         {
-            Validate(purchaseRequestId, description, quantity, estimatedUnitPrice);
+            Validate(purchaseRequestId, description, quantity, unitPrice);
             Id = Guid.NewGuid();
             PurchaseRequestId = purchaseRequestId;
             Description = description;
             Quantity = quantity;
-            EstimatedUnitPrice = estimatedUnitPrice;
+            UnitPrice = unitPrice;
         }
-        public void Update(string description, int quantity, decimal estimatedUnitPrice)
+        public void Update(string description, int quantity, decimal unitPrice)
         {
-            Validate(PurchaseRequestId, description, quantity, estimatedUnitPrice);
+            Validate(PurchaseRequestId, description, quantity, unitPrice);
             Description = description;
             Quantity = quantity;
-            EstimatedUnitPrice = estimatedUnitPrice;
+            UnitPrice = unitPrice;
         }
-        private void Validate(Guid purchaseRequestId, string description, int quantity, decimal estimatedUnitPrice)
+        private void Validate(Guid purchaseRequestId, string description, int quantity, decimal unitPrice)
         {
             if (purchaseRequestId == Guid.Empty) throw new DomainException("El id de la solicitud de compra no puede ser vacio.");
             if (string.IsNullOrWhiteSpace(description)) 
@@ -36,7 +37,7 @@ namespace ProcureFlow.Domain.Entities
             else if(description.Length > 500)
                 throw new DomainException("La descripción no puede tener más de 500 caracteres.");
             if (quantity <= 0) throw new DomainException("La cantidad debe ser mayor a cero.");
-            if (estimatedUnitPrice < 0) throw new DomainException("El precio unitario estimado no puede ser negativo.");
+            if (unitPrice < 0) throw new DomainException("El precio unitario no puede ser negativo.");
         }
     }
 }

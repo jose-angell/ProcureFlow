@@ -1,14 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ProcureFlow.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ProcureFlow.Infrastructure.Configurations
 {
-    public class DepartmentConfiguration: IEntityTypeConfiguration<Department>
+    public class DepartmentConfiguration : IEntityTypeConfiguration<Department>
     {
-        public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Department> builder)
+        public void Configure(EntityTypeBuilder<Department> builder)
         {
             builder.ToTable("departments");
 
