@@ -15,8 +15,4 @@
     <ProjectReference Include="..\ProcureFlow.Domain\ProcureFlow.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Auth\Dtos\" />
-  </ItemGroup>
-
 </Project>

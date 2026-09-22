@@ -21,6 +21,10 @@ namespace ProcureFlow.Application.Users
             var existEmail = await _context.Users.AnyAsync(u => u.Email == request.Email);
             if (existEmail) throw new ConflictException("El correo no esta disponible.");
 
+
+            var existDepartment = await _context.Departments.AnyAsync(d => d.Id == request.DepartmentId);
+            if(!existDepartment) throw new NotFoundException("El departamento no esta en el sistema.");
+
             var passwordHash = _passwordHashService.Hash(request.Password!);
 
             var newUser = new User(request.FullName!, request.Email!, passwordHash, request.Role!.Value, request.DepartmentId!.Value);
@@ -44,6 +48,9 @@ namespace ProcureFlow.Application.Users
 
             var existEmail = await _context.Users.AnyAsync(u => u.Id != id && u.Email == request.Email);
             if (existEmail) throw new ConflictException("El correo no esta disponible.");
+            
+            var existDepartment = await _context.Departments.AnyAsync(d => d.Id == request.DepartmentId);
+            if (!existDepartment) throw new NotFoundException("El departamento no esta en el sistema.");
 
             var passwordHash = _passwordHashService.Hash(request.Password!);
 
