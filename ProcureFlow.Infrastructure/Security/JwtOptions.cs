@@ -1,4 +1,4 @@
-﻿namespace ProcureFlow.Application.Auth.Dtos
+﻿namespace ProcureFlow.Infrastructure.Security
 {
     public class JwtOptions
     {

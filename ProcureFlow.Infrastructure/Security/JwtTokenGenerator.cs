@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using ProcureFlow.Application.Abstractions.Security;
-using ProcureFlow.Application.Auth.Dtos;
 using ProcureFlow.Domain.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
