@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using ProcureFlow.Application.Auth;
 using ProcureFlow.Application.Departments;
-using ProcureFlow.Application.PurchaseRequest;
+using ProcureFlow.Application.PurchaseRequests;
 using ProcureFlow.Application.Users;
 
 namespace ProcureFlow.Application

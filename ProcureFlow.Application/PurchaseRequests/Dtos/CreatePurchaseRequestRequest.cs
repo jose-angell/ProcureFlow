@@ -1,8 +1,5 @@
 ﻿using ProcureFlow.Domain.Enums;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace ProcureFlow.Application.PurchaseRequests.Dtos
 {

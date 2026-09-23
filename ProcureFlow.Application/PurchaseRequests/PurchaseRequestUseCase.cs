@@ -22,7 +22,7 @@ namespace ProcureFlow.Application.PurchaseRequests
         {
 
             var currentRole = _currentUserService.Role;
-            if(currentRole != UserRole.Admin && currentRole != UserRole.Requester)
+            if (currentRole != UserRole.Admin && currentRole != UserRole.Requester)
             {
                 throw new UnauthorizedAccessException("Usuario no autorizado para crear solicitudes de compra.");
             }
