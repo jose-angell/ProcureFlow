@@ -67,6 +67,83 @@ namespace ProcureFlow.Application.PurchaseRequests
                 CancelledAt = newPurchaseRequest.CancelledAt
             };
         }
+        public async Task Update(Guid id, UpdateurchaseRequestRequest request)
+        {
+            var currentRole = _currentUserService.Role;
+            if (currentRole != UserRole.Admin && currentRole != UserRole.Requester)
+            {
+                throw new UnauthorizedAccessException("Usuario no autorizado para actualizar solicitudes de compra.");
+            }
+            var currentUserId = _currentUserService.UserId;
+            var purchaseRequest = await _context.PurchaseRequests.FindAsync(id);
+            if(purchaseRequest == null) throw new NotFoundException("Solicitud de compra no encontrada.");
+            if(purchaseRequest.RequestedByUserId != currentUserId && currentRole != UserRole.Admin)
+            {
+                throw new UnauthorizedAccessException("Usuario no autorizado para actualizar esta solicitud de compra.");
+            }
+
+            purchaseRequest.Update(request.Priority!.Value, request.Justification!);
+            await _context.SaveChangesAsync();
+        }
+        public async Task AddItem(Guid id, CreatePurchaseRequestItemRequest request)
+        {
+            var currentRole = _currentUserService.Role;
+            if (currentRole != UserRole.Admin && currentRole != UserRole.Requester)
+            {
+                throw new UnauthorizedAccessException("Usuario no autorizado para actualizar solicitudes de compra.");
+            }
+            var currentUserId = _currentUserService.UserId;
+            var purchaseRequest = await _context.PurchaseRequests.FindAsync(id);
+            if (purchaseRequest == null) throw new NotFoundException("Solicitud de compra no encontrada.");
+            if (purchaseRequest.RequestedByUserId != currentUserId && currentRole != UserRole.Admin)
+            {
+                throw new UnauthorizedAccessException("Usuario no autorizado para actualizar esta solicitud de compra.");
+            }
+
+            purchaseRequest.AddItem(request.Description!, request.Quantity!.Value, request.UnitPrice!.Value);
+            await _context.SaveChangesAsync();
+        }
+        public async Task UpdateItem(Guid id, UpdatePurchaseRequestItemRequest request)
+        {
+            var currentRole = _currentUserService.Role;
+            if (currentRole != UserRole.Admin && currentRole != UserRole.Requester)
+            {
+                throw new UnauthorizedAccessException("Usuario no autorizado para actualizar solicitudes de compra.");
+            }
+            var currentUserId = _currentUserService.UserId;
+            var purchaseRequest = await _context.PurchaseRequests.FindAsync(id);
+            if (purchaseRequest == null) throw new NotFoundException("Solicitud de compra no encontrada.");
+            if (purchaseRequest.RequestedByUserId != currentUserId && currentRole != UserRole.Admin)
+            {
+                throw new UnauthorizedAccessException("Usuario no autorizado para actualizar esta solicitud de compra.");
+            }
+            var item = purchaseRequest.Items.FirstOrDefault(i => i.Id == request.ItemId);
+            if (item == null) throw new NotFoundException("Item de solicitud de compra no encontrado.");
+
+            item.Update(request.Description!, request.Quantity!.Value, request.UnitPrice!.Value);
+
+            await _context.SaveChangesAsync();
+        }
+        public async Task DeleteItem(Guid id, Guid itemId)
+        {
+            var currentRole = _currentUserService.Role;
+            if (currentRole != UserRole.Admin && currentRole != UserRole.Requester)
+            {
+                throw new UnauthorizedAccessException("Usuario no autorizado para actualizar solicitudes de compra.");
+            }
+            var currentUserId = _currentUserService.UserId;
+            var purchaseRequest = await _context.PurchaseRequests.FindAsync(id);
+            if (purchaseRequest == null) throw new NotFoundException("Solicitud de compra no encontrada.");
+            if (purchaseRequest.RequestedByUserId != currentUserId && currentRole != UserRole.Admin)
+            {
+                throw new UnauthorizedAccessException("Usuario no autorizado para actualizar esta solicitud de compra.");
+            }
+            var item = purchaseRequest.Items.FirstOrDefault(i => i.Id == itemId);
+            if (item == null) throw new NotFoundException("Item de solicitud de compra no encontrado.");
+            
+            purchaseRequest.RemoveItem(itemId);
+            await _context.SaveChangesAsync();
+        }
         private string GenerateRequestNumber()
         {
             string guidPart = Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper();
