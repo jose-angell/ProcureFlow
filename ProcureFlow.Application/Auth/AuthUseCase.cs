@@ -1,10 +1,10 @@
-﻿using ProcureFlow.Application.Abstractions.Persistence;
+﻿using Microsoft.EntityFrameworkCore;
+using ProcureFlow.Application.Abstractions.Persistence;
 using ProcureFlow.Application.Abstractions.Security;
 using ProcureFlow.Application.Auth.Dtos;
 using ProcureFlow.Application.Exceptions;
 using ProcureFlow.Domain.Entities;
 using ProcureFlow.Domain.Enums;
-using Microsoft.EntityFrameworkCore;
 
 namespace ProcureFlow.Application.Auth
 {
