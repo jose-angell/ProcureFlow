@@ -79,5 +79,16 @@ namespace ProcureFlow.Application.Departments
                 })
                 .ToListAsync();
         }
+        public async Task<DepartmentDto> GetById(Guid id)
+        {
+            var department = await _context.Departments.AsNoTracking().FirstOrDefaultAsync(d => d.Id == id);
+            if (department == null) throw new NotFoundException("El departamento no existe.");
+            return new DepartmentDto
+            {
+                Id = department.Id,
+                Name = department.Name,
+                IsActive = department.IsActive
+            };
+        }
     }
 }
