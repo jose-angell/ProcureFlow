@@ -8,7 +8,7 @@ namespace ProcureFlow.Api.Controllers
     [ApiController]
     [Route("api/departments")]
     [Authorize]
-    public class DepartmentsController: ControllerBase
+    public class DepartmentsController : ControllerBase
     {
         readonly DepartmentUseCase _UseCase;
         public DepartmentsController(DepartmentUseCase useCase)

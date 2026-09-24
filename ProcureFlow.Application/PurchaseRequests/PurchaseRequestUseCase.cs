@@ -206,6 +206,93 @@ namespace ProcureFlow.Application.PurchaseRequests
             purchaseRequest.Reject(currentUserId, request.Comments!);
             await _context.SaveChangesAsync();
         }
+        public async Task<PurchaseRequestDto> GetById(Guid id)
+        {
+            var purchaseRequest = await _context.PurchaseRequests
+                .Include(pr => pr.Items)
+                .FirstOrDefaultAsync(pr => pr.Id == id);
+            if (purchaseRequest == null) throw new NotFoundException("Solicitud de compra no encontrada.");
+            return new PurchaseRequestDto
+            {
+                Id = purchaseRequest.Id,
+                RequestNumber = purchaseRequest.RequestNumber,
+                RequestedByUserId = purchaseRequest.RequestedByUserId,
+                DepartmentId = purchaseRequest.DepartmentId,
+                Priority = purchaseRequest.Priority,
+                Status = purchaseRequest.Status,
+                Justification = purchaseRequest.Justification,
+                TotalAmount = purchaseRequest.TotalAmount,
+                CreatedAt = purchaseRequest.CreatedAt,
+                SubmittedAt = purchaseRequest.SubmittedAt,
+                ApprovedAt = purchaseRequest.ApprovedAt,
+                RejectedAt = purchaseRequest.RejectedAt,
+                CancelledAt = purchaseRequest.CancelledAt
+            };
+        }
+        public async Task<IEnumerable<PurchaseRequestDto>> GetAll(PurchaseRequestQuery query)
+        {
+
+            var currentRole = _currentUserService.Role;
+            var currentUserId = _currentUserService.UserId;
+            var user = await _context.Users.FindAsync(currentUserId);
+            if (user == null) throw new NotFoundException("El usuario no fue encotrado");
+
+            var purchaseRequestsQuery = _context.PurchaseRequests.AsQueryable();
+            
+            if(currentRole == UserRole.Approver)
+            {
+                purchaseRequestsQuery = purchaseRequestsQuery.Where(pr => pr.DepartmentId == user.DepartmentId);
+            }
+            if(currentRole == UserRole.Requester)
+            {
+                purchaseRequestsQuery = purchaseRequestsQuery.Where(pr => pr.RequestedByUserId == user.Id);
+            }
+            
+            if (!string.IsNullOrEmpty(query.RequestNumber))
+            {
+                purchaseRequestsQuery = purchaseRequestsQuery.Where(pr => pr.RequestNumber.Contains(query.RequestNumber));
+            }
+            if (!string.IsNullOrEmpty(query.Department))
+            {
+                purchaseRequestsQuery = purchaseRequestsQuery.Where(pr => pr.Department.Name.Contains(query.Department));
+            }
+            if (query.CreatedDateFrom.HasValue)
+            {
+                purchaseRequestsQuery = purchaseRequestsQuery.Where(pr => pr.CreatedAt >= query.CreatedDateFrom.Value);
+            }
+            if (query.CreatedDateTo.HasValue)
+            {
+                purchaseRequestsQuery = purchaseRequestsQuery.Where(pr => pr.CreatedAt <= query.CreatedDateTo.Value);
+            }
+            if (!string.IsNullOrEmpty(query.Status))
+            {
+                var status = Enum.Parse<PurchaseRequestStatus>(query.Status, true);
+                purchaseRequestsQuery = purchaseRequestsQuery.Where(pr => pr.Status == status);
+            }
+            var skip = (query.Page - 1) * query.PageSize;
+            var take = query.PageSize;
+            var purchaseRequests = await purchaseRequestsQuery
+                .Select(pr => new PurchaseRequestDto
+                {
+                    Id = pr.Id,
+                    RequestNumber = pr.RequestNumber,
+                    RequestedByUserId = pr.RequestedByUserId,
+                    DepartmentId = pr.DepartmentId,
+                    Priority = pr.Priority,
+                    Status = pr.Status,
+                    Justification = pr.Justification,
+                    TotalAmount = pr.TotalAmount,
+                    CreatedAt = pr.CreatedAt,
+                    SubmittedAt = pr.SubmittedAt,
+                    ApprovedAt = pr.ApprovedAt,
+                    RejectedAt = pr.RejectedAt,
+                    CancelledAt = pr.CancelledAt
+                })
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync();
+            return purchaseRequests;
+        }
         private string GenerateRequestNumber()
         {
             string guidPart = Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper();
