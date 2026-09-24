@@ -87,6 +87,15 @@ namespace ProcureFlow.Application.Users
             user.Deactivate();
             await _context.SaveChangesAsync();
         }
+        public async Task ChangeDepartment(Guid id, Guid departmentId)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null) throw new NotFoundException("El usuario no esta en el sistema.");
+            var existDepartment = await _context.Departments.AnyAsync(d => d.Id == departmentId);
+            if (!existDepartment) throw new NotFoundException("El departamento no esta en el sistema.");
+            user.ChangeDepartment(departmentId);
+            await _context.SaveChangesAsync();
+        }
         public async Task<UserDto> GetById(Guid id)
         {
             var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
