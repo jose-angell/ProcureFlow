@@ -67,7 +67,7 @@ namespace ProcureFlow.Application.PurchaseRequests
                 CancelledAt = newPurchaseRequest.CancelledAt
             };
         }
-        public async Task Update(Guid id, UpdateurchaseRequestRequest request)
+        public async Task Update(Guid id, UpdatePurchaseRequestRequest request)
         {
             var currentRole = _currentUserService.Role;
             if (currentRole != UserRole.Admin && currentRole != UserRole.Requester)

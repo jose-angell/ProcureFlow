@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ProcureFlow.Application.PurchaseRequests.Dtos
 {
-    public class UpdateurchaseRequestRequest
+    public class UpdatePurchaseRequestRequest
     {
         [Required(ErrorMessage = "La prioridad es requerida.")]
         public PurchaseRequestPriority? Priority { get; set; }
