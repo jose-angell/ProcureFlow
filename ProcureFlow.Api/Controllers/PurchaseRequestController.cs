@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProcureFlow.Application.PurchaseRequests;
 using ProcureFlow.Application.PurchaseRequests.Dtos;
+using System.Reflection.Metadata.Ecma335;
 
 namespace ProcureFlow.Api.Controllers
 {
@@ -26,6 +27,36 @@ namespace ProcureFlow.Api.Controllers
             var result = await _useCase.Create(request);
             return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
+        [HttpGet("item/{id:guid}")]
+        public async Task<IActionResult> GetItemById([FromRoute] Guid id)
+        {
+            if (id == Guid.Empty) return BadRequest("El id es invalido");
+            var result = await _useCase.GetItemById(id);
+            return Ok(result);
+        }
+        [HttpPost("{id:guid}/add-item")]
+        public async Task<IActionResult> AddItem([FromRoute] Guid id, [FromRoute] CreatePurchaseRequestItemRequest request)
+        {
+            if (id == Guid.Empty) return BadRequest("El id es invalido");
+            var result = await _useCase.AddItem(id, request);
+            return CreatedAtAction(nameof(GetItemById), new { id = result.Id }, result);
+        }
+        [HttpPut("{id:guid}/update-item/{itemid:guid}")]
+        public async Task<IActionResult> UpdateItem([FromRoute] Guid id, [FromRoute] Guid itemid, [FromBody] UpdatePurchaseRequestItemRequest request)
+        {
+            if (id == Guid.Empty) return BadRequest("El id de la solicitud es invalido");
+            if (itemid == Guid.Empty) return BadRequest("El id del item es invalido");
+            await _useCase.UpdateItem(id, itemid, request);
+            return NoContent();
+        }
+        [HttpPut("{id:guid}/delete-item/{itemid:guid}")]
+        public async Task<IActionResult> DeleteItem([FromRoute] Guid id, [FromRoute] Guid itemid)
+        {
+            if (id == Guid.Empty) return BadRequest("El id de la solicitud es invalido");
+            if (itemid == Guid.Empty) return BadRequest("El id del item es invalido");
+            await _useCase.DeleteItem(id, itemid);
+            return NoContent();
+        }
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> Update([FromRoute] Guid id ,[FromBody] UpdatePurchaseRequestRequest request)
         {
@@ -46,5 +77,6 @@ namespace ProcureFlow.Api.Controllers
             await _useCase.Submit(id);
             return NoContent();
         }
+
     }
 }

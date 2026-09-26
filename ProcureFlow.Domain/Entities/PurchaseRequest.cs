@@ -48,13 +48,14 @@ namespace ProcureFlow.Domain.Entities
             Justification = justification;
             TotalAmount = Items.Sum(i => i.Quantity * i.UnitPrice);
         }
-        public void AddItem(string description, int quantity, decimal unitPrice)
+        public PurchaseRequestItem AddItem(string description, int quantity, decimal unitPrice)
         {
             if (Status != PurchaseRequestStatus.Draft)
                 throw new DomainException("Solo se pueden agregar items a solicitudes en estado borrador.");
             var item = new PurchaseRequestItem(Id, description, quantity, unitPrice);
             _items.Add(item);
             RecalculateTotal();
+            return item;
         }
         public void RemoveItem(Guid itemId)
         {

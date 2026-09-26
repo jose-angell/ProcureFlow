@@ -85,7 +85,20 @@ namespace ProcureFlow.Application.PurchaseRequests
             purchaseRequest.Update(request.Priority!.Value, request.Justification!);
             await _context.SaveChangesAsync();
         }
-        public async Task AddItem(Guid id, CreatePurchaseRequestItemRequest request)
+        public async Task<PurchaseRequestItemDto> GetItemById(Guid id)
+        {
+            var result = await _context.PurchaseRequestItems.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
+            if(result == null) new NotFoundException("Solicitud de compra no encontrada.");
+            return new PurchaseRequestItemDto
+            {
+                Id = result!.Id,
+                PurchaseRequestId = result.PurchaseRequestId,
+                Description = result.Description,
+                Quantity = result.Quantity,
+                UnitPrice = result.UnitPrice
+            };
+        }
+        public async Task<PurchaseRequestItemDto> AddItem(Guid id, CreatePurchaseRequestItemRequest request)
         {
             var currentRole = _currentUserService.Role;
             if (currentRole != UserRole.Admin && currentRole != UserRole.Requester)
@@ -100,10 +113,18 @@ namespace ProcureFlow.Application.PurchaseRequests
                 throw new UnauthorizedAccessException("Usuario no autorizado para actualizar esta solicitud de compra.");
             }
 
-            purchaseRequest.AddItem(request.Description!, request.Quantity!.Value, request.UnitPrice!.Value);
+            var newItem = purchaseRequest.AddItem(request.Description!, request.Quantity!.Value, request.UnitPrice!.Value);
             await _context.SaveChangesAsync();
+            return new PurchaseRequestItemDto
+            {
+                Id = newItem.Id,
+                PurchaseRequestId = newItem.PurchaseRequestId,
+                Description = newItem.Description,
+                Quantity = newItem.Quantity,
+                UnitPrice = newItem.UnitPrice
+            }; 
         }
-        public async Task UpdateItem(Guid id, UpdatePurchaseRequestItemRequest request)
+        public async Task UpdateItem(Guid id, Guid itemId, UpdatePurchaseRequestItemRequest request)
         {
             var currentRole = _currentUserService.Role;
             if (currentRole != UserRole.Admin && currentRole != UserRole.Requester)
@@ -117,7 +138,7 @@ namespace ProcureFlow.Application.PurchaseRequests
             {
                 throw new UnauthorizedAccessException("Usuario no autorizado para actualizar esta solicitud de compra.");
             }
-            var item = purchaseRequest.Items.FirstOrDefault(i => i.Id == request.ItemId);
+            var item = purchaseRequest.Items.FirstOrDefault(i => i.Id == itemId);
             if (item == null) throw new NotFoundException("Item de solicitud de compra no encontrado.");
 
             item.Update(request.Description!, request.Quantity!.Value, request.UnitPrice!.Value);

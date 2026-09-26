@@ -4,8 +4,6 @@ namespace ProcureFlow.Application.PurchaseRequests.Dtos
 {
     public class UpdatePurchaseRequestItemRequest
     {
-        [Required(ErrorMessage = "El ID del ítem es requerido.")]
-        public Guid ItemId { get; set; }
 
         [Required(ErrorMessage = "La descripción es requerida.")]
         [StringLength(500, ErrorMessage = "La descripción no puede tener mas de 500 caracteres")]
