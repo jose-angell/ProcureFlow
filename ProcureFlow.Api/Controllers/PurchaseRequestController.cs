@@ -77,6 +77,25 @@ namespace ProcureFlow.Api.Controllers
             await _useCase.Submit(id);
             return NoContent();
         }
-
+        [HttpGet]
+        public async Task<IActionResult> GetAll([FromQuery] PurchaseRequestQuery query)
+        {
+            var result = await _useCase.GetAll(query);
+            return Ok(result);
+        }
+        [HttpPatch("{id:guid}/reject")]
+        public async Task<IActionResult> Reject([FromRoute] Guid id, [FromBody] DecisionRequest request)
+        {
+            if (id == Guid.Empty) return BadRequest("El id es invalido");
+            await _useCase.Reject(id, request);
+            return NoContent();
+        }
+        [HttpPatch("{id:guid}/approve")]
+        public async Task<IActionResult> Approve([FromRoute] Guid id, [FromBody] DecisionRequest request)
+        {
+            if (id == Guid.Empty) return BadRequest("El id es invalido");
+            await _useCase.Approve(id, request);
+            return NoContent();
+        }
     }
 }
