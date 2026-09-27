@@ -13,9 +13,13 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddApi(builder.Configuration);
 
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseExceptionHandler();
 
 app.UseHttpsRedirection();
 
