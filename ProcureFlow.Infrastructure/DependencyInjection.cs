@@ -21,6 +21,9 @@ namespace ProcureFlow.Infrastructure
             services.AddScoped<IApplicationDbContext>(provider =>
                 provider.GetRequiredService<AppDbContext>());
 
+            services.Configure<JwtOptions>(
+                configuration.GetSection("Jwt"));
+
             services.AddScoped<IPasswordHashService, PasswordHashService>();
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 

@@ -1,13 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ProcureFlow.Application.PurchaseRequests;
 using ProcureFlow.Application.PurchaseRequests.Dtos;
-using System.Reflection.Metadata.Ecma335;
 
 namespace ProcureFlow.Api.Controllers
 {
     [ApiController]
     [Route("api/purchases")]
-    public class PurchaseRequestController: ControllerBase
+    [Authorize]
+    public class PurchaseRequestController : ControllerBase
     {
         private readonly PurchaseRequestUseCase _useCase;
         public PurchaseRequestController(PurchaseRequestUseCase useCase)
@@ -22,6 +23,7 @@ namespace ProcureFlow.Api.Controllers
             return Ok(result);
         }
         [HttpPost]
+        [Authorize(Roles = "Requester,Admin")]
         public async Task<IActionResult> Create([FromBody] CreatePurchaseRequestRequest request)
         {
             var result = await _useCase.Create(request);
@@ -35,6 +37,7 @@ namespace ProcureFlow.Api.Controllers
             return Ok(result);
         }
         [HttpPost("{id:guid}/add-item")]
+        [Authorize(Roles = "Requester,Admin")]
         public async Task<IActionResult> AddItem([FromRoute] Guid id, [FromRoute] CreatePurchaseRequestItemRequest request)
         {
             if (id == Guid.Empty) return BadRequest("El id es invalido");
@@ -42,6 +45,7 @@ namespace ProcureFlow.Api.Controllers
             return CreatedAtAction(nameof(GetItemById), new { id = result.Id }, result);
         }
         [HttpPut("{id:guid}/update-item/{itemid:guid}")]
+        [Authorize(Roles = "Requester,Admin")]
         public async Task<IActionResult> UpdateItem([FromRoute] Guid id, [FromRoute] Guid itemid, [FromBody] UpdatePurchaseRequestItemRequest request)
         {
             if (id == Guid.Empty) return BadRequest("El id de la solicitud es invalido");
@@ -50,6 +54,7 @@ namespace ProcureFlow.Api.Controllers
             return NoContent();
         }
         [HttpPut("{id:guid}/delete-item/{itemid:guid}")]
+        [Authorize(Roles = "Requester,Admin")]
         public async Task<IActionResult> DeleteItem([FromRoute] Guid id, [FromRoute] Guid itemid)
         {
             if (id == Guid.Empty) return BadRequest("El id de la solicitud es invalido");
@@ -58,7 +63,8 @@ namespace ProcureFlow.Api.Controllers
             return NoContent();
         }
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Update([FromRoute] Guid id ,[FromBody] UpdatePurchaseRequestRequest request)
+        [Authorize(Roles = "Requester,Admin")]
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdatePurchaseRequestRequest request)
         {
             await _useCase.Update(id, request);
             return NoContent();
@@ -84,6 +90,7 @@ namespace ProcureFlow.Api.Controllers
             return Ok(result);
         }
         [HttpPatch("{id:guid}/reject")]
+        [Authorize(Roles = "Approver,Admin")]
         public async Task<IActionResult> Reject([FromRoute] Guid id, [FromBody] DecisionRequest request)
         {
             if (id == Guid.Empty) return BadRequest("El id es invalido");
@@ -91,6 +98,7 @@ namespace ProcureFlow.Api.Controllers
             return NoContent();
         }
         [HttpPatch("{id:guid}/approve")]
+        [Authorize(Roles = "Approver,Admin")]
         public async Task<IActionResult> Approve([FromRoute] Guid id, [FromBody] DecisionRequest request)
         {
             if (id == Guid.Empty) return BadRequest("El id es invalido");
