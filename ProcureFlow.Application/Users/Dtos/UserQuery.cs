@@ -1,7 +1,4 @@
 ﻿using ProcureFlow.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ProcureFlow.Application.Users.Dtos
 {
@@ -14,6 +11,5 @@ namespace ProcureFlow.Application.Users.Dtos
         public bool? isActive { get; set; }
         public int pageSize { get; set; } = 10;
         public int page { get; set; } = 1;
-    }
     }
 }
