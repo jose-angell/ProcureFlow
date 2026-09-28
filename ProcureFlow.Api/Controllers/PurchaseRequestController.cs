@@ -105,5 +105,11 @@ namespace ProcureFlow.Api.Controllers
             await _useCase.Approve(id, request);
             return NoContent();
         }
-    }
+        [HttpGet("pendingApprovals")]
+        public async Task<IActionResult> GetPendingApprovals()
+        {
+            var result = await _useCase.GetPendingApprovals();
+            return Ok(result);
+        }
+    } 
 }

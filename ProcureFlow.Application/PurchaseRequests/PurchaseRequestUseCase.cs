@@ -5,6 +5,7 @@ using ProcureFlow.Application.Exceptions;
 using ProcureFlow.Application.PurchaseRequests.Dtos;
 using ProcureFlow.Domain.Entities;
 using ProcureFlow.Domain.Enums;
+using System.Globalization;
 
 namespace ProcureFlow.Application.PurchaseRequests
 {
@@ -313,6 +314,41 @@ namespace ProcureFlow.Application.PurchaseRequests
                 .Take(take)
                 .ToListAsync();
             return purchaseRequests;
+        }
+        public async Task<ICollection<PurchaseRequestDto>> GetPendingApprovals()
+        {
+            var currentRole = _currentUserService.Role;
+            var currentUser = _currentUserService.UserId;
+            var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == currentUser);
+            if (user == null) throw new NotFoundException("Usuario no encontrado.");
+
+            IQueryable<PurchaseRequest> query = _context.PurchaseRequests.AsNoTracking();
+            if (currentRole == UserRole.Requester)
+            {
+                query = query.Where(p => p.RequestedByUserId == user.Id);
+            }
+
+            if (currentRole == UserRole.Approver)
+            {
+                query = query.Where(p => p.DepartmentId == user.DepartmentId);
+            }
+
+            return await query.Select(pr => new PurchaseRequestDto
+            {
+                Id = pr.Id,
+                RequestNumber = pr.RequestNumber,
+                RequestedByUserId = pr.RequestedByUserId,
+                DepartmentId = pr.DepartmentId,
+                Priority = pr.Priority,
+                Status = pr.Status,
+                Justification = pr.Justification,
+                TotalAmount = pr.TotalAmount,
+                CreatedAt = pr.CreatedAt,
+                SubmittedAt = pr.SubmittedAt,
+                ApprovedAt = pr.ApprovedAt,
+                RejectedAt = pr.RejectedAt,
+                CancelledAt = pr.CancelledAt
+            }).ToListAsync();
         }
         private string GenerateRequestNumber()
         {
