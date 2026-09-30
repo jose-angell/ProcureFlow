@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ProcureFlow.Application.Exceptions;
 using ProcureFlow.Application.PurchaseRequests;
 using ProcureFlow.Application.PurchaseRequests.Dtos;
 using ProcureFlow.Domain.Entities;
@@ -6,6 +7,7 @@ using ProcureFlow.Domain.Enums;
 using ProcureFlow.Tests.TestSupport;
 using System;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using System.Text;
 
 namespace ProcureFlow.Tests.Application
@@ -68,6 +70,115 @@ namespace ProcureFlow.Tests.Application
 
             Assert.NotNull(savedRequest);
             Assert.Equal(user.Id, savedRequest.RequestedByUserId);
+        }
+        [Fact]
+        public async Task AddItem_ShouldThrowForbidden_WhenUserIsNotOwner()
+        {
+            // Arrange
+            using var db = new TestDbContextFactory();
+
+            var department = new Department("IT");
+
+            var user = new User(
+                "José Gallardo",
+                "jose@test.com",
+                "hashed-password",
+                UserRole.Requester,
+                department.Id);
+
+            var user2 = new User(
+               "tests user",
+               "testsUser@test.com",
+               "hashed-password",
+               UserRole.Requester,
+               department.Id);
+
+            var request = new PurchaseRequest(user.Id, department.Id, PurchaseRequestPriority.High, "Equipo para nuevo colaborador");
+
+            using (var seedContext = db.CreateContext())
+            {
+                seedContext.Departments.Add(department);
+                seedContext.Users.Add(user);
+                seedContext.Users.Add(user2);
+                seedContext.PurchaseRequests.Add(request);
+
+                await seedContext.SaveChangesAsync();
+            }
+
+            var currentUserService = new FakeCurrentUserService(
+                user2.Id,
+                UserRole.Requester);
+
+            using var context = db.CreateContext();
+
+            var useCase = new PurchaseRequestUseCase(
+                context,
+                currentUserService);
+
+            var requestItem = new CreatePurchaseRequestItemRequest
+            {
+                Description = "description tests",
+                Quantity = 1,
+                UnitPrice = 1244m
+            };
+
+            // Act
+            Func<Task> act = () => useCase.AddItem(request.Id, requestItem);
+
+            // Assert
+            await Assert.ThrowsAsync<ForbiddenException>(act);
+        }
+        [Fact]
+        public async Task Submit_ShouldThrowForbidden_WhenUserIsNotOwner()
+        {
+            // Arrange
+            using var db = new TestDbContextFactory();
+
+            var department = new Department("IT");
+
+            var user = new User(
+                "José Gallardo",
+                "jose@test.com",
+                "hashed-password",
+                UserRole.Requester,
+                department.Id);
+
+            var user2 = new User(
+               "tests user",
+               "testsUser@test.com",
+               "hashed-password",
+               UserRole.Requester,
+               department.Id);
+
+            var request = new PurchaseRequest(user.Id, department.Id, PurchaseRequestPriority.High, "Equipo para nuevo colaborador");
+            var item = new PurchaseRequestItem(request.Id,"description Tests", 1, 1340m);
+            using (var seedContext = db.CreateContext())
+            {
+                seedContext.Departments.Add(department);
+                seedContext.Users.Add(user);
+                seedContext.Users.Add(user2);
+                seedContext.PurchaseRequests.Add(request);
+                seedContext.PurchaseRequestItems.Add(item);
+
+                await seedContext.SaveChangesAsync();
+            }
+
+            var currentUserService = new FakeCurrentUserService(
+                user2.Id,
+                UserRole.Requester);
+
+            using var context = db.CreateContext();
+
+            var useCase = new PurchaseRequestUseCase(
+                context,
+                currentUserService);
+
+           
+            // Act
+            Func<Task> act = () => useCase.Submit(request.Id);
+
+            // Assert
+            await Assert.ThrowsAsync<ForbiddenException>(act);
         }
     }
 }

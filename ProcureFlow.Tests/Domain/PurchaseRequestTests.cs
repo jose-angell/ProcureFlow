@@ -12,7 +12,6 @@ namespace ProcureFlow.Tests.Domain
         {
             // Arrange
             var purchaseRequest = new PurchaseRequest(
-                "PR-2026-000002",
                 Guid.NewGuid(),
                 Guid.NewGuid(),
                 PurchaseRequestPriority.High,
@@ -39,7 +38,6 @@ namespace ProcureFlow.Tests.Domain
         {
             // Arrange
             var purchaseRequest = new PurchaseRequest(
-                "PR-2026-000001",
                 Guid.NewGuid(),
                 Guid.NewGuid(),
                 PurchaseRequestPriority.Medium,
@@ -61,7 +59,6 @@ namespace ProcureFlow.Tests.Domain
         {
             // Arrange
             var purchaseRequest = new PurchaseRequest(
-                "PR-2026-000002",
                 Guid.NewGuid(),
                 Guid.NewGuid(),
                 PurchaseRequestPriority.High,
@@ -86,7 +83,6 @@ namespace ProcureFlow.Tests.Domain
         {
             // Arrange
             var purchaseRequest = new PurchaseRequest(
-                "PR-2026-000002",
                 Guid.NewGuid(),
                 Guid.NewGuid(),
                 PurchaseRequestPriority.High,
@@ -113,7 +109,6 @@ namespace ProcureFlow.Tests.Domain
         {
             // Arrange
             var purchaseRequest = new PurchaseRequest(
-                "PR-2026-000002",
                 Guid.NewGuid(),
                 Guid.NewGuid(),
                 PurchaseRequestPriority.High,
@@ -148,5 +143,5 @@ namespace ProcureFlow.Tests.Domain
                 approverId,
                 purchaseRequest.ApprovalDecision.ApproverUserId);
         }
-    } 
+    }
 }

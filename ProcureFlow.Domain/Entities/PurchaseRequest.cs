@@ -25,11 +25,11 @@ namespace ProcureFlow.Domain.Entities
         public IReadOnlyCollection<PurchaseRequestItem> Items => _items;
         public ApprovalDecision? ApprovalDecision { get; private set; }
         private PurchaseRequest() { }
-        public PurchaseRequest(string requestNumber, Guid requestedByUserId, Guid departmentId, PurchaseRequestPriority priority, string justification)
+        public PurchaseRequest(Guid requestedByUserId, Guid departmentId, PurchaseRequestPriority priority, string justification)
         {
-            Validate(requestNumber, requestedByUserId, departmentId, priority, justification);
+            Validate(requestedByUserId, departmentId, priority, justification);
             Id = Guid.NewGuid();
-            RequestNumber = requestNumber;
+            RequestNumber = GenerateRequestNumber();
             RequestedByUserId = requestedByUserId;
             DepartmentId = departmentId;
             Priority = priority;
@@ -43,7 +43,7 @@ namespace ProcureFlow.Domain.Entities
             if (Status != PurchaseRequestStatus.Draft)
                 throw new DomainException("Solo se pueden actualizar solicitudes en estado borrador.");
 
-            Validate(RequestNumber, RequestedByUserId, DepartmentId, priority, justification);
+            Validate(RequestedByUserId, DepartmentId, priority, justification);
             Priority = priority;
             Justification = justification;
             TotalAmount = Items.Sum(i => i.Quantity * i.UnitPrice);
@@ -118,12 +118,8 @@ namespace ProcureFlow.Domain.Entities
             CancelledAt = DateTime.UtcNow;
         }
 
-        private void Validate(string requestNumber, Guid requestedByUserId, Guid departmentId, PurchaseRequestPriority priority, string justification)
+        private void Validate( Guid requestedByUserId, Guid departmentId, PurchaseRequestPriority priority, string justification)
         {
-
-            if (string.IsNullOrWhiteSpace(requestNumber)) throw new DomainException("El número de solicitud es obligatorio.");
-            else if (requestNumber.Length > 30)
-                throw new DomainException("El número de solicitud no puede superar los 30 caracteres.");
 
             if (requestedByUserId == Guid.Empty)
                 throw new DomainException("El identificador del usuario solicitante es inválido.");
@@ -143,6 +139,15 @@ namespace ProcureFlow.Domain.Entities
         private void RecalculateTotal()
         {
             TotalAmount = Items.Sum(i => i.Quantity * i.UnitPrice);
+        }
+
+        private string GenerateRequestNumber()
+        {
+            string guidPart = Id.ToString("N").Substring(0, 8).ToUpper();
+
+            int year = DateTime.Now.Year;
+
+            return $"PR-{year}-{guidPart}";
         }
     }
 }
