@@ -38,7 +38,7 @@ namespace ProcureFlow.Api.Controllers
         }
         [HttpPost("{id:guid}/add-item")]
         [Authorize(Roles = "Requester,Admin")]
-        public async Task<IActionResult> AddItem([FromRoute] Guid id, [FromRoute] CreatePurchaseRequestItemRequest request)
+        public async Task<IActionResult> AddItem([FromRoute] Guid id, [FromBody] CreatePurchaseRequestItemRequest request)
         {
             if (id == Guid.Empty) return BadRequest("El id es invalido");
             var result = await _useCase.AddItem(id, request);

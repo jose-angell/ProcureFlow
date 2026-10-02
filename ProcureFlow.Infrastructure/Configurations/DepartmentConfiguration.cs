@@ -12,6 +12,9 @@ namespace ProcureFlow.Infrastructure.Configurations
 
             builder.HasKey(department => department.Id);
 
+            builder.Property(department => department.Id)
+                .ValueGeneratedNever();
+
             builder.Property(department => department.Name)
                 .IsRequired()
                 .HasMaxLength(100);

@@ -20,6 +20,11 @@ namespace ProcureFlow.Application.PurchaseRequests
         }
         public async Task<PurchaseRequestDto> Create(CreatePurchaseRequestRequest request)
         {
+            var isAuthenticated = _currentUserService.IsAuthenticated;
+            if(!isAuthenticated)
+            {
+                throw new UnauthorizedAccessException("Usuario no autenticado.");
+            }
 
             var currentRole = _currentUserService.Role;
             if (currentRole != UserRole.Admin && currentRole != UserRole.Requester)
@@ -30,7 +35,7 @@ namespace ProcureFlow.Application.PurchaseRequests
 
             var currentUserId = _currentUserService.UserId;
             var user = await _context.Users.FindAsync(currentUserId);
-            if (user == null) throw new NotFoundException("Usuario no encontrado.");
+            if (user == null) throw new ForbiddenException("Usuario no encontrado.");
             if (!user.IsActive) throw new ConflictException("Usuario inactivo no puede crear solicitudes de compra.");
 
             var userDepartment = await _context.Departments.FirstOrDefaultAsync(d => d.Id == user.DepartmentId);
@@ -202,11 +207,18 @@ namespace ProcureFlow.Application.PurchaseRequests
             var currentRole = _currentUserService.Role;
             if (currentRole != UserRole.Admin && currentRole != UserRole.Approver)
             {
-                throw new UnauthorizedAccessException("Usuario no autorizado para aprovar solicitudes de compra.");
+                throw new ForbiddenException("Usuario no autorizado para aprovar solicitudes de compra.");
             }
             var currentUserId = _currentUserService.UserId;
+            var user = await _context.Users.FindAsync(currentUserId);
+            if (user == null) throw new ForbiddenException("Usuario no encontrado.");
+            if (!user.IsActive) throw new ConflictException("Usuario inactivo no puede aprovarsolicitudes de compra.");
+            
             var purchaseRequest = await _context.PurchaseRequests.FindAsync(id);
             if (purchaseRequest == null) throw new NotFoundException("Solicitud de compra no encontrada.");
+
+            if (user.DepartmentId != purchaseRequest.DepartmentId) 
+                throw new ForbiddenException("Usuario no autorizado para aprovar esta solicitud de compra.");
 
             purchaseRequest.Approve(currentUserId, request.Comments);
             await _context.SaveChangesAsync();

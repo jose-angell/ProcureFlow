@@ -10,6 +10,10 @@ namespace ProcureFlow.Infrastructure.Configurations
         {
             builder.ToTable("purchase_request_items");
             builder.HasKey(item => item.Id);
+
+            builder.Property(item => item.Id)
+                .ValueGeneratedNever();
+
             builder.Property(item => item.PurchaseRequestId)
                 .IsRequired();
             builder.Property(item => item.Description)

@@ -10,6 +10,8 @@ namespace ProcureFlow.Infrastructure.Configurations
         {
             builder.ToTable("approval_decisions");
             builder.HasKey(decision => decision.Id);
+            builder.Property(decision => decision.Id)
+                .ValueGeneratedNever();
             builder.Property(decision => decision.PurchaseRequestId)
                 .IsRequired();
             builder.Property(decision => decision.ApproverUserId)
