@@ -26,23 +26,8 @@ public sealed class ProcureFlowWebApplicationFactory
     {
         builder.UseEnvironment("Testing");
 
-        builder.ConfigureAppConfiguration((context, configuration) =>
-        {
-            configuration.AddInMemoryCollection(
-                new Dictionary<string, string?>
-                {
-                    ["Jwt:Issuer"] = "ProcureFlow.Tests",
-                    ["Jwt:Audience"] = "ProcureFlow.Tests",
-                    ["Jwt:SecretKey"] =
-                        "ProcureFlow-Integration-Tests-Secret-Key-2026!",
-                    ["Jwt:ExpirationMinutes"] = "60"
-                });
-        });
-
         builder.ConfigureServices(services =>
         {
-            // Eliminar completamente la configuración
-            // original de AppDbContext/Npgsql.
             services.RemoveAll<
                 IDbContextOptionsConfiguration<AppDbContext>>();
 
@@ -50,11 +35,8 @@ public sealed class ProcureFlowWebApplicationFactory
                 DbContextOptions<AppDbContext>>();
 
             services.RemoveAll<AppDbContext>();
-
             services.RemoveAll<IApplicationDbContext>();
 
-            // Registrar AppDbContext nuevamente,
-            // ahora exclusivamente con SQLite.
             services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseSqlite(_connection);
@@ -81,8 +63,6 @@ public sealed class ProcureFlowWebApplicationFactory
         base.Dispose(disposing);
 
         if (disposing)
-        {
             _connection.Dispose();
-        }
     }
 }
