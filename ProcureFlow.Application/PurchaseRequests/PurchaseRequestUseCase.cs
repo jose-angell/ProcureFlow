@@ -176,12 +176,13 @@ namespace ProcureFlow.Application.PurchaseRequests
                 throw new UnauthorizedAccessException("Usuario no autorizado para enviar solicitudes de compra.");
             }
             var currentUserId = _currentUserService.UserId;
-            var purchaseRequest = await _context.PurchaseRequests.FindAsync(id);
+            var purchaseRequest = await _context.PurchaseRequests.Include(p => p.Items).FirstOrDefaultAsync(p => p.Id == id);
             if (purchaseRequest == null) throw new NotFoundException("Solicitud de compra no encontrada.");
             if (purchaseRequest.RequestedByUserId != currentUserId && currentRole != UserRole.Admin)
             {
                 throw new ForbiddenException("Usuario no autorizado para enviar esta solicitud de compra.");
             }
+
             purchaseRequest.Submit();
             await _context.SaveChangesAsync();
         }
