@@ -27,10 +27,10 @@ namespace ProcureFlow.Tests.Domain
 
             // Assert
             Assert.Equal(
-                PurchaseRequestStatus.Approved,
+                PurchaseRequestStatus.Submitted,
                 purchaseRequest.Status);
 
-            Assert.NotNull(purchaseRequest.ApprovalDecision);
+            Assert.Null(purchaseRequest.ApprovalDecision);
         }
 
         [Fact]

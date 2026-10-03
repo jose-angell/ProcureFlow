@@ -23,13 +23,13 @@ namespace ProcureFlow.Application.PurchaseRequests
             var isAuthenticated = _currentUserService.IsAuthenticated;
             if(!isAuthenticated)
             {
-                throw new UnauthorizedAccessException("Usuario no autenticado.");
+                throw new UnauthorizedException("Usuario no autenticado.");
             }
 
             var currentRole = _currentUserService.Role;
             if (currentRole != UserRole.Admin && currentRole != UserRole.Requester)
             {
-                throw new UnauthorizedAccessException("Usuario no autorizado para crear solicitudes de compra.");
+                throw new UnauthorizedException("Usuario no autorizado para crear solicitudes de compra.");
             }
 
 
@@ -75,14 +75,14 @@ namespace ProcureFlow.Application.PurchaseRequests
             var currentRole = _currentUserService.Role;
             if (currentRole != UserRole.Admin && currentRole != UserRole.Requester)
             {
-                throw new UnauthorizedAccessException("Usuario no autorizado para actualizar solicitudes de compra.");
+                throw new UnauthorizedException("Usuario no autorizado para actualizar solicitudes de compra.");
             }
             var currentUserId = _currentUserService.UserId;
             var purchaseRequest = await _context.PurchaseRequests.FindAsync(id);
             if (purchaseRequest == null) throw new NotFoundException("Solicitud de compra no encontrada.");
             if (purchaseRequest.RequestedByUserId != currentUserId && currentRole != UserRole.Admin)
             {
-                throw new UnauthorizedAccessException("Usuario no autorizado para actualizar esta solicitud de compra.");
+                throw new UnauthorizedException("Usuario no autorizado para actualizar esta solicitud de compra.");
             }
 
             purchaseRequest.Update(request.Priority!.Value, request.Justification!);
@@ -91,7 +91,7 @@ namespace ProcureFlow.Application.PurchaseRequests
         public async Task<PurchaseRequestItemDto> GetItemById(Guid id)
         {
             var result = await _context.PurchaseRequestItems.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
-            if (result == null) new NotFoundException("Solicitud de compra no encontrada.");
+            if (result == null) throw new NotFoundException("Solicitud de compra no encontrada.");
             return new PurchaseRequestItemDto
             {
                 Id = result!.Id,
@@ -106,10 +106,10 @@ namespace ProcureFlow.Application.PurchaseRequests
             var currentRole = _currentUserService.Role;
             if (currentRole != UserRole.Admin && currentRole != UserRole.Requester)
             {
-                throw new UnauthorizedAccessException("Usuario no autorizado para actualizar solicitudes de compra.");
+                throw new UnauthorizedException("Usuario no autorizado para actualizar solicitudes de compra.");
             }
             var currentUserId = _currentUserService.UserId;
-            var purchaseRequest = await _context.PurchaseRequests.FindAsync(id);
+            var purchaseRequest = await _context.PurchaseRequests.Include(p => p.Items).FirstOrDefaultAsync(p => p.Id == id);
             if (purchaseRequest == null) throw new NotFoundException("Solicitud de compra no encontrada.");
             if (purchaseRequest.RequestedByUserId != currentUserId && currentRole != UserRole.Admin)
             {
@@ -132,19 +132,18 @@ namespace ProcureFlow.Application.PurchaseRequests
             var currentRole = _currentUserService.Role;
             if (currentRole != UserRole.Admin && currentRole != UserRole.Requester)
             {
-                throw new UnauthorizedAccessException("Usuario no autorizado para actualizar solicitudes de compra.");
+                throw new UnauthorizedException("Usuario no autorizado para actualizar solicitudes de compra.");
             }
             var currentUserId = _currentUserService.UserId;
-            var purchaseRequest = await _context.PurchaseRequests.FindAsync(id);
+            var purchaseRequest = await _context.PurchaseRequests.Include(p => p.Items).FirstOrDefaultAsync(p => p.Id == id);
             if (purchaseRequest == null) throw new NotFoundException("Solicitud de compra no encontrada.");
             if (purchaseRequest.RequestedByUserId != currentUserId && currentRole != UserRole.Admin)
             {
                 throw new ForbiddenException("Usuario no autorizado para actualizar esta solicitud de compra.");
             }
-            var item = purchaseRequest.Items.FirstOrDefault(i => i.Id == itemId);
-            if (item == null) throw new NotFoundException("Item de solicitud de compra no encontrado.");
 
-            item.Update(request.Description!, request.Quantity!.Value, request.UnitPrice!.Value);
+
+            purchaseRequest.UpdateItem(itemId, request.Description!, request.Quantity!.Value, request.UnitPrice!.Value);
 
             await _context.SaveChangesAsync();
         }
@@ -153,10 +152,10 @@ namespace ProcureFlow.Application.PurchaseRequests
             var currentRole = _currentUserService.Role;
             if (currentRole != UserRole.Admin && currentRole != UserRole.Requester)
             {
-                throw new UnauthorizedAccessException("Usuario no autorizado para actualizar solicitudes de compra.");
+                throw new UnauthorizedException("Usuario no autorizado para actualizar solicitudes de compra.");
             }
             var currentUserId = _currentUserService.UserId;
-            var purchaseRequest = await _context.PurchaseRequests.FindAsync(id);
+            var purchaseRequest = await _context.PurchaseRequests.Include(p => p.Items).FirstOrDefaultAsync(p => p.Id == id);
             if (purchaseRequest == null) throw new NotFoundException("Solicitud de compra no encontrada.");
             if (purchaseRequest.RequestedByUserId != currentUserId && currentRole != UserRole.Admin)
             {
@@ -173,7 +172,7 @@ namespace ProcureFlow.Application.PurchaseRequests
             var currentRole = _currentUserService.Role;
             if (currentRole != UserRole.Admin && currentRole != UserRole.Requester)
             {
-                throw new UnauthorizedAccessException("Usuario no autorizado para enviar solicitudes de compra.");
+                throw new UnauthorizedException("Usuario no autorizado para enviar solicitudes de compra.");
             }
             var currentUserId = _currentUserService.UserId;
             var purchaseRequest = await _context.PurchaseRequests.Include(p => p.Items).FirstOrDefaultAsync(p => p.Id == id);
@@ -191,7 +190,7 @@ namespace ProcureFlow.Application.PurchaseRequests
             var currentRole = _currentUserService.Role;
             if (currentRole != UserRole.Admin && currentRole != UserRole.Requester)
             {
-                throw new UnauthorizedAccessException("Usuario no autorizado para enviar solicitudes de compra.");
+                throw new UnauthorizedException("Usuario no autorizado para enviar solicitudes de compra.");
             }
             var currentUserId = _currentUserService.UserId;
             var purchaseRequest = await _context.PurchaseRequests.FindAsync(id);
@@ -229,21 +228,47 @@ namespace ProcureFlow.Application.PurchaseRequests
             var currentRole = _currentUserService.Role;
             if (currentRole != UserRole.Admin && currentRole != UserRole.Approver)
             {
-                throw new UnauthorizedAccessException("Usuario no autorizado para rechazar solicitudes de compra.");
+                throw new UnauthorizedException("Usuario no autorizado para rechazar solicitudes de compra.");
             }
             var currentUserId = _currentUserService.UserId;
+
+            var user = await _context.Users.FindAsync(currentUserId);
+            if (user == null) throw new ForbiddenException("Usuario no encontrado.");
+            if (!user.IsActive) throw new ConflictException("Usuario inactivo no puede aprovarsolicitudes de compra.");
+
             var purchaseRequest = await _context.PurchaseRequests.FindAsync(id);
             if (purchaseRequest == null) throw new NotFoundException("Solicitud de compra no encontrada.");
+
+            if (currentRole != UserRole.Admin && user.DepartmentId != purchaseRequest.DepartmentId)
+                throw new ForbiddenException("Usuario no autorizado para aprovar esta solicitud de compra.");
 
             purchaseRequest.Reject(currentUserId, request.Comments!);
             await _context.SaveChangesAsync();
         }
         public async Task<PurchaseRequestDto> GetById(Guid id)
         {
-            var purchaseRequest = await _context.PurchaseRequests
-                .Include(pr => pr.Items)
-                .FirstOrDefaultAsync(pr => pr.Id == id);
+            var currentRole = _currentUserService.Role;
+            var currentUserId = _currentUserService.UserId;
+            var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == currentUserId);
+            if (user == null) throw new NotFoundException("El usuario no fue encotrado");
+
+
+            IQueryable<PurchaseRequest> query = _context.PurchaseRequests
+               .Include(pr => pr.Items);
+
+            if(currentRole == UserRole.Approver)
+            {
+                query = query.Where(pr => pr.DepartmentId == user.DepartmentId);
+            }
+            if(currentRole == UserRole.Requester)
+            {
+                query = query.Where(pr => pr.RequestedByUserId == user.Id);
+            }
+
+            var purchaseRequest = await query.FirstOrDefaultAsync(pr => pr.Id == id); 
             if (purchaseRequest == null) throw new NotFoundException("Solicitud de compra no encontrada.");
+
+
             return new PurchaseRequestDto
             {
                 Id = purchaseRequest.Id,
@@ -258,7 +283,8 @@ namespace ProcureFlow.Application.PurchaseRequests
                 SubmittedAt = purchaseRequest.SubmittedAt,
                 ApprovedAt = purchaseRequest.ApprovedAt,
                 RejectedAt = purchaseRequest.RejectedAt,
-                CancelledAt = purchaseRequest.CancelledAt
+                CancelledAt = purchaseRequest.CancelledAt,
+                ItemsCount = purchaseRequest.Items.Count
             };
         }
         public async Task<IEnumerable<PurchaseRequestDto>> GetAll(PurchaseRequestQuery query)
@@ -269,7 +295,7 @@ namespace ProcureFlow.Application.PurchaseRequests
             var user = await _context.Users.FindAsync(currentUserId);
             if (user == null) throw new NotFoundException("El usuario no fue encotrado");
 
-            var purchaseRequestsQuery = _context.PurchaseRequests.AsQueryable();
+            var purchaseRequestsQuery = _context.PurchaseRequests.Include(pr => pr.Items).AsQueryable();
 
             if (currentRole == UserRole.Approver)
             {
@@ -318,7 +344,8 @@ namespace ProcureFlow.Application.PurchaseRequests
                     SubmittedAt = pr.SubmittedAt,
                     ApprovedAt = pr.ApprovedAt,
                     RejectedAt = pr.RejectedAt,
-                    CancelledAt = pr.CancelledAt
+                    CancelledAt = pr.CancelledAt,
+                    ItemsCount = pr.Items.Count
                 })
                 .Skip(skip)
                 .Take(take)
@@ -332,7 +359,8 @@ namespace ProcureFlow.Application.PurchaseRequests
             var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == currentUser);
             if (user == null) throw new NotFoundException("Usuario no encontrado.");
 
-            IQueryable<PurchaseRequest> query = _context.PurchaseRequests.AsNoTracking();
+            IQueryable<PurchaseRequest> query = _context.PurchaseRequests.AsNoTracking()
+                .Where(p => p.Status == PurchaseRequestStatus.Submitted);
             if (currentRole == UserRole.Requester)
             {
                 query = query.Where(p => p.RequestedByUserId == user.Id);

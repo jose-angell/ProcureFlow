@@ -46,7 +46,6 @@ namespace ProcureFlow.Domain.Entities
             Validate(RequestedByUserId, DepartmentId, priority, justification);
             Priority = priority;
             Justification = justification;
-            TotalAmount = Items.Sum(i => i.Quantity * i.UnitPrice);
         }
         public PurchaseRequestItem AddItem(string description, int quantity, decimal unitPrice)
         {

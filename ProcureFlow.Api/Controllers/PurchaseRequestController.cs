@@ -106,6 +106,7 @@ namespace ProcureFlow.Api.Controllers
             return NoContent();
         }
         [HttpGet("pendingApprovals")]
+        [Authorize(Roles = "Approver,Admin")]
         public async Task<IActionResult> GetPendingApprovals()
         {
             var result = await _useCase.GetPendingApprovals();

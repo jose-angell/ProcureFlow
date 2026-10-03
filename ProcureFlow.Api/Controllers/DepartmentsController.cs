@@ -23,12 +23,14 @@ namespace ProcureFlow.Api.Controllers
             return Ok(department);
         }
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([FromBody] CreateDepartmentRequest request)
         {
             var result = await _UseCase.Create(request);
             return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
         }
         [HttpPut("{id:guid}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateDepartmentRequest request)
         {
             if (id == Guid.Empty) return BadRequest("El id es invalido");
@@ -36,6 +38,7 @@ namespace ProcureFlow.Api.Controllers
             return NoContent();
         }
         [HttpDelete("{id:guid}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             if (id == Guid.Empty) return BadRequest("El id es invalido");
@@ -43,6 +46,7 @@ namespace ProcureFlow.Api.Controllers
             return NoContent();
         }
         [HttpPatch("{id:guid}/activate")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Activate([FromRoute] Guid id)
         {
             if (id == Guid.Empty) return BadRequest("El id es invalido");
@@ -50,6 +54,7 @@ namespace ProcureFlow.Api.Controllers
             return NoContent();
         }
         [HttpPatch("{id:guid}/deactivate")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Deactivate([FromRoute] Guid id)
         {
             if (id == Guid.Empty) return BadRequest("El id es invalido");
