@@ -1,6 +1,6 @@
 # SPEC 01 — Pantalla de login
 
-> **Estado:** aprobado
+> **Estado:** implementado
 > **Depende de:** ninguna
 > **Fecha:** 2026-10-22
 > **Objetivo:** Construir la pantalla `/login` según el diseño Stitch para autenticar contra `POST /api/auth/login` y guardar la sesión en el navegador.
@@ -109,21 +109,21 @@ Configuración nueva en la API:
 
 ## Criterios de aceptación
 
-- [ ] `dotnet build` y `dotnet test` pasan.
-- [ ] `npm run lint` y `npm run build` pasan sin errores.
-- [ ] Con la API corriendo en `http://localhost:5285`, el login desde `http://localhost:5173` no da error CORS en consola.
-- [ ] Credenciales válidas redirigen a `/dashboard`.
-- [ ] Con "Recordar sesión" marcado, `localStorage['procureflow.session']` tiene el token y `sessionStorage` no tiene la clave.
-- [ ] Con "Recordar sesión" desmarcado, `sessionStorage['procureflow.session']` tiene el token y `localStorage` no tiene la clave.
-- [ ] Contraseña incorrecta muestra "Correo o contraseña incorrectos." y no guarda sesión.
-- [ ] Usuario inactivo muestra "Tu usuario está inactivo. Contacta al administrador.".
-- [ ] Con la API apagada, se muestra "No se pudo conectar con el servidor. Intenta de nuevo.".
-- [ ] Enviar con correo vacío o mal formado muestra error bajo el campo y no llama a la API.
-- [ ] El botón queda deshabilitado mientras la petición está en curso.
-- [ ] El botón de ojo alterna el `type` del input entre `password` y `text`, y tiene `aria-label`.
-- [ ] Cada input tiene un `label` asociado por `htmlFor`.
-- [ ] Con ancho menor a 1024px, el panel izquierdo no se ve y no hay scroll horizontal a 375px.
-- [ ] No hay enlaces "¿Olvidaste tu contraseña?" ni "Regístrate" en la pantalla.
+- [x] `dotnet build` y `dotnet test` pasan.
+- [x] `npm run lint` y `npm run build` pasan sin errores.
+- [x] Con la API corriendo en `http://localhost:5285`, el login desde `http://localhost:5173` no da error CORS en consola.
+- [x] Credenciales válidas redirigen a `/dashboard`.
+- [x] Con "Recordar sesión" marcado, `localStorage['procureflow.session']` tiene el token y `sessionStorage` no tiene la clave.
+- [x] Con "Recordar sesión" desmarcado, `sessionStorage['procureflow.session']` tiene el token y `localStorage` no tiene la clave.
+- [x] Contraseña incorrecta muestra "Correo o contraseña incorrectos." y no guarda sesión.
+- [x] Usuario inactivo muestra "Tu usuario está inactivo. Contacta al administrador.".
+- [x] Con la API apagada, se muestra "No se pudo conectar con el servidor. Intenta de nuevo.".
+- [x] Enviar con correo vacío o mal formado muestra error bajo el campo y no llama a la API.
+- [x] El botón queda deshabilitado mientras la petición está en curso.
+- [x] El botón de ojo alterna el `type` del input entre `password` y `text`, y tiene `aria-label`.
+- [x] Cada input tiene un `label` asociado por `htmlFor`.
+- [x] Con ancho menor a 1024px, el panel izquierdo no se ve y no hay scroll horizontal a 375px.
+- [x] No hay enlaces "¿Olvidaste tu contraseña?" ni "Regístrate" en la pantalla.
 
 ## Decisiones
 
