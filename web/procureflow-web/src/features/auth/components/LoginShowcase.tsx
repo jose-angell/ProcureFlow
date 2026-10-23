@@ -34,9 +34,9 @@ function LoginShowcase() {
           <BadgeCheck className="size-3.5" aria-hidden="true" />
           Control Presupuestario en Tiempo Real
         </div>
-        <h1 className="mb-4 max-w-xl font-heading text-4xl leading-11 font-bold tracking-tight">
+        <h2 className="mb-4 max-w-xl font-heading text-4xl leading-11 font-bold tracking-tight">
           Aprobaciones ágiles y compras corporativas bajo estricta gobernanza.
-        </h1>
+        </h2>
         <p className="mb-8 max-w-lg text-base text-white/60">
           Supervise órdenes de compra, automatice flujos contables y asegure el
           cumplimiento normativo de su organización en una sola plataforma
