@@ -60,6 +60,19 @@ namespace ProcureFlow.Api
 
             services.AddAuthorization();
 
+            var allowedOrigins = configuration
+                .GetSection("Cors:AllowedOrigins")
+                .Get<string[]>() ?? [];
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("Frontend", policy =>
+                    policy
+                        .WithOrigins(allowedOrigins)
+                        .AllowAnyHeader()
+                        .AllowAnyMethod());
+            });
+
             return services;
         }
     }
