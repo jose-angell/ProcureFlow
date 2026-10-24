@@ -1,6 +1,6 @@
 # SPEC 02 — Pantalla de registro
 
-> **Estado:** aprobados
+> **Estado:** implementado
 > **Depende de:** SPEC 01
 > **Fecha:** 2026-10-23
 > **Objetivo:** Construir la pantalla `/register` según el diseño Stitch para crear una cuenta con `POST /api/auth/register`, iniciar sesión automáticamente y redirigir a `/dashboard`.
@@ -114,25 +114,25 @@ En error o vacío, "Crear cuenta" queda deshabilitado.
 
 ## Criterios de aceptación
 
-- [ ] `dotnet build` y `dotnet test` pasan.
-- [ ] `npm run lint` y `npm run build` pasan sin errores.
-- [ ] `GET /api/departments/active` sin token responde 200 y solo incluye departamentos activos con `id` y `name`.
-- [ ] `GET /api/departments` sin token sigue respondiendo 401.
-- [ ] `POST /api/auth/register` con un departamento inactivo responde 404.
-- [ ] La respuesta de `register` incluye `departmentId` y `departmentName`.
-- [ ] El select muestra los departamentos activos.
-- [ ] Registro válido redirige a `/dashboard` y `sessionStorage['procureflow.session']` tiene el token con `departmentName`; `localStorage` no tiene la clave.
-- [ ] Correo ya registrado muestra "Ya existe una cuenta con este correo." y no guarda sesión.
-- [ ] Con la API apagada, se muestra el mensaje de error de red y "Crear cuenta" queda deshabilitado.
-- [ ] Enviar con cualquier campo inválido muestra el error bajo ese campo y no llama a la API.
-- [ ] Contraseña de 7 caracteres muestra "La contraseña debe tener al menos 8 caracteres.".
-- [ ] Sin marcar términos no se envía el formulario.
-- [ ] El botón queda deshabilitado mientras la petición está en curso.
-- [ ] El botón de ojo alterna el `type` entre `password` y `text` y tiene `aria-label`.
-- [ ] Cada campo tiene `label` asociado y los errores se enlazan con `aria-describedby`.
-- [ ] `/login` enlaza a `/register` y `/register` enlaza a `/login`.
-- [ ] Con ancho menor a 1024px el panel no se ve y no hay scroll horizontal a 375px.
-- [ ] No hay medidor de fuerza, enlaces de términos ni insignias SSO/ERP/SOC2.
+- [x] `dotnet build` y `dotnet test` pasan.
+- [x] `npm run lint` y `npm run build` pasan sin errores.
+- [x] `GET /api/departments/active` sin token responde 200 y solo incluye departamentos activos con `id` y `name`.
+- [x] `GET /api/departments` sin token sigue respondiendo 401.
+- [x] `POST /api/auth/register` con un departamento inactivo responde 404.
+- [x] La respuesta de `register` incluye `departmentId` y `departmentName`.
+- [x] El select muestra los departamentos activos.
+- [x] Registro válido redirige a `/dashboard` y `sessionStorage['procureflow.session']` tiene el token con `departmentName`; `localStorage` no tiene la clave.
+- [x] Correo ya registrado muestra "Ya existe una cuenta con este correo." y no guarda sesión.
+- [x] Con la API apagada, se muestra el mensaje de error de red y "Crear cuenta" queda deshabilitado.
+- [x] Enviar con cualquier campo inválido muestra el error bajo ese campo y no llama a la API.
+- [x] Contraseña de 7 caracteres muestra "La contraseña debe tener al menos 8 caracteres.".
+- [x] Sin marcar términos no se envía el formulario.
+- [x] El botón queda deshabilitado mientras la petición está en curso.
+- [x] El botón de ojo alterna el `type` entre `password` y `text` y tiene `aria-label`.
+- [x] Cada campo tiene `label` asociado y los errores se enlazan con `aria-describedby`.
+- [x] `/login` enlaza a `/register` y `/register` enlaza a `/login`.
+- [x] Con ancho menor a 1024px el panel no se ve y no hay scroll horizontal a 375px.
+- [x] No hay medidor de fuerza, enlaces de términos ni insignias SSO/ERP/SOC2.
 
 ## Decisiones
 
