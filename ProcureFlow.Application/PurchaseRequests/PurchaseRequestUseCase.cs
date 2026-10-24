@@ -367,6 +367,52 @@ namespace ProcureFlow.Application.PurchaseRequests
                 PageSize = query.PageSize
             };
         }
+        public async Task<PurchaseRequestSummaryDto> GetSummary()
+        {
+            var currentRole = _currentUserService.Role;
+            var currentUserId = _currentUserService.UserId;
+            var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == currentUserId);
+            if (user == null) throw new NotFoundException("Usuario no encontrado.");
+
+            IQueryable<PurchaseRequest> query = _context.PurchaseRequests.AsNoTracking();
+            if (currentRole == UserRole.Approver)
+            {
+                query = query.Where(pr => pr.DepartmentId == user.DepartmentId);
+            }
+            if (currentRole == UserRole.Requester)
+            {
+                query = query.Where(pr => pr.RequestedByUserId == user.Id);
+            }
+
+            var statusCounts = await query
+                .GroupBy(pr => pr.Status)
+                .Select(g => new { Status = g.Key, Count = g.Count() })
+                .ToListAsync();
+
+            var byDepartment = await query
+                .GroupBy(pr => new { pr.DepartmentId, pr.Department.Name })
+                .Select(g => new DepartmentRequestCountDto
+                {
+                    DepartmentId = g.Key.DepartmentId,
+                    DepartmentName = g.Key.Name,
+                    Count = g.Count()
+                })
+                .ToListAsync();
+
+            int CountOf(PurchaseRequestStatus status) =>
+                statusCounts.FirstOrDefault(s => s.Status == status)?.Count ?? 0;
+
+            return new PurchaseRequestSummaryDto
+            {
+                Total = statusCounts.Sum(s => s.Count),
+                Draft = CountOf(PurchaseRequestStatus.Draft),
+                Submitted = CountOf(PurchaseRequestStatus.Submitted),
+                Approved = CountOf(PurchaseRequestStatus.Approved),
+                Rejected = CountOf(PurchaseRequestStatus.Rejected),
+                Cancelled = CountOf(PurchaseRequestStatus.Cancelled),
+                ByDepartment = byDepartment.OrderByDescending(d => d.Count).ToList()
+            };
+        }
         public async Task<ICollection<PurchaseRequestDto>> GetPendingApprovals()
         {
             var currentRole = _currentUserService.Role;

@@ -89,6 +89,12 @@ namespace ProcureFlow.Api.Controllers
             var result = await _useCase.GetAll(query);
             return Ok(result);
         }
+        [HttpGet("summary")]
+        public async Task<IActionResult> GetSummary()
+        {
+            var result = await _useCase.GetSummary();
+            return Ok(result);
+        }
         [HttpPatch("{id:guid}/reject")]
         [Authorize(Roles = "Approver,Admin")]
         public async Task<IActionResult> Reject([FromRoute] Guid id, [FromBody] DecisionRequest request)
