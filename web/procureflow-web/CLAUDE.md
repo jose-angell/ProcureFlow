@@ -34,7 +34,8 @@
 ## API y sesión
 - La URL base viene de `VITE_API_URL`; las llamadas pasan por `src/shared/api/httpClient.ts` (`ApiError`, `NetworkError`). No usar `fetch` directo en las features.
 - Los mensajes de error se fijan por status HTTP en el frontend; no mostrar `detail` del ProblemDetails.
-- La sesión se guarda con `features/auth/session.ts` bajo `procureflow.session` (`localStorage` si "Recordar sesión", si no `sessionStorage`).
+- La sesión se guarda con `features/auth/session.ts` bajo `procureflow.session` (`localStorage` si "Recordar sesión", si no `sessionStorage`) y se lee con `getSession()`.
+- Para llamadas autenticadas, la feature obtiene el token de `getSession()` y lo pasa a `getJson(path, { token })`. `shared` no importa de `features`.
 - `UserRole` debe coincidir con `ProcureFlow.Domain/Enums/UserRole.cs`.
-- Estado actual: `ProtectedRoute` es un placeholder y no se envía `Authorization`. El almacenamiento en Web Storage es una decisión de MVP, no final.
+- Estado actual: `ProtectedRoute` es un placeholder; `Authorization` solo se envía en `getJson` cuando se pasa `token`. El almacenamiento en Web Storage es una decisión de MVP, no final.
 - Detalle y pendientes: `../../docs/decisions/ADR-001-auth-api.md`.

@@ -28,10 +28,10 @@ Cada decisión indica si está **Implementada**, **Parcial** o **Pendiente**. La
 ## D3. Cliente HTTP propio sobre `fetch` — Parcial
 
 - **Contexto:** el login necesitaba una llamada JSON sin añadir dependencias.
-- **Decisión:** `src/shared/api/httpClient.ts` expone `getJson` y `postJson` (sobre un helper común), `ApiError` (con `status`) para respuestas no 2xx y `NetworkError` cuando `fetch` falla.
+- **Decisión:** `src/shared/api/httpClient.ts` expone `getJson` y `postJson` (sobre un helper común), `ApiError` (con `status`) para respuestas no 2xx y `NetworkError` cuando `fetch` falla. `getJson` acepta `{ token }` opcional y, si se pasa, envía `Authorization: Bearer <token>` (SPEC 03). El token lo entrega quien llama; `shared` no importa de `features`.
 - **Justificación:** suficiente para el alcance actual; sin axios ni librerías de datos.
 - **Consecuencias:** las features distinguen "la API respondió con error" de "no hubo conexión".
-- **Limitaciones / pendiente:** solo existen `getJson` y `postJson`. Faltan otros métodos y el envío del token (ver D6).
+- **Limitaciones / pendiente:** solo existen `getJson` y `postJson`. Faltan otros métodos. `postJson` aún no envía el token y `getJson` solo lo envía si quien llama lo pasa (ver D6).
 
 ## D4. Errores: mensajes fijos por status — Implementada (solo login)
 
@@ -56,7 +56,8 @@ Cada decisión indica si está **Implementada**, **Parcial** o **Pendiente**. La
 - **Justificación:** da función real al checkbox del diseño sin añadir dependencias.
 - **Consecuencias:** el token es legible desde JavaScript.
 - **Limitaciones (decisión temporal de MVP, no definitiva):** cualquier XSS podría robar el token. La mitigación actual es solo no usar `dangerouslySetInnerHTML`. Debe reevaluarse antes de producción en la spec de sesión.
-- **Pendiente:** leer la sesión guardada, enviar `Authorization: Bearer`, detectar expiración, logout.
+- **Lectura (SPEC 03):** `getSession()` lee `localStorage` y luego `sessionStorage`; devuelve `null` si no hay sesión o el JSON es inválido. Las llamadas del dashboard envían `Authorization: Bearer` mediante `getJson(path, { token })`.
+- **Pendiente:** enviar el token en otros métodos (`postJson`), detectar expiración, logout.
 
 ## D7. Separación de responsabilidades — Implementada como principio
 
@@ -71,7 +72,7 @@ Cada decisión indica si está **Implementada**, **Parcial** o **Pendiente**. La
 - `ProtectedRoute` real leyendo la sesión.
 - Logout.
 - Expiración y renovación del token.
-- Header `Authorization` en peticiones autenticadas (y métodos HTTP adicionales).
+- Header `Authorization` en `postJson` y métodos HTTP adicionales (`getJson` ya lo admite).
 - Redirigir fuera de `/login` si ya hay sesión.
 - Revisar dónde se almacena el token (D6) antes de producción.
 - Definir `Cors:AllowedOrigins`, `VITE_API_URL` y `Jwt:SecretKey` de producción.

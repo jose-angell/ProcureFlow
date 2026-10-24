@@ -36,8 +36,21 @@ async function requestJson<TResponse>(
   return (await response.json()) as TResponse
 }
 
-export function getJson<TResponse>(path: string): Promise<TResponse> {
-  return requestJson<TResponse>(path)
+export interface GetJsonOptions {
+  /** Si se envía, la petición lleva `Authorization: Bearer <token>`. */
+  token?: string
+}
+
+export function getJson<TResponse>(
+  path: string,
+  options?: GetJsonOptions,
+): Promise<TResponse> {
+  return requestJson<TResponse>(
+    path,
+    options?.token
+      ? { headers: { Authorization: `Bearer ${options.token}` } }
+      : undefined,
+  )
 }
 
 export function postJson<TBody, TResponse>(
