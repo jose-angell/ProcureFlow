@@ -195,7 +195,6 @@ public class PurchaseRequestEndpointsTests : IntegrationTestBase
 
         var decision = new DecisionRequest
         {
-            ApproverUserId = requester.UserId,
             Comments = "Intento de aprobación"
         };
 
@@ -234,7 +233,6 @@ public class PurchaseRequestEndpointsTests : IntegrationTestBase
 
         var decision = new DecisionRequest
         {
-            ApproverUserId = approver.UserId,
             Comments = "Aprobado"
         };
 
@@ -288,7 +286,6 @@ public class PurchaseRequestEndpointsTests : IntegrationTestBase
 
         var decision = new DecisionRequest
         {
-            ApproverUserId = approver.UserId,
             Comments = "Aprobado"
         };
 

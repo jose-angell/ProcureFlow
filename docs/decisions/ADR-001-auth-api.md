@@ -47,7 +47,7 @@ Cada decisión indica si está **Implementada**, **Parcial** o **Pendiente**. La
 - **Decisión:** token HS256 con claims `NameIdentifier`, `Email`, `Name` y `Role`; vigencia `Jwt:ExpirationMinutes` (60) y `ClockSkew = 0`. Sin refresh token. El contrato del frontend está en `features/auth/types.ts`; `UserRole` es un objeto `as const` numérico (`Admin=1, Requester=2, Approver=3`) que copia `ProcureFlow.Domain/Enums/UserRole.cs`. No se usa `JsonStringEnumConverter`.
 - **Justificación:** no cambia el contrato existente de la API ni los tests de integración.
 - **Consecuencias:** hay que mantener `UserRole` sincronizado a mano entre dominio y frontend.
-- **Limitaciones:** el `role` del JSON es numérico y el claim del token es texto. `register` no devuelve `departmentId` ni `departmentName`. El `SecretKey` de `appsettings.json` es solo de desarrollo; en producción debe venir de `Jwt__SecretKey`.
+- **Limitaciones:** el `role` del JSON es numérico y el claim del token es texto. `register` exige un departamento activo (404 si no existe o está inactivo) y devuelve `departmentId` y `departmentName`, igual que `login` (SPEC 02). El `SecretKey` de `appsettings.json` es solo de desarrollo; en producción debe venir de `Jwt__SecretKey`.
 
 ## D6. Sesión en Web Storage — Guardado implementado; resto pendiente (MVP)
 
