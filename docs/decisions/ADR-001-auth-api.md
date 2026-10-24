@@ -28,10 +28,10 @@ Cada decisión indica si está **Implementada**, **Parcial** o **Pendiente**. La
 ## D3. Cliente HTTP propio sobre `fetch` — Parcial
 
 - **Contexto:** el login necesitaba una llamada JSON sin añadir dependencias.
-- **Decisión:** `src/shared/api/httpClient.ts` expone `postJson`, `ApiError` (con `status`) para respuestas no 2xx y `NetworkError` cuando `fetch` falla.
+- **Decisión:** `src/shared/api/httpClient.ts` expone `getJson` y `postJson` (sobre un helper común), `ApiError` (con `status`) para respuestas no 2xx y `NetworkError` cuando `fetch` falla.
 - **Justificación:** suficiente para el alcance actual; sin axios ni librerías de datos.
 - **Consecuencias:** las features distinguen "la API respondió con error" de "no hubo conexión".
-- **Limitaciones / pendiente:** solo existe `postJson`. Faltan otros métodos y el envío del token (ver D6).
+- **Limitaciones / pendiente:** solo existen `getJson` y `postJson`. Faltan otros métodos y el envío del token (ver D6).
 
 ## D4. Errores: mensajes fijos por status — Implementada (solo login)
 

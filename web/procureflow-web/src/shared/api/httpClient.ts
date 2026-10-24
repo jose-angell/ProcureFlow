@@ -17,18 +17,14 @@ export class NetworkError extends Error {
   }
 }
 
-export async function postJson<TBody, TResponse>(
+async function requestJson<TResponse>(
   path: string,
-  body: TBody,
+  init?: RequestInit,
 ): Promise<TResponse> {
   let response: Response
 
   try {
-    response = await fetch(`${import.meta.env.VITE_API_URL}${path}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    })
+    response = await fetch(`${import.meta.env.VITE_API_URL}${path}`, init)
   } catch (error) {
     throw new NetworkError({ cause: error })
   }
@@ -38,4 +34,19 @@ export async function postJson<TBody, TResponse>(
   }
 
   return (await response.json()) as TResponse
+}
+
+export function getJson<TResponse>(path: string): Promise<TResponse> {
+  return requestJson<TResponse>(path)
+}
+
+export function postJson<TBody, TResponse>(
+  path: string,
+  body: TBody,
+): Promise<TResponse> {
+  return requestJson<TResponse>(path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  })
 }
