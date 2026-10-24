@@ -1,5 +1,6 @@
 import { createBrowserRouter, Navigate } from 'react-router'
 import LoginPage from '@/features/auth/pages/LoginPage'
+import RegisterPage from '@/features/auth/pages/RegisterPage'
 import DashboardPage from '@/features/dashboard/pages/DashboardPage'
 import PurchaseRequestsPage from '@/features/purchase-requests/pages/PurchaseRequestsPage'
 import NotFoundPage from '@/shared/components/NotFoundPage'
@@ -9,6 +10,7 @@ import ProtectedRoute from './ProtectedRoute'
 export const router = createBrowserRouter([
   // Rutas públicas
   { path: '/login', element: <LoginPage /> },
+  { path: '/register', element: <RegisterPage /> },
 
   // Rutas protegidas
   {
