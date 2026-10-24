@@ -79,6 +79,18 @@ namespace ProcureFlow.Application.Departments
                 })
                 .ToListAsync();
         }
+        public async Task<ICollection<DepartmentOptionDto>> GetActive()
+        {
+            return await _context.Departments.AsNoTracking()
+                .Where(d => d.IsActive)
+                .OrderBy(d => d.Name)
+                .Select(d => new DepartmentOptionDto
+                {
+                    Id = d.Id,
+                    Name = d.Name
+                })
+                .ToListAsync();
+        }
         public async Task<DepartmentDto> GetById(Guid id)
         {
             var department = await _context.Departments.AsNoTracking().FirstOrDefaultAsync(d => d.Id == id);

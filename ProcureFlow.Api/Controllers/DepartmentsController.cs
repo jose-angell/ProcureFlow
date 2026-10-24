@@ -67,5 +67,12 @@ namespace ProcureFlow.Api.Controllers
             var departments = await _UseCase.GetAll();
             return Ok(departments);
         }
+        [HttpGet("active")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetActive()
+        {
+            var departments = await _UseCase.GetActive();
+            return Ok(departments);
+        }
     }
 }
