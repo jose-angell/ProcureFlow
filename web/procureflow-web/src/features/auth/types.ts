@@ -7,6 +7,18 @@ export interface LoginRequest {
   password: string
 }
 
+export interface RegisterRequest {
+  fullName: string
+  email: string
+  password: string
+  departmentId: string
+}
+
+export interface DepartmentOption {
+  id: string
+  name: string
+}
+
 export interface AuthResponse {
   accessToken: string
   userId: string
