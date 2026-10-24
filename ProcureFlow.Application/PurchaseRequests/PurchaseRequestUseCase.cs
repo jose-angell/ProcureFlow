@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProcureFlow.Application.Abstractions.Persistence;
 using ProcureFlow.Application.Abstractions.Security;
+using ProcureFlow.Application.Common;
 using ProcureFlow.Application.Exceptions;
 using ProcureFlow.Application.PurchaseRequests.Dtos;
 using ProcureFlow.Domain.Entities;
@@ -254,7 +255,9 @@ namespace ProcureFlow.Application.PurchaseRequests
 
 
             IQueryable<PurchaseRequest> query = _context.PurchaseRequests
-               .Include(pr => pr.Items);
+               .Include(pr => pr.Items)
+               .Include(pr => pr.RequestedByUser)
+               .Include(pr => pr.Department);
 
             if(currentRole == UserRole.Approver)
             {
@@ -274,7 +277,9 @@ namespace ProcureFlow.Application.PurchaseRequests
                 Id = purchaseRequest.Id,
                 RequestNumber = purchaseRequest.RequestNumber,
                 RequestedByUserId = purchaseRequest.RequestedByUserId,
+                RequestedByName = purchaseRequest.RequestedByUser.FullName,
                 DepartmentId = purchaseRequest.DepartmentId,
+                DepartmentName = purchaseRequest.Department.Name,
                 Priority = purchaseRequest.Priority,
                 Status = purchaseRequest.Status,
                 Justification = purchaseRequest.Justification,
@@ -287,7 +292,7 @@ namespace ProcureFlow.Application.PurchaseRequests
                 ItemsCount = purchaseRequest.Items.Count
             };
         }
-        public async Task<IEnumerable<PurchaseRequestDto>> GetAll(PurchaseRequestQuery query)
+        public async Task<PagedResult<PurchaseRequestDto>> GetAll(PurchaseRequestQuery query)
         {
 
             var currentRole = _currentUserService.Role;
@@ -327,15 +332,19 @@ namespace ProcureFlow.Application.PurchaseRequests
                 var status = Enum.Parse<PurchaseRequestStatus>(query.Status, true);
                 purchaseRequestsQuery = purchaseRequestsQuery.Where(pr => pr.Status == status);
             }
+            var totalCount = await purchaseRequestsQuery.CountAsync();
             var skip = (query.Page - 1) * query.PageSize;
             var take = query.PageSize;
             var purchaseRequests = await purchaseRequestsQuery
+                .OrderByDescending(pr => pr.CreatedAt)
                 .Select(pr => new PurchaseRequestDto
                 {
                     Id = pr.Id,
                     RequestNumber = pr.RequestNumber,
                     RequestedByUserId = pr.RequestedByUserId,
+                    RequestedByName = pr.RequestedByUser.FullName,
                     DepartmentId = pr.DepartmentId,
+                    DepartmentName = pr.Department.Name,
                     Priority = pr.Priority,
                     Status = pr.Status,
                     Justification = pr.Justification,
@@ -350,7 +359,13 @@ namespace ProcureFlow.Application.PurchaseRequests
                 .Skip(skip)
                 .Take(take)
                 .ToListAsync();
-            return purchaseRequests;
+            return new PagedResult<PurchaseRequestDto>
+            {
+                Items = purchaseRequests,
+                TotalCount = totalCount,
+                Page = query.Page,
+                PageSize = query.PageSize
+            };
         }
         public async Task<ICollection<PurchaseRequestDto>> GetPendingApprovals()
         {
@@ -376,7 +391,9 @@ namespace ProcureFlow.Application.PurchaseRequests
                 Id = pr.Id,
                 RequestNumber = pr.RequestNumber,
                 RequestedByUserId = pr.RequestedByUserId,
+                RequestedByName = pr.RequestedByUser.FullName,
                 DepartmentId = pr.DepartmentId,
+                DepartmentName = pr.Department.Name,
                 Priority = pr.Priority,
                 Status = pr.Status,
                 Justification = pr.Justification,

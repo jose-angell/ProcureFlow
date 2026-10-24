@@ -7,7 +7,9 @@ namespace ProcureFlow.Application.PurchaseRequests.Dtos
         public Guid Id { get; set; }
         public string RequestNumber { get; set; } = null!;
         public Guid RequestedByUserId { get; set; }
+        public string RequestedByName { get; set; } = string.Empty;
         public Guid DepartmentId { get; set; }
+        public string DepartmentName { get; set; } = string.Empty;
         public PurchaseRequestPriority Priority { get; set; }
         public PurchaseRequestStatus Status { get; set; }
         public string Justification { get; set; } = null!;
