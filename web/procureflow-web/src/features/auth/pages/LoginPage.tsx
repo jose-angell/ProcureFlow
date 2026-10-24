@@ -1,4 +1,5 @@
 import { Landmark } from 'lucide-react'
+import { Link } from 'react-router'
 import LoginForm from '../components/LoginForm'
 import LoginShowcase from '../components/LoginShowcase'
 
@@ -38,6 +39,16 @@ function LoginPage() {
           </div>
 
           <LoginForm />
+
+          <p className="mt-6 text-center text-sm text-muted-foreground">
+            ¿No tienes cuenta?{' '}
+            <Link
+              to="/register"
+              className="font-medium text-secondary underline underline-offset-4 transition-colors hover:text-secondary/80"
+            >
+              Regístrate
+            </Link>
+          </p>
         </div>
       </div>
     </main>
