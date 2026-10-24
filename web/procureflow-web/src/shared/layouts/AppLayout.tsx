@@ -1,40 +1,46 @@
-import { NavLink, Outlet } from 'react-router'
-import { cn } from '@/lib/utils'
+import { ChevronRight } from 'lucide-react'
+import { Outlet, useLocation } from 'react-router'
+import CurrentUser from '@/features/auth/components/CurrentUser'
+import AppSidebar from '@/shared/components/AppSidebar'
 
-const navItems = [
-  { to: '/dashboard', label: 'Dashboard' },
-  { to: '/purchases', label: 'Solicitudes' },
-]
+const PAGE_TITLES: Record<string, string> = {
+  '/dashboard': 'Dashboard',
+  '/purchases': 'Mis solicitudes',
+}
 
 function AppLayout() {
+  const { pathname } = useLocation()
+  const pageTitle = PAGE_TITLES[pathname]
+
   return (
-    <div className="flex min-h-svh flex-col bg-background text-foreground">
-      <header className="border-b border-border">
-        <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:gap-8">
-          <span className="text-lg font-semibold">ProcureFlow</span>
-          <nav aria-label="Principal" className="flex gap-1">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) =>
-                  cn(
-                    'rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
-                    isActive
-                      ? 'bg-muted text-foreground'
-                      : 'text-muted-foreground hover:bg-muted hover:text-foreground',
-                  )
-                }
-              >
-                {item.label}
-              </NavLink>
-            ))}
+    <div className="min-h-svh bg-background text-foreground">
+      <AppSidebar />
+
+      <div className="flex min-h-svh flex-col lg:pl-64">
+        <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b border-border bg-card/90 px-4 backdrop-blur-md lg:px-8">
+          <nav aria-label="Ruta de navegación">
+            <ol className="flex items-center gap-2 text-xs text-muted-foreground">
+              <li>Inicio</li>
+              {pageTitle && (
+                <>
+                  <li aria-hidden="true">
+                    <ChevronRight className="size-3.5" />
+                  </li>
+                  <li aria-current="page" className="font-medium text-foreground">
+                    {pageTitle}
+                  </li>
+                </>
+              )}
+            </ol>
           </nav>
-        </div>
-      </header>
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6">
-        <Outlet />
-      </main>
+
+          <CurrentUser />
+        </header>
+
+        <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 lg:px-8">
+          <Outlet />
+        </main>
+      </div>
     </div>
   )
 }
