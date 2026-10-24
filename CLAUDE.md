@@ -42,6 +42,17 @@ Dependencies point inward: `Api → Application → Domain`, and `Infrastructure
 
 Roles (`UserRole`): `Requester`, `Approver`, `Admin`.
 
+## Frontend ↔ API
+
+The React client lives in `web/procureflow-web` (it has its own `CLAUDE.md`). Permanent conventions:
+
+- CORS is the `"Frontend"` policy, driven by `Cors:AllowedOrigins` (empty in `appsettings.json`, `http://localhost:5173` in Development; override with `Cors__AllowedOrigins__0`). `UseCors` goes before `UseAuthentication`.
+- The frontend maps HTTP status codes (400/401/403) to fixed messages, so changing the exception type a use case throws changes what the user sees.
+- `UserRole` is numeric in JSON (no `JsonStringEnumConverter`); the frontend copy must match `Domain/Enums/UserRole.cs`.
+- Session storage of the JWT in Web Storage is an MVP decision, not a final one.
+
+Rationale and pending items (route guard, logout, expiry, `Authorization` header): `docs/decisions/ADR-001-auth-api.md`. New architectural decisions go in `docs/decisions/`.
+
 ## Tests (`ProcureFlow.Tests`, xUnit)
 
 - `Domain/`: plain unit tests on entities, with no infrastructure.
