@@ -1,6 +1,6 @@
 # SPEC 03 — Dashboard principal
 
-> **Estado:** aprobado
+> **Estado:** implementado
 > **Depende de:** SPEC 01, SPEC 02
 > **Fecha:** 2026-10-24
 > **Objetivo:** Construir `/dashboard` según el diseño Stitch con KPIs, solicitudes por departamento, tabla paginada de solicitudes y pendientes de decisión, leyendo datos reales de la API con el token de la sesión.
@@ -200,35 +200,35 @@ Estados vacíos:
 
 ## Criterios de aceptación
 
-- [ ] `dotnet build` y `dotnet test` pasan, incluidos los tests nuevos.
-- [ ] `npm run lint` y `npm run build` pasan sin errores.
-- [ ] `GET /api/purchases/summary` sin token responde 401.
-- [ ] `GET /api/purchases/summary` como Requester cuenta solo sus solicitudes; como Approver solo las de su departamento; como Admin todas.
-- [ ] `GET /api/purchases?page=2&pageSize=10` devuelve `items`, `totalCount`, `page` y `pageSize`, ordenados por `createdAt` descendente.
-- [ ] Cada elemento de `GET /api/purchases` y `pendingApprovals` incluye `requestedByName` y `departmentName`.
-- [ ] Con sesión iniciada, las peticiones del dashboard llevan `Authorization: Bearer <token>` (pestaña Network).
-- [ ] Las tarjetas KPI muestran los mismos números que `summary`.
-- [ ] La tasa de aprobadas muestra "—" cuando no hay solicitudes.
-- [ ] La suma de los conteos de "Solicitudes por departamento" es igual al total.
-- [ ] La tabla muestra 10 filas como máximo y "Mostrando 1 a 10 de N".
-- [ ] "Anterior" está deshabilitado en la página 1 y "Siguiente" en la última.
-- [ ] Buscar un número existente y pulsar Enter deja solo esa solicitud.
-- [ ] Elegir un estado muestra solo solicitudes con ese estado y vuelve a la página 1.
-- [ ] "Limpiar" restablece búsqueda y estado.
-- [ ] Los importes se ven como `14.850,00 US$` y las fechas como `24 oct 2026`.
-- [ ] Como Requester no se ve el widget "En espera de tu decisión" y no se llama a `pendingApprovals`.
-- [ ] Como Approver el widget lista solo solicitudes `Submitted` de su departamento, sin botones de acción.
-- [ ] Sin sesión guardada se ve "Tu sesión expiró. Inicia sesión de nuevo." con enlace a `/login` y no hay peticiones a la API.
-- [ ] Con la API apagada cada bloque muestra "No se pudo conectar con el servidor. Intenta de nuevo.".
-- [ ] Mientras carga, cada bloque muestra skeleton.
-- [ ] El header muestra nombre, rol en español y departamento del usuario de la sesión.
-- [ ] El menú lateral es `src/shared/components/AppSidebar.tsx` y se ve también en `/purchases`.
-- [ ] El menú muestra Dashboard, Mis solicitudes, Aprobaciones, Departamentos, Usuarios, Centro de ayuda y Configuración.
-- [ ] Solo Dashboard y Mis solicitudes son enlaces; la opción de la ruta actual tiene `aria-current="page"`.
-- [ ] Aprobaciones, Departamentos, Usuarios, Centro de ayuda y Configuración no son enlaces, no reciben foco con Tab y tienen `aria-disabled="true"`.
-- [ ] Con ancho menor a 1024px la sidebar no se ve, la navegación está en la barra superior y no hay scroll horizontal de página a 375px (la tabla puede desplazarse dentro de su contenedor).
-- [ ] La tabla usa `<th>` con `scope="col"` y los filtros tienen `label` asociado.
-- [ ] No hay botones Nueva solicitud, Exportar, Aprobar, Rechazar ni Decidir, ni selector de rol, notificaciones o buscador global.
+- [x] `dotnet build` y `dotnet test` pasan, incluidos los tests nuevos.
+- [x] `npm run lint` y `npm run build` pasan sin errores.
+- [x] `GET /api/purchases/summary` sin token responde 401.
+- [x] `GET /api/purchases/summary` como Requester cuenta solo sus solicitudes; como Approver solo las de su departamento; como Admin todas.
+- [x] `GET /api/purchases?page=2&pageSize=10` devuelve `items`, `totalCount`, `page` y `pageSize`, ordenados por `createdAt` descendente.
+- [x] Cada elemento de `GET /api/purchases` y `pendingApprovals` incluye `requestedByName` y `departmentName`.
+- [x] Con sesión iniciada, las peticiones del dashboard llevan `Authorization: Bearer <token>` (pestaña Network).
+- [x] Las tarjetas KPI muestran los mismos números que `summary`.
+- [x] La tasa de aprobadas muestra "—" cuando no hay solicitudes.
+- [x] La suma de los conteos de "Solicitudes por departamento" es igual al total.
+- [x] La tabla muestra 10 filas como máximo y "Mostrando 1 a 10 de N".
+- [x] "Anterior" está deshabilitado en la página 1 y "Siguiente" en la última.
+- [x] Buscar un número existente y pulsar Enter deja solo esa solicitud.
+- [x] Elegir un estado muestra solo solicitudes con ese estado y vuelve a la página 1.
+- [x] "Limpiar" restablece búsqueda y estado.
+- [x] Los importes se ven como `14.850,00 US$` y las fechas como `24 oct 2026`.
+- [x] Como Requester no se ve el widget "En espera de tu decisión" y no se llama a `pendingApprovals`.
+- [x] Como Approver el widget lista solo solicitudes `Submitted` de su departamento, sin botones de acción.
+- [x] Sin sesión guardada se ve "Tu sesión expiró. Inicia sesión de nuevo." con enlace a `/login` y no hay peticiones a la API.
+- [x] Con la API apagada cada bloque muestra "No se pudo conectar con el servidor. Intenta de nuevo.".
+- [x] Mientras carga, cada bloque muestra skeleton.
+- [x] El header muestra nombre, rol en español y departamento del usuario de la sesión.
+- [x] El menú lateral es `src/shared/components/AppSidebar.tsx` y se ve también en `/purchases`.
+- [x] El menú muestra Dashboard, Mis solicitudes, Aprobaciones, Departamentos, Usuarios, Centro de ayuda y Configuración.
+- [x] Solo Dashboard y Mis solicitudes son enlaces; la opción de la ruta actual tiene `aria-current="page"`.
+- [x] Aprobaciones, Departamentos, Usuarios, Centro de ayuda y Configuración no son enlaces, no reciben foco con Tab y tienen `aria-disabled="true"`.
+- [x] Con ancho menor a 1024px la sidebar no se ve, la navegación está en la barra superior y no hay scroll horizontal de página a 375px (la tabla puede desplazarse dentro de su contenedor).
+- [x] La tabla usa `<th>` con `scope="col"` y los filtros tienen `label` asociado.
+- [x] No hay botones Nueva solicitud, Exportar, Aprobar, Rechazar ni Decidir, ni selector de rol, notificaciones o buscador global.
 
 ## Decisiones
 
