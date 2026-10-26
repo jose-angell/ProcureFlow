@@ -1,5 +1,5 @@
 import { getSession } from '@/features/auth/session'
-import { ApiError, getJson } from '@/shared/api/httpClient'
+import { ApiError, getJson, patch } from '@/shared/api/httpClient'
 import type {
   PagedResult,
   PurchaseRequest,
@@ -33,6 +33,10 @@ export async function getPurchaseRequestSummary(): Promise<PurchaseRequestSummar
   return getJson<PurchaseRequestSummary>('/api/purchases/summary', {
     token: getToken(),
   })
+}
+
+export async function cancelPurchaseRequest(id: string): Promise<void> {
+  return patch(`/api/purchases/${id}/cancel`, { token: getToken() })
 }
 
 export async function getPendingApprovals(): Promise<PurchaseRequest[]> {

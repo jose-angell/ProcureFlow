@@ -62,5 +62,6 @@ export interface PurchaseRequestSummary {
   approved: number
   rejected: number
   cancelled: number
+  totalAmount: number
   byDepartment: DepartmentRequestCount[]
 }

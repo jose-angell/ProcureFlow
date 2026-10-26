@@ -198,6 +198,8 @@ namespace ProcureFlow.Tests.Application
             Assert.Equal(0, result.Approved);
             Assert.Equal(0, result.Rejected);
             Assert.Equal(0, result.Cancelled);
+            // Solo la solicitud Submitted propia tiene una partida de 100.
+            Assert.Equal(100m, result.TotalAmount);
             var department = Assert.Single(result.ByDepartment);
             Assert.Equal(seed.It.Id, department.DepartmentId);
             Assert.Equal(3, department.Count);
@@ -224,6 +226,8 @@ namespace ProcureFlow.Tests.Application
             Assert.Equal(1, result.Approved);
             Assert.Equal(0, result.Rejected);
             Assert.Equal(0, result.Cancelled);
+            // IT: Submitted + Approved, 100 cada una.
+            Assert.Equal(200m, result.TotalAmount);
             var department = Assert.Single(result.ByDepartment);
             Assert.Equal(seed.It.Id, department.DepartmentId);
             Assert.Equal(4, department.Count);
@@ -250,6 +254,8 @@ namespace ProcureFlow.Tests.Application
             Assert.Equal(1, result.Approved);
             Assert.Equal(1, result.Rejected);
             Assert.Equal(1, result.Cancelled);
+            // Submitted + Approved + Rejected, 100 cada una.
+            Assert.Equal(300m, result.TotalAmount);
             Assert.Equal(2, result.ByDepartment.Count);
             Assert.Equal("IT", result.ByDepartment[0].DepartmentName);
             Assert.Equal(4, result.ByDepartment[0].Count);

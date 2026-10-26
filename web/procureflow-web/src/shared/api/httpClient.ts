@@ -17,10 +17,7 @@ export class NetworkError extends Error {
   }
 }
 
-async function requestJson<TResponse>(
-  path: string,
-  init?: RequestInit,
-): Promise<TResponse> {
+async function request(path: string, init?: RequestInit): Promise<Response> {
   let response: Response
 
   try {
@@ -33,6 +30,14 @@ async function requestJson<TResponse>(
     throw new ApiError(response.status)
   }
 
+  return response
+}
+
+async function requestJson<TResponse>(
+  path: string,
+  init?: RequestInit,
+): Promise<TResponse> {
+  const response = await request(path, init)
   return (await response.json()) as TResponse
 }
 
@@ -51,6 +56,17 @@ export function getJson<TResponse>(
       ? { headers: { Authorization: `Bearer ${options.token}` } }
       : undefined,
   )
+}
+
+/** PATCH sin cuerpo; no parsea la respuesta (la API responde 204). */
+export async function patch(
+  path: string,
+  options?: GetJsonOptions,
+): Promise<void> {
+  await request(path, {
+    method: 'PATCH',
+    headers: options?.token ? { Authorization: `Bearer ${options.token}` } : undefined,
+  })
 }
 
 export function postJson<TBody, TResponse>(
