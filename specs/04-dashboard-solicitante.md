@@ -1,6 +1,6 @@
 # SPEC 04 — Dashboard del solicitante
 
-> **Estado:** aprobado
+> **Estado:** implementado
 > **Depende de:** SPEC 03
 > **Fecha:** 2026-10-25
 > **Objetivo:** Mostrar en `/dashboard` una versión para el rol Requester según `design/dashboardRequester.html`, con KPIs propios, importe acumulado, tabla de sus solicitudes con acción de cancelar y menú reducido.
@@ -123,27 +123,27 @@ Estados vacíos y errores de carga: los de SPEC 03.
 
 ## Criterios de aceptación
 
-- [ ] `dotnet build` y `dotnet test` pasan, incluido el test nuevo.
-- [ ] `npm run lint` y `npm run build` pasan sin errores.
-- [ ] `GET /api/purchases/summary` incluye `totalAmount`; como Requester es la suma de sus solicitudes, como Approver la de su departamento y como Admin la de todas.
-- [ ] Como Requester, `/dashboard` muestra "Mis Solicitudes de Compra" y el badge "Panel Solicitante".
-- [ ] Como Approver o Admin, `/dashboard` se ve igual que en SPEC 03.
-- [ ] El botón "Nueva solicitud" está deshabilitado y no dispara peticiones.
-- [ ] Las cuatro tarjetas muestran los valores de la tabla de KPIs calculados desde `summary`.
-- [ ] El importe acumulado se ve con formato `14.850,00 US$`.
-- [ ] La tasa de aprobadas muestra "—" cuando no hay solicitudes.
-- [ ] La tabla del Requester no tiene columnas Solicitante ni Departamento y sí tiene Acciones.
-- [ ] Solo las filas Borrador y Enviada muestran el botón "Cancelar".
-- [ ] Pulsar "Cancelar" abre el diálogo; "Volver" o Esc lo cierran sin peticiones.
-- [ ] Confirmar envía `PATCH /api/purchases/{id}/cancel` con `Authorization: Bearer <token>`.
-- [ ] Tras éxito se ve "Solicitud {número} cancelada.", la fila pasa a Cancelada y los KPIs se actualizan.
-- [ ] Con la API apagada, confirmar muestra "No se pudo conectar con el servidor. Intenta de nuevo." sobre la tabla.
-- [ ] Como Requester no se hace ninguna petición a `pendingApprovals`.
-- [ ] Como Requester el menú muestra Dashboard, Mis solicitudes, Centro de ayuda y Configuración, y no muestra Aprobaciones, Departamentos ni Usuarios.
-- [ ] Como Approver o Admin el menú es igual que en SPEC 03.
-- [ ] Filtros, "Limpiar" y paginación funcionan como en SPEC 03.
-- [ ] No hay scroll horizontal de página a 375px (la tabla puede desplazarse en su contenedor).
-- [ ] No hay modal de creación, "Exportar informe", widget de acceso rápido ni widget de actualizaciones.
+- [x] `dotnet build` y `dotnet test` pasan, incluido el test nuevo.
+- [x] `npm run lint` y `npm run build` pasan sin errores.
+- [x] `GET /api/purchases/summary` incluye `totalAmount`; como Requester es la suma de sus solicitudes, como Approver la de su departamento y como Admin la de todas.
+- [x] Como Requester, `/dashboard` muestra "Mis Solicitudes de Compra" y el badge "Panel Solicitante".
+- [x] Como Approver o Admin, `/dashboard` se ve igual que en SPEC 03.
+- [x] El botón "Nueva solicitud" está deshabilitado y no dispara peticiones.
+- [x] Las cuatro tarjetas muestran los valores de la tabla de KPIs calculados desde `summary`.
+- [x] El importe acumulado se ve con formato `14.850,00 US$`.
+- [x] La tasa de aprobadas muestra "—" cuando no hay solicitudes.
+- [x] La tabla del Requester no tiene columnas Solicitante ni Departamento y sí tiene Acciones.
+- [x] Solo las filas Borrador y Enviada muestran el botón "Cancelar".
+- [x] Pulsar "Cancelar" abre el diálogo; "Volver" o Esc lo cierran sin peticiones.
+- [x] Confirmar envía `PATCH /api/purchases/{id}/cancel` con `Authorization: Bearer <token>`.
+- [x] Tras éxito se ve "Solicitud {número} cancelada.", la fila pasa a Cancelada y los KPIs se actualizan.
+- [x] Con la API apagada, confirmar muestra "No se pudo conectar con el servidor. Intenta de nuevo." sobre la tabla.
+- [x] Como Requester no se hace ninguna petición a `pendingApprovals`.
+- [x] Como Requester el menú muestra Dashboard, Mis solicitudes, Centro de ayuda y Configuración, y no muestra Aprobaciones, Departamentos ni Usuarios.
+- [x] Como Approver o Admin el menú es igual que en SPEC 03.
+- [x] Filtros, "Limpiar" y paginación funcionan como en SPEC 03.
+- [x] No hay scroll horizontal de página a 375px (la tabla puede desplazarse en su contenedor).
+- [x] No hay modal de creación, "Exportar informe", widget de acceso rápido ni widget de actualizaciones.
 
 ## Decisiones
 
