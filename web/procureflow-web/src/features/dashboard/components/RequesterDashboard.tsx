@@ -130,7 +130,8 @@ function RequesterDashboard() {
 
       <RecentRequestsTable
         title="Mis solicitudes recientes"
-        showOwnerColumns={false}
+        showRequesterColumn={false}
+        showDepartmentColumn={false}
         renderActions={renderActions}
         reloadKey={reloadKey}
       />

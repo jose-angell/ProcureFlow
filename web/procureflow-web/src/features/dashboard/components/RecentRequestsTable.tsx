@@ -49,15 +49,15 @@ interface Column {
   className: string
 }
 
-const OWNER_COLUMNS: Column[] = [
-  { label: 'Solicitante', className: '' },
-  { label: 'Departamento', className: '' },
-]
-
-function getColumns(showOwnerColumns: boolean, hasActions: boolean): Column[] {
+function getColumns(
+  showRequesterColumn: boolean,
+  showDepartmentColumn: boolean,
+  hasActions: boolean,
+): Column[] {
   return [
     { label: 'Número', className: '' },
-    ...(showOwnerColumns ? OWNER_COLUMNS : []),
+    ...(showRequesterColumn ? [{ label: 'Solicitante', className: '' }] : []),
+    ...(showDepartmentColumn ? [{ label: 'Departamento', className: '' }] : []),
     { label: 'Justificación', className: '' },
     { label: 'Fecha', className: '' },
     { label: 'Importe', className: 'text-right' },
@@ -76,8 +76,10 @@ type RequestsState = { key: string } & (
 
 interface RecentRequestsTableProps {
   title?: string
-  /** Muestra las columnas Solicitante y Departamento. */
-  showOwnerColumns?: boolean
+  /** Muestra la columna Solicitante. */
+  showRequesterColumn?: boolean
+  /** Muestra la columna Departamento. */
+  showDepartmentColumn?: boolean
   /** Si se pasa, agrega la columna Acciones con lo que devuelva por fila. */
   renderActions?: (request: PurchaseRequest) => ReactNode
   /** Cambiar su valor vuelve a cargar la tabla. */
@@ -86,11 +88,16 @@ interface RecentRequestsTableProps {
 
 function RecentRequestsTable({
   title = 'Solicitudes recientes',
-  showOwnerColumns = true,
+  showRequesterColumn = true,
+  showDepartmentColumn = true,
   renderActions,
   reloadKey = 0,
 }: RecentRequestsTableProps) {
-  const columns = getColumns(showOwnerColumns, renderActions !== undefined)
+  const columns = getColumns(
+    showRequesterColumn,
+    showDepartmentColumn,
+    renderActions !== undefined,
+  )
   const [searchInput, setSearchInput] = useState('')
   const [requestNumber, setRequestNumber] = useState('')
   const [status, setStatus] = useState<StatusFilter>('all')
@@ -239,13 +246,13 @@ function RecentRequestsTable({
                 current.result.items.map((request) => (
                   <TableRow key={request.id}>
                     <TableCell className="font-semibold">{request.requestNumber}</TableCell>
-                    {showOwnerColumns && (
-                      <>
-                        <TableCell className="font-medium">{request.requestedByName}</TableCell>
-                        <TableCell className="text-muted-foreground">
-                          {request.departmentName}
-                        </TableCell>
-                      </>
+                    {showRequesterColumn && (
+                      <TableCell className="font-medium">{request.requestedByName}</TableCell>
+                    )}
+                    {showDepartmentColumn && (
+                      <TableCell className="text-muted-foreground">
+                        {request.departmentName}
+                      </TableCell>
                     )}
                     <TableCell className="max-w-xs">
                       <p className="truncate" title={request.justification}>
