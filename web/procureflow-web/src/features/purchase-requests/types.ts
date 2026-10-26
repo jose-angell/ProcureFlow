@@ -49,6 +49,11 @@ export interface PurchaseRequestFilters {
   pageSize: number
 }
 
+// Copia ProcureFlow.Application/PurchaseRequests/Dtos/DecisionRequest.cs
+export interface DecisionRequest {
+  comments: string | null
+}
+
 export interface DepartmentRequestCount {
   departmentId: string
   departmentName: string

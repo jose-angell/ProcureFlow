@@ -69,6 +69,22 @@ export async function patch(
   })
 }
 
+/** PATCH con cuerpo JSON; no parsea la respuesta (la API responde 204). */
+export async function patchJson<TBody>(
+  path: string,
+  body: TBody,
+  options?: GetJsonOptions,
+): Promise<void> {
+  await request(path, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(options?.token ? { Authorization: `Bearer ${options.token}` } : {}),
+    },
+    body: JSON.stringify(body),
+  })
+}
+
 export function postJson<TBody, TResponse>(
   path: string,
   body: TBody,
