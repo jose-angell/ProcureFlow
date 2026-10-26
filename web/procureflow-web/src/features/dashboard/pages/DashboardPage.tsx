@@ -7,6 +7,7 @@ import { ApiError } from '@/shared/api/httpClient'
 import BlockError from '../components/BlockError'
 import PendingDecisions from '../components/PendingDecisions'
 import RecentRequestsTable from '../components/RecentRequestsTable'
+import RequesterDashboard from '../components/RequesterDashboard'
 import RequestsByDepartment from '../components/RequestsByDepartment'
 import SummaryCards from '../components/SummaryCards'
 
@@ -80,6 +81,10 @@ function DashboardPage() {
         <BlockError error={new ApiError(401)} />
       </section>
     )
+  }
+
+  if (session.user.role === UserRole.Requester) {
+    return <RequesterDashboard />
   }
 
   return <DashboardContent role={session.user.role} />
