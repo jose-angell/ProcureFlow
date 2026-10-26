@@ -3,22 +3,29 @@ import { Outlet, useLocation } from 'react-router'
 import CurrentUser from '@/features/auth/components/CurrentUser'
 import { getSession } from '@/features/auth/session'
 import { UserRole } from '@/features/auth/types'
-import AppSidebar from '@/shared/components/AppSidebar'
+import AppSidebar, { type NavAudience } from '@/shared/components/AppSidebar'
 
 const PAGE_TITLES: Record<string, string> = {
   '/dashboard': 'Dashboard',
   '/purchases': 'Mis solicitudes',
 }
 
+const AUDIENCE_BY_ROLE: Record<UserRole, NavAudience> = {
+  [UserRole.Requester]: 'requester',
+  [UserRole.Approver]: 'approver',
+  [UserRole.Admin]: 'admin',
+}
+
 function AppLayout() {
   const { pathname } = useLocation()
   const pageTitle = PAGE_TITLES[pathname]
-  // Sin sesión se muestran todas las opciones.
-  const showRestricted = getSession()?.user.role !== UserRole.Requester
+  // Sin sesión (audience null) se muestran todas las opciones.
+  const role = getSession()?.user.role
+  const audience = role ? AUDIENCE_BY_ROLE[role] : null
 
   return (
     <div className="min-h-svh bg-background text-foreground">
-      <AppSidebar showRestricted={showRestricted} />
+      <AppSidebar audience={audience} />
 
       <div className="flex min-h-svh flex-col lg:pl-64">
         <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b border-border bg-card/90 px-4 backdrop-blur-md lg:px-8">

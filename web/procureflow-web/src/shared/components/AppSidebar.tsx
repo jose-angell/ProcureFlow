@@ -12,21 +12,23 @@ import {
 import { NavLink } from 'react-router'
 import { cn } from '@/lib/utils'
 
+export type NavAudience = 'requester' | 'approver' | 'admin'
+
 interface NavItem {
   label: string
   icon: LucideIcon
   /** Sin `to` la opción se muestra deshabilitada: aún no tiene página. */
   to?: string
-  /** Se oculta cuando `showRestricted` es false (p. ej. para el rol Requester). */
-  restricted?: true
+  /** Audiencias que ven la opción. Sin `visibleTo` la ven todas. */
+  visibleTo?: NavAudience[]
 }
 
 const navItems: NavItem[] = [
   { label: 'Dashboard', icon: LayoutGrid, to: '/dashboard' },
   { label: 'Mis solicitudes', icon: ReceiptText, to: '/purchases' },
-  { label: 'Aprobaciones', icon: BadgeCheck, restricted: true },
-  { label: 'Departamentos', icon: Building2, restricted: true },
-  { label: 'Usuarios', icon: Users, restricted: true },
+  { label: 'Aprobaciones', icon: BadgeCheck, visibleTo: ['approver', 'admin'] },
+  { label: 'Departamentos', icon: Building2, visibleTo: ['admin'] },
+  { label: 'Usuarios', icon: Users, visibleTo: ['admin'] },
 ]
 
 const footerNavItems: NavItem[] = [
@@ -75,16 +77,18 @@ function SidebarItem({ item }: { item: NavItem }) {
 }
 
 interface AppSidebarProps {
-  /** Si es false se ocultan las opciones marcadas como `restricted`. */
-  showRestricted: boolean
+  /** Audiencia del usuario actual; `null` (sin sesión) muestra todas las opciones. */
+  audience: NavAudience | null
 }
 
 /**
  * Menú lateral global. Desde `lg` es una barra fija a la izquierda (el layout
  * debe dejar `lg:pl-64`); por debajo de `lg` es una barra horizontal superior.
  */
-function AppSidebar({ showRestricted }: AppSidebarProps) {
-  const visibleItems = navItems.filter((item) => showRestricted || !item.restricted)
+function AppSidebar({ audience }: AppSidebarProps) {
+  const visibleItems = navItems.filter(
+    (item) => !audience || !item.visibleTo || item.visibleTo.includes(audience),
+  )
 
   return (
     <aside className="flex items-center gap-4 overflow-x-auto border-b border-border bg-card px-4 py-2 lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:w-64 lg:flex-col lg:items-stretch lg:justify-between lg:gap-0 lg:overflow-x-visible lg:overflow-y-auto lg:border-r lg:border-b-0 lg:px-4 lg:py-0">
