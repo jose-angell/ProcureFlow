@@ -399,6 +399,9 @@ namespace ProcureFlow.Application.PurchaseRequests
                 })
                 .ToListAsync();
 
+            // La suma se hace en memoria: SQLite no traduce Sum sobre decimal.
+            var amounts = await query.Select(pr => pr.TotalAmount).ToListAsync();
+
             int CountOf(PurchaseRequestStatus status) =>
                 statusCounts.FirstOrDefault(s => s.Status == status)?.Count ?? 0;
 
@@ -410,6 +413,7 @@ namespace ProcureFlow.Application.PurchaseRequests
                 Approved = CountOf(PurchaseRequestStatus.Approved),
                 Rejected = CountOf(PurchaseRequestStatus.Rejected),
                 Cancelled = CountOf(PurchaseRequestStatus.Cancelled),
+                TotalAmount = amounts.Sum(),
                 ByDepartment = byDepartment.OrderByDescending(d => d.Count).ToList()
             };
         }

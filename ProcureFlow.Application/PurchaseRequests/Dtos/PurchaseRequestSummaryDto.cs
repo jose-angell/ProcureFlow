@@ -8,6 +8,7 @@ namespace ProcureFlow.Application.PurchaseRequests.Dtos
         public int Approved { get; set; }
         public int Rejected { get; set; }
         public int Cancelled { get; set; }
+        public decimal TotalAmount { get; set; }
         public List<DepartmentRequestCountDto> ByDepartment { get; set; } = [];
     }
 }
