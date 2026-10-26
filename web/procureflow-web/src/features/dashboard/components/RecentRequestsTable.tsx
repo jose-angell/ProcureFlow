@@ -1,4 +1,4 @@
-import { useEffect, useState, type SyntheticEvent } from 'react'
+import { useEffect, useState, type ReactNode, type SyntheticEvent } from 'react'
 import { ChevronLeft, ChevronRight, RotateCcw, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -44,16 +44,28 @@ const STATUS_OPTIONS: { value: StatusFilter; label: string }[] = [
   { value: 'Cancelled', label: 'Cancelada' },
 ]
 
-const COLUMNS = [
-  { label: 'Número', className: '' },
+interface Column {
+  label: string
+  className: string
+}
+
+const OWNER_COLUMNS: Column[] = [
   { label: 'Solicitante', className: '' },
   { label: 'Departamento', className: '' },
-  { label: 'Justificación', className: '' },
-  { label: 'Fecha', className: '' },
-  { label: 'Importe', className: 'text-right' },
-  { label: 'Prioridad', className: 'text-center' },
-  { label: 'Estado', className: 'text-center' },
 ]
+
+function getColumns(showOwnerColumns: boolean, hasActions: boolean): Column[] {
+  return [
+    { label: 'Número', className: '' },
+    ...(showOwnerColumns ? OWNER_COLUMNS : []),
+    { label: 'Justificación', className: '' },
+    { label: 'Fecha', className: '' },
+    { label: 'Importe', className: 'text-right' },
+    { label: 'Prioridad', className: 'text-center' },
+    { label: 'Estado', className: 'text-center' },
+    ...(hasActions ? [{ label: 'Acciones', className: 'text-right' }] : []),
+  ]
+}
 
 // El resultado guarda la clave de la petición que lo originó: mientras la clave
 // actual no coincida, el bloque está cargando.
@@ -62,14 +74,30 @@ type RequestsState = { key: string } & (
   | { error: unknown }
 )
 
-function RecentRequestsTable() {
+interface RecentRequestsTableProps {
+  title?: string
+  /** Muestra las columnas Solicitante y Departamento. */
+  showOwnerColumns?: boolean
+  /** Si se pasa, agrega la columna Acciones con lo que devuelva por fila. */
+  renderActions?: (request: PurchaseRequest) => ReactNode
+  /** Cambiar su valor vuelve a cargar la tabla. */
+  reloadKey?: number
+}
+
+function RecentRequestsTable({
+  title = 'Solicitudes recientes',
+  showOwnerColumns = true,
+  renderActions,
+  reloadKey = 0,
+}: RecentRequestsTableProps) {
+  const columns = getColumns(showOwnerColumns, renderActions !== undefined)
   const [searchInput, setSearchInput] = useState('')
   const [requestNumber, setRequestNumber] = useState('')
   const [status, setStatus] = useState<StatusFilter>('all')
   const [page, setPage] = useState(1)
   const [state, setState] = useState<RequestsState | null>(null)
 
-  const requestKey = `${requestNumber}|${status}|${page}`
+  const requestKey = `${requestNumber}|${status}|${page}|${reloadKey}`
 
   useEffect(() => {
     let cancelled = false
@@ -117,7 +145,7 @@ function RecentRequestsTable() {
   return (
     <Card className="gap-0 py-0">
       <div className="flex flex-col gap-3 border-b border-border p-4">
-        <h2 className="font-heading text-base font-semibold">Solicitudes recientes</h2>
+        <h2 className="font-heading text-base font-semibold">{title}</h2>
 
         <div className="flex flex-col gap-2 lg:flex-row lg:items-center">
           <form onSubmit={handleSearch} role="search" className="relative flex-1">
@@ -176,7 +204,7 @@ function RecentRequestsTable() {
           <Table aria-busy={isLoading}>
             <TableHeader>
               <TableRow className="bg-muted/50 hover:bg-muted/50">
-                {COLUMNS.map((column) => (
+                {columns.map((column) => (
                   <TableHead
                     key={column.label}
                     scope="col"
@@ -190,7 +218,7 @@ function RecentRequestsTable() {
             <TableBody>
               {current === null ? (
                 <TableRow>
-                  <TableCell colSpan={COLUMNS.length} className="space-y-2 p-4">
+                  <TableCell colSpan={columns.length} className="space-y-2 p-4">
                     {Array.from({ length: 5 }, (_, index) => (
                       <Skeleton key={index} className="h-8 w-full" />
                     ))}
@@ -199,7 +227,7 @@ function RecentRequestsTable() {
               ) : current.result.items.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={COLUMNS.length}
+                    colSpan={columns.length}
                     className="py-10 text-center text-muted-foreground"
                   >
                     {hasFilters
@@ -211,10 +239,14 @@ function RecentRequestsTable() {
                 current.result.items.map((request) => (
                   <TableRow key={request.id}>
                     <TableCell className="font-semibold">{request.requestNumber}</TableCell>
-                    <TableCell className="font-medium">{request.requestedByName}</TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {request.departmentName}
-                    </TableCell>
+                    {showOwnerColumns && (
+                      <>
+                        <TableCell className="font-medium">{request.requestedByName}</TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {request.departmentName}
+                        </TableCell>
+                      </>
+                    )}
                     <TableCell className="max-w-xs">
                       <p className="truncate" title={request.justification}>
                         {request.justification}
@@ -230,6 +262,9 @@ function RecentRequestsTable() {
                     <TableCell className="text-center">
                       <StatusBadge status={request.status} />
                     </TableCell>
+                    {renderActions && (
+                      <TableCell className="text-right">{renderActions(request)}</TableCell>
+                    )}
                   </TableRow>
                 ))
               )}
