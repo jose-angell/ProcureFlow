@@ -4,6 +4,7 @@ import { getSession } from '@/features/auth/session'
 import { getPurchaseRequestSummary } from '@/features/purchase-requests/api/purchaseRequests'
 import type { PurchaseRequestSummary } from '@/features/purchase-requests/types'
 import { ApiError } from '@/shared/api/httpClient'
+import ApproverDashboard from '../components/ApproverDashboard'
 import BlockError from '../components/BlockError'
 import PendingDecisions from '../components/PendingDecisions'
 import RecentRequestsTable from '../components/RecentRequestsTable'
@@ -85,6 +86,10 @@ function DashboardPage() {
 
   if (session.user.role === UserRole.Requester) {
     return <RequesterDashboard />
+  }
+
+  if (session.user.role === UserRole.Approver) {
+    return <ApproverDashboard />
   }
 
   return <DashboardContent role={session.user.role} />
