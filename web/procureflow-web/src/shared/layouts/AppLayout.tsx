@@ -1,6 +1,8 @@
 import { ChevronRight } from 'lucide-react'
 import { Outlet, useLocation } from 'react-router'
 import CurrentUser from '@/features/auth/components/CurrentUser'
+import { getSession } from '@/features/auth/session'
+import { UserRole } from '@/features/auth/types'
 import AppSidebar from '@/shared/components/AppSidebar'
 
 const PAGE_TITLES: Record<string, string> = {
@@ -11,10 +13,12 @@ const PAGE_TITLES: Record<string, string> = {
 function AppLayout() {
   const { pathname } = useLocation()
   const pageTitle = PAGE_TITLES[pathname]
+  // Sin sesión se muestran todas las opciones.
+  const showRestricted = getSession()?.user.role !== UserRole.Requester
 
   return (
     <div className="min-h-svh bg-background text-foreground">
-      <AppSidebar />
+      <AppSidebar showRestricted={showRestricted} />
 
       <div className="flex min-h-svh flex-col lg:pl-64">
         <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b border-border bg-card/90 px-4 backdrop-blur-md lg:px-8">
