@@ -1,6 +1,6 @@
 # SPEC 05 — Dashboard del aprobador
 
-> **Estado:** aprobado
+> **Estado:** implementado
 > **Depende de:** SPEC 03, SPEC 04
 > **Fecha:** 2026-10-25
 > **Objetivo:** Mostrar en `/dashboard` una versión para el rol Approver según `design/dashboardApprover.html`, con KPIs de su departamento, tabla con acción "Decidir" (aprobar o rechazar con comentario) y widgets de aprobaciones y de solicitudes por departamento.
@@ -146,29 +146,29 @@ Los estados vacíos y los errores de carga son los de SPEC 03.
 
 ## Criterios de aceptación
 
-- [ ] `npm run lint` y `npm run build` pasan sin errores.
-- [ ] Como Approver, `/dashboard` muestra "Gestión y Aprobación de Compras" y el badge "Panel Aprobador".
-- [ ] Como Admin, `/dashboard` se ve igual que en SPEC 03. Como Requester, igual que en SPEC 04.
-- [ ] Las cuatro tarjetas muestran los valores de la tabla de KPIs calculados desde `summary`. La tasa muestra "—" si no hay solicitudes.
-- [ ] La tabla del Approver tiene la columna Solicitante, no tiene Departamento y tiene Acciones.
-- [ ] Solo las filas Enviada muestran "Decidir".
-- [ ] "Decidir" abre el diálogo con el número, el solicitante, el importe y la justificación. "Volver" o Esc lo cierran sin hacer peticiones.
-- [ ] "Rechazar" está deshabilitado mientras el comentario está vacío o tiene solo espacios. "Aprobar" está habilitado sin comentario.
-- [ ] El `Textarea` no acepta más de 1000 caracteres.
-- [ ] Aprobar envía `PATCH /api/purchases/{id}/approve` con `Authorization: Bearer <token>` y el cuerpo `{"comments":null}` o con el comentario recortado.
-- [ ] Rechazar envía `PATCH /api/purchases/{id}/reject` con el comentario recortado.
-- [ ] Después de aprobar se ve "Solicitud {número} aprobada.", la fila pasa a Aprobada y se actualizan los KPIs y el widget.
-- [ ] Después de rechazar se ve "Solicitud {número} rechazada." y la fila pasa a Rechazada.
-- [ ] Si la solicitud ya fue decidida en otra pestaña, se ve "La solicitud ya no está pendiente de decisión." y la tabla se recarga.
-- [ ] Con la API apagada, decidir muestra "No se pudo conectar con el servidor. Intenta de nuevo.".
-- [ ] El widget "Aprobaciones departamentales" muestra el mismo número que la tarjeta "Pendientes de decisión", y "Revisar pendientes" está deshabilitado.
-- [ ] El widget "Solicitudes por departamento" se muestra con los datos de `summary`.
-- [ ] Como Approver no se llama a `pendingApprovals`.
-- [ ] Como Approver el menú muestra Dashboard, Mis solicitudes, Aprobaciones, Centro de ayuda y Configuración, y no muestra Departamentos ni Usuarios.
-- [ ] Como Requester el menú es igual que en SPEC 04. Como Admin, igual que en SPEC 03.
-- [ ] Filtros, "Limpiar" y paginación funcionan como en SPEC 03.
-- [ ] No hay scroll horizontal de página a 375px (la tabla puede desplazarse dentro de su contenedor).
-- [ ] No hay "Exportar informe", "Revisión por lote", checkboxes ni widget de actualizaciones.
+- [x] `npm run lint` y `npm run build` pasan sin errores.
+- [x] Como Approver, `/dashboard` muestra "Gestión y Aprobación de Compras" y el badge "Panel Aprobador".
+- [x] Como Admin, `/dashboard` se ve igual que en SPEC 03. Como Requester, igual que en SPEC 04.
+- [x] Las cuatro tarjetas muestran los valores de la tabla de KPIs calculados desde `summary`. La tasa muestra "—" si no hay solicitudes.
+- [x] La tabla del Approver tiene la columna Solicitante, no tiene Departamento y tiene Acciones.
+- [x] Solo las filas Enviada muestran "Decidir".
+- [x] "Decidir" abre el diálogo con el número, el solicitante, el importe y la justificación. "Volver" o Esc lo cierran sin hacer peticiones.
+- [x] "Rechazar" está deshabilitado mientras el comentario está vacío o tiene solo espacios. "Aprobar" está habilitado sin comentario.
+- [x] El `Textarea` no acepta más de 1000 caracteres.
+- [x] Aprobar envía `PATCH /api/purchases/{id}/approve` con `Authorization: Bearer <token>` y el cuerpo `{"comments":null}` o con el comentario recortado.
+- [x] Rechazar envía `PATCH /api/purchases/{id}/reject` con el comentario recortado.
+- [x] Después de aprobar se ve "Solicitud {número} aprobada.", la fila pasa a Aprobada y se actualizan los KPIs y el widget.
+- [x] Después de rechazar se ve "Solicitud {número} rechazada." y la fila pasa a Rechazada.
+- [x] Si la solicitud ya fue decidida en otra pestaña, se ve "La solicitud ya no está pendiente de decisión." y la tabla se recarga.
+- [x] Con la API apagada, decidir muestra "No se pudo conectar con el servidor. Intenta de nuevo.".
+- [x] El widget "Aprobaciones departamentales" muestra el mismo número que la tarjeta "Pendientes de decisión", y "Revisar pendientes" está deshabilitado.
+- [x] El widget "Solicitudes por departamento" se muestra con los datos de `summary`.
+- [x] Como Approver no se llama a `pendingApprovals`.
+- [x] Como Approver el menú muestra Dashboard, Mis solicitudes, Aprobaciones, Centro de ayuda y Configuración, y no muestra Departamentos ni Usuarios.
+- [x] Como Requester el menú es igual que en SPEC 04. Como Admin, igual que en SPEC 03.
+- [x] Filtros, "Limpiar" y paginación funcionan como en SPEC 03.
+- [x] No hay scroll horizontal de página a 375px (la tabla puede desplazarse dentro de su contenedor).
+- [x] No hay "Exportar informe", "Revisión por lote", checkboxes ni widget de actualizaciones.
 
 ## Decisiones
 
