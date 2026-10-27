@@ -1,5 +1,5 @@
 import { useState, type SyntheticEvent } from 'react'
-import { useNavigate } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
 import { ArrowRight, CircleAlert, Eye, EyeOff, KeyRound, Mail } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label'
 import { login } from '../api/login'
 import { getLoginErrorMessage } from '../loginErrors'
 import { saveSession } from '../session'
+import type { LoginLocationState } from '../types'
 
 const EMAIL_MAX_LENGTH = 200
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -36,8 +37,28 @@ function validate(email: string, password: string): FieldErrors {
   return errors
 }
 
+const DEFAULT_DESTINATION = '/dashboard'
+const AUTH_PATHS = ['/login', '/register']
+
+/** Destino tras el login: `from` solo si es una ruta interna que no sea de autenticación. */
+function getDestination(state: LoginLocationState | null): string {
+  const from = state?.from
+  if (
+    !from ||
+    typeof from.pathname !== 'string' ||
+    !from.pathname.startsWith('/') ||
+    from.pathname.startsWith('//') ||
+    AUTH_PATHS.includes(from.pathname)
+  ) {
+    return DEFAULT_DESTINATION
+  }
+
+  return from.pathname + (typeof from.search === 'string' ? from.search : '')
+}
+
 function LoginForm() {
   const navigate = useNavigate()
+  const location = useLocation()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -63,7 +84,9 @@ function LoginForm() {
     try {
       const response = await login({ email: trimmedEmail, password })
       saveSession(response, remember)
-      navigate('/dashboard', { replace: true })
+      navigate(getDestination(location.state as LoginLocationState | null), {
+        replace: true,
+      })
     } catch (error) {
       setSubmitError(getLoginErrorMessage(error))
       setIsSubmitting(false)
