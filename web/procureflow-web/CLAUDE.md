@@ -37,5 +37,7 @@
 - La sesión se guarda con `features/auth/session.ts` bajo `procureflow.session` (`localStorage` si "Recordar sesión", si no `sessionStorage`) y se lee con `getSession()`.
 - Para llamadas autenticadas, la feature obtiene el token de `getSession()` y lo pasa a `getJson(path, { token })`. `shared` no importa de `features`.
 - `UserRole` debe coincidir con `ProcureFlow.Domain/Enums/UserRole.cs`.
-- Estado actual: `ProtectedRoute` es un placeholder; `Authorization` solo se envía en `getJson` cuando se pasa `token`. El almacenamiento en Web Storage es una decisión de MVP, no final.
+- `ProtectedRoute` exige sesión con token no vencido (`isTokenExpired`); `GuestRoute` saca de `/login` y `/register` a quien ya tiene sesión. El logout está en el menú de `CurrentUser` (`clearSession()`).
+- Una petición con `Authorization` que recibe 401 dispara el handler de `setUnauthorizedHandler` (registrado en `app/router.tsx`): borra la sesión y lleva a `/login` con `state.reason = 'expired'`. El destino tras el login sale de `state.from`.
+- Estado actual: `Authorization` solo se envía en `getJson`, `patch` y `patchJson` cuando se pasa `token`; `postJson` no lo envía. El almacenamiento en Web Storage es una decisión de MVP, no final.
 - Detalle y pendientes: `../../docs/decisions/ADR-001-auth-api.md`.
