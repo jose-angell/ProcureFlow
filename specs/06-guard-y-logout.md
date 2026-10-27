@@ -1,6 +1,6 @@
 # SPEC 06 — Guard de rutas y cierre de sesión
 
-> **Estado:** aprobado
+> **Estado:** implementado
 > **Depende de:** SPEC 01, SPEC 03
 > **Fecha:** 2026-10-26
 > **Objetivo:** Proteger las rutas privadas con la sesión real, incluida la expiración del JWT, y permitir cerrar sesión desde la cabecera.
@@ -105,24 +105,24 @@ Textos:
 
 ## Criterios de aceptación
 
-- [ ] `npm run lint` y `npm run build` pasan sin errores.
-- [ ] Sin sesión, abrir `/dashboard` redirige a `/login` sin el aviso de expiración.
-- [ ] Sin sesión, abrir `/purchases` y luego iniciar sesión lleva a `/purchases`.
-- [ ] Iniciar sesión entrando directo a `/login` lleva a `/dashboard`.
-- [ ] Con un `state.from` de `/login` o `//evil.com`, el login lleva a `/dashboard`.
-- [ ] Con un token cuyo `exp` ya pasó, abrir `/dashboard` borra `procureflow.session` de los dos almacenamientos y muestra `/login` con "Tu sesión expiró. Inicia sesión de nuevo.".
-- [ ] Con un token ilegible (no es JWT), abrir `/dashboard` se comporta igual que con un token vencido.
-- [ ] Recargar `/login` después del aviso ya no muestra el aviso.
-- [ ] Con sesión válida, abrir `/login` o `/register` redirige a `/dashboard`.
-- [ ] Hacer clic en el avatar o nombre de la cabecera abre un menú con "Cerrar sesión".
-- [ ] El menú se abre con teclado (Enter/Espacio) y se cierra con Esc.
-- [ ] "Cerrar sesión" borra la clave de `localStorage` y de `sessionStorage` y muestra `/login` sin aviso.
-- [ ] Después de cerrar sesión, el botón Atrás del navegador no vuelve a mostrar el dashboard.
-- [ ] Si la API responde 401 a una petición con token (por ejemplo, token manipulado en storage), se borra la sesión y se muestra `/login` con el aviso.
-- [ ] Credenciales incorrectas en `/login` siguen mostrando el mensaje de SPEC 01 y no activan el handler 401.
-- [ ] Varios 401 simultáneos en el dashboard producen una sola navegación a `/login`.
-- [ ] Los dashboards de Requester, Approver y Admin se ven igual que en SPEC 03–05.
-- [ ] No hay dependencias npm nuevas aparte de los archivos generados por shadcn.
+- [x] `npm run lint` y `npm run build` pasan sin errores.
+- [x] Sin sesión, abrir `/dashboard` redirige a `/login` sin el aviso de expiración.
+- [x] Sin sesión, abrir `/purchases` y luego iniciar sesión lleva a `/purchases`.
+- [x] Iniciar sesión entrando directo a `/login` lleva a `/dashboard`.
+- [x] Con un `state.from` de `/login` o `//evil.com`, el login lleva a `/dashboard`.
+- [x] Con un token cuyo `exp` ya pasó, abrir `/dashboard` borra `procureflow.session` de los dos almacenamientos y muestra `/login` con "Tu sesión expiró. Inicia sesión de nuevo.".
+- [x] Con un token ilegible (no es JWT), abrir `/dashboard` se comporta igual que con un token vencido.
+- [x] Recargar `/login` después del aviso ya no muestra el aviso.
+- [x] Con sesión válida, abrir `/login` o `/register` redirige a `/dashboard`.
+- [x] Hacer clic en el avatar o nombre de la cabecera abre un menú con "Cerrar sesión".
+- [x] El menú se abre con teclado (Enter/Espacio) y se cierra con Esc.
+- [x] "Cerrar sesión" borra la clave de `localStorage` y de `sessionStorage` y muestra `/login` sin aviso.
+- [x] Después de cerrar sesión, el botón Atrás del navegador no vuelve a mostrar el dashboard.
+- [x] Si la API responde 401 a una petición con token (por ejemplo, token manipulado en storage), se borra la sesión y se muestra `/login` con el aviso.
+- [x] Credenciales incorrectas en `/login` siguen mostrando el mensaje de SPEC 01 y no activan el handler 401.
+- [x] Varios 401 simultáneos en el dashboard producen una sola navegación a `/login`.
+- [x] Los dashboards de Requester, Approver y Admin se ven igual que en SPEC 03–05.
+- [x] No hay dependencias npm nuevas aparte de los archivos generados por shadcn.
 
 ## Decisiones
 
