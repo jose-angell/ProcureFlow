@@ -19,6 +19,12 @@ export interface DepartmentOption {
   name: string
 }
 
+/** Estado de navegación que recibe /login (guard, handler 401 y logout). */
+export interface LoginLocationState {
+  from?: { pathname: string; search?: string }
+  reason?: 'expired'
+}
+
 export interface AuthResponse {
   accessToken: string
   userId: string
