@@ -5,12 +5,18 @@ import DashboardPage from '@/features/dashboard/pages/DashboardPage'
 import PurchaseRequestsPage from '@/features/purchase-requests/pages/PurchaseRequestsPage'
 import NotFoundPage from '@/shared/components/NotFoundPage'
 import AppLayout from '@/shared/layouts/AppLayout'
+import GuestRoute from './GuestRoute'
 import ProtectedRoute from './ProtectedRoute'
 
 export const router = createBrowserRouter([
   // Rutas públicas
-  { path: '/login', element: <LoginPage /> },
-  { path: '/register', element: <RegisterPage /> },
+  {
+    element: <GuestRoute />,
+    children: [
+      { path: '/login', element: <LoginPage /> },
+      { path: '/register', element: <RegisterPage /> },
+    ],
+  },
 
   // Rutas protegidas
   {
