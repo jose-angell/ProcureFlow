@@ -1,9 +1,13 @@
-import { Landmark } from 'lucide-react'
-import { Link } from 'react-router'
+import { CircleAlert, Landmark } from 'lucide-react'
+import { Link, useLocation } from 'react-router'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import LoginForm from '../components/LoginForm'
 import LoginShowcase from '../components/LoginShowcase'
+import type { LoginLocationState } from '../types'
 
 function LoginPage() {
+  const location = useLocation()
+
   return (
     <main className="flex min-h-svh w-full items-stretch">
       <LoginShowcase />
@@ -37,6 +41,13 @@ function LoginPage() {
               aprobaciones y compras.
             </p>
           </div>
+
+          {(location.state as LoginLocationState | null)?.reason === 'expired' && (
+            <Alert variant="destructive" className="mb-4">
+              <CircleAlert aria-hidden="true" />
+              <AlertDescription>Tu sesión expiró. Inicia sesión de nuevo.</AlertDescription>
+            </Alert>
+          )}
 
           <LoginForm />
 
