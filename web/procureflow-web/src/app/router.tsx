@@ -1,8 +1,11 @@
 import { createBrowserRouter, Navigate } from 'react-router'
 import LoginPage from '@/features/auth/pages/LoginPage'
 import RegisterPage from '@/features/auth/pages/RegisterPage'
+import { clearSession, getSession } from '@/features/auth/session'
+import type { LoginLocationState } from '@/features/auth/types'
 import DashboardPage from '@/features/dashboard/pages/DashboardPage'
 import PurchaseRequestsPage from '@/features/purchase-requests/pages/PurchaseRequestsPage'
+import { setUnauthorizedHandler } from '@/shared/api/httpClient'
 import NotFoundPage from '@/shared/components/NotFoundPage'
 import AppLayout from '@/shared/layouts/AppLayout'
 import GuestRoute from './GuestRoute'
@@ -35,3 +38,15 @@ export const router = createBrowserRouter([
 
   { path: '*', element: <NotFoundPage /> },
 ])
+
+// Una petición con token que recibe 401 cierra la sesión y lleva a /login.
+// Sin sesión guardada no hace nada: así varios 401 simultáneos navegan una sola vez.
+setUnauthorizedHandler(() => {
+  if (!getSession()) return
+
+  const { pathname, search } = router.state.location
+  clearSession()
+
+  const state: LoginLocationState = { from: { pathname, search }, reason: 'expired' }
+  void router.navigate('/login', { replace: true, state })
+})

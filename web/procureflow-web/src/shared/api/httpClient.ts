@@ -17,6 +17,20 @@ export class NetworkError extends Error {
   }
 }
 
+let unauthorizedHandler: (() => void) | null = null
+
+/**
+ * Registra qué hacer cuando una petición con `Authorization` recibe 401
+ * (token vencido o rechazado). Hay uno solo: registrar otro lo reemplaza.
+ */
+export function setUnauthorizedHandler(handler: (() => void) | null): void {
+  unauthorizedHandler = handler
+}
+
+function hasAuthorization(init?: RequestInit): boolean {
+  return new Headers(init?.headers).has('Authorization')
+}
+
 async function request(path: string, init?: RequestInit): Promise<Response> {
   let response: Response
 
@@ -27,6 +41,11 @@ async function request(path: string, init?: RequestInit): Promise<Response> {
   }
 
   if (!response.ok) {
+    // Sin token (p. ej. credenciales incorrectas en el login) el 401 no es una sesión vencida.
+    if (response.status === 401 && hasAuthorization(init)) {
+      unauthorizedHandler?.()
+    }
+
     throw new ApiError(response.status)
   }
 
