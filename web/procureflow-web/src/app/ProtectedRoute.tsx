@@ -1,20 +1,25 @@
 import { Navigate, Outlet, useLocation } from 'react-router'
+import { clearSession, getSession, isTokenExpired } from '@/features/auth/session'
+import type { LoginLocationState } from '@/features/auth/types'
 
 /**
- * PLACEHOLDER TEMPORAL: no implementa autenticación real.
- *
- * `isAuthenticated` está fijo en `true`, por lo que hoy cualquier visitante
- * accede a las rutas protegidas. Esto NO es una medida de seguridad; la API
- * sigue siendo la autoridad final. Se reemplazará en la fase de autenticación
- * (sesión JWT) leyendo el estado real de la sesión.
+ * Deja pasar solo con una sesión guardada cuyo token no venció. Sin sesión va a
+ * /login; con token vencido borra la sesión y lo indica en el estado de navegación.
+ * Es solo UX: la API sigue validando cada petición.
  */
-const isAuthenticated = true
-
 function ProtectedRoute() {
-  const location = useLocation()
+  const { pathname, search } = useLocation()
+  const session = getSession()
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace state={{ from: location }} />
+  if (!session) {
+    const state: LoginLocationState = { from: { pathname, search } }
+    return <Navigate to="/login" replace state={state} />
+  }
+
+  if (isTokenExpired(session.accessToken)) {
+    clearSession()
+    const state: LoginLocationState = { from: { pathname, search }, reason: 'expired' }
+    return <Navigate to="/login" replace state={state} />
   }
 
   return <Outlet />
