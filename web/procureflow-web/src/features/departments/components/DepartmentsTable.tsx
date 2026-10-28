@@ -6,7 +6,6 @@ import {
   Pencil,
   RotateCcw,
   Search,
-  Trash2,
 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -31,6 +30,7 @@ import {
 } from '@/components/ui/table'
 import { cn } from '@/lib/utils'
 import type { Department, DepartmentStatusFilter } from '../types'
+import DeleteDepartmentButton from './DeleteDepartmentButton'
 
 const STATUS_OPTIONS: { value: DepartmentStatusFilter; label: string }[] = [
   { value: 'all', label: 'Todos' },
@@ -58,9 +58,11 @@ function normalizeText(text: string): string {
 interface DepartmentsTableProps {
   /** Lista ya ordenada; `null` mientras carga. */
   departments: Department[] | null
+  onDeleted: (name: string) => void
+  onDeleteError: (error: unknown) => void
 }
 
-function DepartmentsTable({ departments }: DepartmentsTableProps) {
+function DepartmentsTable({ departments, onDeleted, onDeleteError }: DepartmentsTableProps) {
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState<DepartmentStatusFilter>('all')
   const [pageSize, setPageSize] = useState(10)
@@ -239,14 +241,11 @@ function DepartmentsTable({ departments }: DepartmentsTableProps) {
                     >
                       <Pencil aria-hidden="true" />
                     </Button>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      aria-label={`Eliminar ${department.name}`}
-                    >
-                      <Trash2 aria-hidden="true" />
-                    </Button>
+                    <DeleteDepartmentButton
+                      department={department}
+                      onDeleted={onDeleted}
+                      onError={onDeleteError}
+                    />
                   </div>
                 </TableCell>
               </TableRow>
