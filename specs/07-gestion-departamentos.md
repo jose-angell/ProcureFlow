@@ -1,6 +1,6 @@
 # SPEC 07 — Gestión de departamentos
 
-> **Estado:** aprobado
+> **Estado:** implementado
 > **Depende de:** SPEC 03, SPEC 05, SPEC 06
 > **Fecha:** 2026-10-27
 > **Objetivo:** Crear la página `/departments`, solo para Admin, con el listado de departamentos y las acciones crear, editar (nombre y estado) y eliminar, según `design/department.html` y `design/departmentModa.html`.
@@ -182,35 +182,35 @@ Estados de la lista:
 
 ## Criterios de aceptación
 
-- [ ] `npm run lint` y `npm run build` pasan sin errores.
-- [ ] Como Admin, el menú "Departamentos" está habilitado y lleva a `/departments`.
-- [ ] Como Requester o Approver, abrir `/departments` por URL redirige a `/dashboard`.
-- [ ] Las migas muestran "Inicio > Departamentos".
-- [ ] La página muestra "Gestión de Departamentos" y el badge con el número de departamentos activos.
-- [ ] La tabla lista todos los departamentos de `GET /api/departments` ordenados por nombre.
-- [ ] Los departamentos inactivos muestran el badge "Inactivo" y la fila atenuada.
-- [ ] Escribir "tecnologia" encuentra "Tecnología".
-- [ ] El filtro "Solo inactivos" muestra solo departamentos inactivos, y el contador se actualiza.
-- [ ] "Limpiar" vacía la búsqueda y vuelve el estado a Todos.
-- [ ] Con más de 10 departamentos hay 2 páginas; con 25 filas por página hay 1.
-- [ ] "Agregar departamento" abre el modal "Crear nuevo departamento" sin el campo Estado.
-- [ ] Crear envía `POST /api/departments` con `Authorization: Bearer <token>` y el cuerpo `{"name":"..."}` recortado.
-- [ ] Después de crear se ve "Departamento {name} creado." y el departamento aparece Activo en la tabla.
-- [ ] Crear con un nombre existente muestra "Ya existe un departamento con ese nombre." dentro del modal, y el modal sigue abierto.
-- [ ] El campo Nombre no acepta más de 100 caracteres. Con nombre vacío o solo espacios, "Guardar departamento" está deshabilitado.
-- [ ] Editar abre el modal con el nombre y el estado actuales.
-- [ ] Editar solo el nombre envía `PUT` y ningún `PATCH`. Editar solo el estado envía un `PATCH` y ningún `PUT`.
-- [ ] Desactivar un departamento con usuarios muestra "No se puede desactivar un departamento con usuarios asociados." en el modal.
-- [ ] La papelera abre "¿Eliminar el departamento {name}?". "Cancelar" o Esc lo cierran sin peticiones.
-- [ ] Eliminar un departamento sin usuarios envía `DELETE`, muestra "Departamento {name} eliminado." y lo quita de la tabla.
-- [ ] Eliminar un departamento con usuarios muestra "No se puede eliminar un departamento con usuarios asociados." sobre la tabla.
-- [ ] Con la API apagada, cargar la página muestra "No se pudo conectar con el servidor. Intenta de nuevo.".
-- [ ] Mientras guarda o elimina, los botones están deshabilitados y el diálogo no se cierra con Esc.
-- [ ] El modal y el `AlertDialog` se pueden usar solo con teclado.
-- [ ] Login y registro siguen funcionando igual (`postJson` sin token).
-- [ ] No hay scroll horizontal de página a 375px (la tabla puede desplazarse dentro de su contenedor).
-- [ ] No hay Código, Descripción, tarjetas de métricas, "Exportar listado", checkboxes, filtro de Centro de Coste ni banner ERP.
-- [ ] No hay dependencias npm nuevas aparte de los archivos generados por shadcn.
+- [x] `npm run lint` y `npm run build` pasan sin errores.
+- [x] Como Admin, el menú "Departamentos" está habilitado y lleva a `/departments`.
+- [x] Como Requester o Approver, abrir `/departments` por URL redirige a `/dashboard`.
+- [x] Las migas muestran "Inicio > Departamentos".
+- [x] La página muestra "Gestión de Departamentos" y el badge con el número de departamentos activos.
+- [x] La tabla lista todos los departamentos de `GET /api/departments` ordenados por nombre.
+- [x] Los departamentos inactivos muestran el badge "Inactivo" y la fila atenuada.
+- [x] Escribir "tecnologia" encuentra "Tecnología".
+- [x] El filtro "Solo inactivos" muestra solo departamentos inactivos, y el contador se actualiza.
+- [x] "Limpiar" vacía la búsqueda y vuelve el estado a Todos.
+- [x] Con más de 10 departamentos hay 2 páginas; con 25 filas por página hay 1.
+- [x] "Agregar departamento" abre el modal "Crear nuevo departamento" sin el campo Estado.
+- [x] Crear envía `POST /api/departments` con `Authorization: Bearer <token>` y el cuerpo `{"name":"..."}` recortado.
+- [x] Después de crear se ve "Departamento {name} creado." y el departamento aparece Activo en la tabla.
+- [x] Crear con un nombre existente muestra "Ya existe un departamento con ese nombre." dentro del modal, y el modal sigue abierto.
+- [x] El campo Nombre no acepta más de 100 caracteres. Con nombre vacío o solo espacios, "Guardar departamento" está deshabilitado.
+- [x] Editar abre el modal con el nombre y el estado actuales.
+- [x] Editar solo el nombre envía `PUT` y ningún `PATCH`. Editar solo el estado envía un `PATCH` y ningún `PUT`.
+- [x] Desactivar un departamento con usuarios muestra "No se puede desactivar un departamento con usuarios asociados." en el modal.
+- [x] La papelera abre "¿Eliminar el departamento {name}?". "Cancelar" o Esc lo cierran sin peticiones.
+- [x] Eliminar un departamento sin usuarios envía `DELETE`, muestra "Departamento {name} eliminado." y lo quita de la tabla.
+- [x] Eliminar un departamento con usuarios muestra "No se puede eliminar un departamento con usuarios asociados." sobre la tabla.
+- [x] Con la API apagada, cargar la página muestra "No se pudo conectar con el servidor. Intenta de nuevo.".
+- [x] Mientras guarda o elimina, los botones están deshabilitados y el diálogo no se cierra con Esc.
+- [x] El modal y el `AlertDialog` se pueden usar solo con teclado.
+- [x] Login y registro siguen funcionando igual (`postJson` sin token).
+- [x] No hay scroll horizontal de página a 375px (la tabla puede desplazarse dentro de su contenedor).
+- [x] No hay Código, Descripción, tarjetas de métricas, "Exportar listado", checkboxes, filtro de Centro de Coste ni banner ERP.
+- [x] No hay dependencias npm nuevas aparte de los archivos generados por shadcn.
 
 ## Decisiones
 
