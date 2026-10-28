@@ -104,13 +104,44 @@ export async function patchJson<TBody>(
   })
 }
 
+/** PUT con cuerpo JSON; no parsea la respuesta (la API responde 204). */
+export async function putJson<TBody>(
+  path: string,
+  body: TBody,
+  options?: GetJsonOptions,
+): Promise<void> {
+  await request(path, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(options?.token ? { Authorization: `Bearer ${options.token}` } : {}),
+    },
+    body: JSON.stringify(body),
+  })
+}
+
+/** DELETE sin cuerpo; no parsea la respuesta (la API responde 204). */
+export async function deleteRequest(
+  path: string,
+  options?: GetJsonOptions,
+): Promise<void> {
+  await request(path, {
+    method: 'DELETE',
+    headers: options?.token ? { Authorization: `Bearer ${options.token}` } : undefined,
+  })
+}
+
 export function postJson<TBody, TResponse>(
   path: string,
   body: TBody,
+  options?: GetJsonOptions,
 ): Promise<TResponse> {
   return requestJson<TResponse>(path, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      ...(options?.token ? { Authorization: `Bearer ${options.token}` } : {}),
+    },
     body: JSON.stringify(body),
   })
 }
