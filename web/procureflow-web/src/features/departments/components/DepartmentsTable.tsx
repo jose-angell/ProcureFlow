@@ -58,11 +58,17 @@ function normalizeText(text: string): string {
 interface DepartmentsTableProps {
   /** Lista ya ordenada; `null` mientras carga. */
   departments: Department[] | null
+  onEdit: (department: Department) => void
   onDeleted: (name: string) => void
   onDeleteError: (error: unknown) => void
 }
 
-function DepartmentsTable({ departments, onDeleted, onDeleteError }: DepartmentsTableProps) {
+function DepartmentsTable({
+  departments,
+  onEdit,
+  onDeleted,
+  onDeleteError,
+}: DepartmentsTableProps) {
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState<DepartmentStatusFilter>('all')
   const [pageSize, setPageSize] = useState(10)
@@ -238,6 +244,7 @@ function DepartmentsTable({ departments, onDeleted, onDeleteError }: Departments
                       variant="ghost"
                       size="icon"
                       aria-label={`Editar ${department.name}`}
+                      onClick={() => onEdit(department)}
                     >
                       <Pencil aria-hidden="true" />
                     </Button>
