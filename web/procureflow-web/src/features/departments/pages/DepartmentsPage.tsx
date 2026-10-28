@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { CircleAlert } from 'lucide-react'
+import { CircleAlert, CircleCheck } from 'lucide-react'
 import { Link, Navigate } from 'react-router'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { getSession } from '@/features/auth/session'
@@ -7,7 +7,11 @@ import { UserRole } from '@/features/auth/types'
 import { isSessionError } from '@/features/dashboard/dashboardErrors'
 import { getDepartments } from '../api/departments'
 import DepartmentsTable from '../components/DepartmentsTable'
-import { getDepartmentErrorMessage } from '../departmentErrors'
+import {
+  getDepartmentDeletedMessage,
+  getDepartmentErrorMessage,
+  type DepartmentOperation,
+} from '../departmentErrors'
 import type { Department } from '../types'
 
 type DepartmentsState = { departments: Department[] } | { error: unknown }
@@ -16,9 +20,14 @@ function sortByName(departments: Department[]): Department[] {
   return [...departments].sort((a, b) => a.name.localeCompare(b.name, 'es'))
 }
 
-function DepartmentsContent() {
-  const [state, setState] = useState<DepartmentsState | null>(null)
+type ActionResult = { success: string } | { error: unknown; operation: DepartmentOperation }
 
+function DepartmentsContent() {
+  const [reloadKey, setReloadKey] = useState(0)
+  const [state, setState] = useState<DepartmentsState | null>(null)
+  const [actionResult, setActionResult] = useState<ActionResult | null>(null)
+
+  // Al recargar se conserva la lista anterior hasta que llega la nueva.
   useEffect(() => {
     let cancelled = false
 
@@ -33,11 +42,22 @@ function DepartmentsContent() {
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [reloadKey])
 
   const departments = state && 'departments' in state ? state.departments : null
   const error = state && 'error' in state ? state.error : null
   const activeCount = departments?.filter((department) => department.isActive).length ?? 0
+
+  function handleDeleted(name: string) {
+    setActionResult({ success: getDepartmentDeletedMessage(name) })
+    setReloadKey((key) => key + 1)
+  }
+
+  function handleDeleteError(error: unknown) {
+    setActionResult({ error, operation: 'delete' })
+    // El estado pudo cambiar (p. ej. otro Admin lo eliminó): se vuelve a cargar.
+    setReloadKey((key) => key + 1)
+  }
 
   return (
     <section className="flex flex-col gap-6">
@@ -57,6 +77,27 @@ function DepartmentsContent() {
         </p>
       </div>
 
+      {actionResult && (
+        <Alert variant={'error' in actionResult ? 'destructive' : 'default'}>
+          {'error' in actionResult ? (
+            <CircleAlert aria-hidden="true" />
+          ) : (
+            <CircleCheck aria-hidden="true" />
+          )}
+          <AlertDescription>
+            {'error' in actionResult
+              ? getDepartmentErrorMessage(actionResult.error, actionResult.operation)
+              : actionResult.success}
+            {'error' in actionResult && isSessionError(actionResult.error) && (
+              <>
+                {' '}
+                <Link to="/login">Iniciar sesión</Link>
+              </>
+            )}
+          </AlertDescription>
+        </Alert>
+      )}
+
       {error !== null ? (
         <Alert variant="destructive">
           <CircleAlert aria-hidden="true" />
@@ -71,7 +112,11 @@ function DepartmentsContent() {
           </AlertDescription>
         </Alert>
       ) : (
-        <DepartmentsTable departments={departments} />
+        <DepartmentsTable
+          departments={departments}
+          onDeleted={handleDeleted}
+          onDeleteError={handleDeleteError}
+        />
       )}
     </section>
   )
