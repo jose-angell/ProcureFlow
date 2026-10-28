@@ -39,5 +39,5 @@
 - `UserRole` debe coincidir con `ProcureFlow.Domain/Enums/UserRole.cs`.
 - `ProtectedRoute` exige sesión con token no vencido (`isTokenExpired`); `GuestRoute` saca de `/login` y `/register` a quien ya tiene sesión. El logout está en el menú de `CurrentUser` (`clearSession()`).
 - Una petición con `Authorization` que recibe 401 dispara el handler de `setUnauthorizedHandler` (registrado en `app/router.tsx`): borra la sesión y lleva a `/login` con `state.reason = 'expired'`. El destino tras el login sale de `state.from`.
-- Estado actual: `Authorization` solo se envía en `getJson`, `patch` y `patchJson` cuando se pasa `token`; `postJson` no lo envía. El almacenamiento en Web Storage es una decisión de MVP, no final.
+- Estado actual: `Authorization` se envía en `getJson`, `postJson`, `patch`, `patchJson`, `putJson` y `deleteRequest` cuando se pasa `token`; login y registro llaman a `postJson` sin token. `/departments` solo es para Admin: la página redirige a `/dashboard` si el rol no lo es (no hay guard por rol genérico). El almacenamiento en Web Storage es una decisión de MVP, no final.
 - Detalle y pendientes: `../../docs/decisions/ADR-001-auth-api.md`.
