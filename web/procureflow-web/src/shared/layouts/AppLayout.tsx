@@ -8,6 +8,7 @@ import AppSidebar, { type NavAudience } from '@/shared/components/AppSidebar'
 const PAGE_TITLES: Record<string, string> = {
   '/dashboard': 'Dashboard',
   '/purchases': 'Mis solicitudes',
+  '/departments': 'Departamentos',
 }
 
 const AUDIENCE_BY_ROLE: Record<UserRole, NavAudience> = {
