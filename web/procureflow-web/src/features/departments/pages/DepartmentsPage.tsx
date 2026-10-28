@@ -2,12 +2,11 @@ import { useEffect, useState } from 'react'
 import { CircleAlert } from 'lucide-react'
 import { Link, Navigate } from 'react-router'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Card, CardContent } from '@/components/ui/card'
-import { Skeleton } from '@/components/ui/skeleton'
 import { getSession } from '@/features/auth/session'
 import { UserRole } from '@/features/auth/types'
 import { isSessionError } from '@/features/dashboard/dashboardErrors'
 import { getDepartments } from '../api/departments'
+import DepartmentsTable from '../components/DepartmentsTable'
 import { getDepartmentErrorMessage } from '../departmentErrors'
 import type { Department } from '../types'
 
@@ -58,17 +57,7 @@ function DepartmentsContent() {
         </p>
       </div>
 
-      {state === null && (
-        <Card>
-          <CardContent className="flex flex-col gap-3" aria-busy="true">
-            {Array.from({ length: 5 }, (_, index) => (
-              <Skeleton key={index} className="h-10 w-full" />
-            ))}
-          </CardContent>
-        </Card>
-      )}
-
-      {error !== null && (
+      {error !== null ? (
         <Alert variant="destructive">
           <CircleAlert aria-hidden="true" />
           <AlertDescription>
@@ -81,14 +70,8 @@ function DepartmentsContent() {
             )}
           </AlertDescription>
         </Alert>
-      )}
-
-      {departments && departments.length === 0 && (
-        <Card>
-          <CardContent className="py-6 text-center text-sm text-muted-foreground">
-            No hay departamentos registrados.
-          </CardContent>
-        </Card>
+      ) : (
+        <DepartmentsTable departments={departments} />
       )}
     </section>
   )
