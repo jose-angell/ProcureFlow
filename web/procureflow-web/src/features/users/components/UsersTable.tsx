@@ -77,6 +77,7 @@ interface UsersTableProps {
   departments: Department[]
   /** Usuario de la sesión: su fila no tiene botón Eliminar. */
   currentUserId: string | undefined
+  onEdit: (user: User) => void
   onDeleted: (fullName: string) => void
   onDeleteError: (error: unknown) => void
 }
@@ -85,6 +86,7 @@ function UsersTable({
   users,
   departments,
   currentUserId,
+  onEdit,
   onDeleted,
   onDeleteError,
 }: UsersTableProps) {
@@ -321,6 +323,7 @@ function UsersTable({
                       variant="ghost"
                       size="icon"
                       aria-label={`Editar ${user.fullName}`}
+                      onClick={() => onEdit(user)}
                     >
                       <Pencil aria-hidden="true" />
                     </Button>

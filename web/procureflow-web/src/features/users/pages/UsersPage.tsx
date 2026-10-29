@@ -10,6 +10,7 @@ import { isSessionError } from '@/features/dashboard/dashboardErrors'
 import { getDepartments } from '@/features/departments/api/departments'
 import type { Department } from '@/features/departments/types'
 import { getUsers } from '../api/users'
+import UserFormDialog from '../components/UserFormDialog'
 import UserStatsCards from '../components/UserStatsCards'
 import UsersTable from '../components/UsersTable'
 import {
@@ -35,6 +36,8 @@ function UsersContent() {
   const [reloadKey, setReloadKey] = useState(0)
   const [state, setState] = useState<UsersState | null>(null)
   const [actionResult, setActionResult] = useState<ActionResult | null>(null)
+  // `null` = modal cerrado; `{ user: null }` = crear; `{ user }` = editar.
+  const [formDialog, setFormDialog] = useState<{ user: User | null } | null>(null)
   // Un fallo al cargar departamentos no bloquea la lista: solo limita filtro y modal.
   const [departmentsState, setDepartmentsState] = useState<DepartmentsState | null>(null)
 
@@ -67,6 +70,21 @@ function UsersContent() {
   const error = state && 'error' in state ? state.error : null
   const departments =
     departmentsState && 'departments' in departmentsState ? departmentsState.departments : []
+  const departmentsError =
+    departmentsState && 'error' in departmentsState ? departmentsState.error : null
+  const currentUserId = getSession()?.user.userId
+
+  function handleSaved(message: string) {
+    setActionResult({ success: message })
+    setFormDialog(null)
+    setReloadKey((key) => key + 1)
+  }
+
+  function handleFormClose(hasFailed: boolean) {
+    setFormDialog(null)
+    // Un guardado a medias (p. ej. los datos cambiaron y el estado no) deja la lista desactualizada.
+    if (hasFailed) setReloadKey((key) => key + 1)
+  }
 
   function handleDeleted(fullName: string) {
     setActionResult({ success: getUserDeletedMessage(fullName) })
@@ -99,7 +117,7 @@ function UsersContent() {
           </p>
         </div>
 
-        <Button type="button" disabled>
+        <Button type="button" onClick={() => setFormDialog({ user: null })}>
           <Plus aria-hidden="true" />
           Agregar usuario
         </Button>
@@ -156,11 +174,24 @@ function UsersContent() {
           <UsersTable
             users={users}
             departments={departments}
-            currentUserId={getSession()?.user.userId}
+            currentUserId={currentUserId}
+            onEdit={(user) => setFormDialog({ user })}
             onDeleted={handleDeleted}
             onDeleteError={handleDeleteError}
           />
         </>
+      )}
+
+      {formDialog && (
+        <UserFormDialog
+          key={formDialog.user?.id ?? 'new'}
+          user={formDialog.user}
+          departments={departments}
+          departmentsError={departmentsError}
+          currentUserId={currentUserId}
+          onSaved={handleSaved}
+          onClose={handleFormClose}
+        />
       )}
     </section>
   )
