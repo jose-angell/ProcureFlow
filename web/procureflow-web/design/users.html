@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+
+<html lang="es"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-secondary-fixed":"#00174b","primary-container":"#131b2e","on-primary-container":"#7c839b","on-surface-variant":"#45464d","secondary-container":"#316bf3","tertiary-fixed-dim":"#68dba9","error-container":"#ffdad6","outline-variant":"#c6c6cd","on-secondary-container":"#fefcff","surface-bright":"#f8f9ff","inverse-primary":"#bec6e0","secondary":"#0051d5","on-error":"#ffffff","primary-fixed-dim":"#bec6e0","surface-container-highest":"#d3e4fe","surface":"#f8f9ff","surface-tint":"#565e74","on-primary-fixed":"#131b2e","tertiary-container":"#002114","secondary-fixed":"#dbe1ff","tertiary":"#000000","on-secondary-fixed-variant":"#003ea8","on-primary":"#ffffff","on-background":"#0b1c30","on-secondary":"#ffffff","surface-container":"#e5eeff","surface-container-lowest":"#ffffff","error":"#ba1a1a","inverse-on-surface":"#eaf1ff","surface-container-high":"#dce9ff","secondary-fixed-dim":"#b4c5ff","background":"#f8f9ff","surface-variant":"#d3e4fe","on-error-container":"#93000a","inverse-surface":"#213145","surface-container-low":"#eff4ff","on-tertiary-fixed-variant":"#005137","on-primary-fixed-variant":"#3f465c","primary":"#000000","on-tertiary-fixed":"#002114","on-surface":"#0b1c30","on-tertiary":"#ffffff","primary-fixed":"#dae2fd","outline":"#76777d","tertiary-fixed":"#85f8c4","surface-dim":"#cbdbf5","on-tertiary-container":"#069669"},borderRadius:{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},spacing:{"space-xs":"0.25rem","margin-mobile":"1rem","space-sm":"0.5rem","space-md":"1rem","gutter-mobile":"1rem","space-xl":"2rem","gutter":"1.5rem","margin":"2rem","space-lg":"1.5rem"},fontFamily:{"body-sm":["Inter"],"label-sm":["Inter"],"headline-display-mobile":["Plus Jakarta Sans"],"body-lg":["Inter"],"body-md":["Inter"],"headline-lg-mobile":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"numeric-data":["Inter"],"headline-md":["Plus Jakarta Sans"],"label-xs":["Inter"],"headline-display":["Plus Jakarta Sans"],"headline-sm":["Plus Jakarta Sans"],"label-md":["Inter"]},fontSize:{"body-sm":["12px",{lineHeight:"16px",fontWeight:"400"}],"label-sm":["12px",{lineHeight:"16px",fontWeight:"500"}],"headline-display-mobile":["28px",{lineHeight:"36px",letterSpacing:"-0.02em",fontWeight:"700"}],"body-lg":["16px",{lineHeight:"24px",fontWeight:"400"}],"body-md":["14px",{lineHeight:"20px",fontWeight:"400"}],"headline-lg-mobile":["24px",{lineHeight:"32px",letterSpacing:"-0.015em",fontWeight:"600"}],"headline-lg":["30px",{lineHeight:"38px",letterSpacing:"-0.02em",fontWeight:"600"}],"numeric-data":["14px",{lineHeight:"20px",letterSpacing:"0",fontWeight:"500"}],"headline-md":["20px",{lineHeight:"28px",letterSpacing:"-0.015em",fontWeight:"600"}],"label-xs":["11px",{lineHeight:"14px",letterSpacing:"0.02em",fontWeight:"600"}],"headline-display":["36px",{lineHeight:"44px",letterSpacing:"-0.025em",fontWeight:"700"}],"headline-sm":["16px",{lineHeight:"24px",letterSpacing:"-0.01em",fontWeight:"600"}],"label-md":["14px",{lineHeight:"20px",fontWeight:"500"}]}}}};</script></head><body class="bg-background font-body-md text-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between"><div class="flex flex-col"><div class="h-16 px-space-md flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="ProcureFlow Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1U-aQBeadItr5DtNMGdIOCp2D1z58gA_e5IJGUD0nhG42AnnA5aCKVJXMvXU-PS97ZtBiDmJN8U4INU3d3zZOsFVcZhegY-LluPSvMPC-dQLV11Qe8YbAoHMDEzhbwCIz1R6CH03VI1WyEg16gaUGwSjegsUbG42F_K4yNGsmPbwiYuYRI-gJlgTlYjYG0eOivkO6IAKfsVkMoASRZNuD8oA7Qdt9HMkVhk9nBS7pTuoFZifqCG0zKLPfM"/><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight">ProcureFlow</span></div><span class="inline-flex items-center px-space-xs py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-xs text-label-xs">v2.4</span></div><div class="px-space-md py-space-sm"><div class="bg-surface-container-low rounded-lg p-space-sm"><div class="flex items-center justify-between text-on-surface-variant font-label-xs text-label-xs mb-1"><span class="">ROL ACTIVO</span><span class="material-symbols-outlined text-[16px]">swap_horiz</span></div><div class="flex items-center justify-between"><select class="bg-transparent font-label-md text-label-md text-on-surface font-semibold focus:outline-none cursor-pointer pr-1 w-full"><option selected="">Approver (Aprobador)</option><option>Requester (Solicitante)</option><option>Admin (Administrador)</option></select><span class="w-2 h-2 rounded-full bg-secondary shrink-0"></span></div></div></div><div class="px-space-md pt-space-xs"><p class="px-space-sm pb-space-xs font-label-xs text-label-xs text-on-surface-variant tracking-wider uppercase">Principal</p><nav class="space-y-1" data-active-classes="bg-surface-container-high text-on-surface font-semibold"><a class="flex items-center justify-between px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="dashboard" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">grid_view</span><span class="font-label-md text-label-md">Dashboard</span></div></a><a class="flex items-center justify-between px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="mis-solicitudes" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">receipt_long</span><span class="font-label-md text-label-md">Mis solicitudes</span></div><span class="px-1.5 py-0.5 rounded-full bg-surface-container font-numeric-data text-label-xs text-on-surface-variant">12</span></a><a class="flex items-center justify-between px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="aprobaciones" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">verified</span><span class="font-label-md text-label-md">Aprobaciones</span></div><span class="px-1.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-numeric-data text-label-xs font-semibold">4</span></a><a class="flex items-center justify-between px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="departamentos" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">domain</span><span class="font-label-md text-label-md">Departamentos</span></div></a><a class="flex items-center justify-between px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="usuarios" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">group</span><span class="font-label-md text-label-md">Usuarios</span></div></a></nav></div></div><div class="p-space-md space-y-space-md"><div class="bg-surface-container-low rounded-lg p-space-sm"><div class="flex items-center justify-between"><div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim"></span><span class="font-label-xs text-label-xs text-on-surface-variant">Sistema Operativo</span></div><span class="font-numeric-data text-label-xs text-on-surface font-medium">En línea</span></div></div><nav class="space-y-1" data-active-classes="bg-surface-container-high text-on-surface font-semibold"><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-label-md text-label-md" data-path="documentacion" href="#"><span class="material-symbols-outlined text-[20px]">help_center</span><span class="">Centro de Ayuda</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-label-md text-label-md" data-path="configuracion" href="#"><span class="material-symbols-outlined text-[20px]">settings</span><span class="">Configuración</span></a></nav></div></aside><div class="pl-64"><header class="fixed top-0 left-64 right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 px-space-lg flex items-center justify-between"><div class="flex items-center gap-space-md"><div class="flex items-center gap-2 font-label-sm text-label-sm text-on-surface-variant"><span class="hover:text-on-surface cursor-pointer">Inicio</span><span class="material-symbols-outlined text-[14px]">chevron_right</span><span class="text-on-surface font-medium">Dashboard general</span></div><div class="hidden md:flex items-center gap-2 bg-surface-container-low px-3 py-1.5 rounded-lg text-on-surface-variant"><span class="material-symbols-outlined text-[18px]">search</span><input class="bg-transparent border-none text-body-sm font-body-sm text-on-surface placeholder:text-outline focus:outline-none w-56 lg:w-72" placeholder="Buscar por número, solicitante o justificación..." type="text"/><kbd class="bg-surface-container-lowest px-1.5 py-0.5 rounded font-label-xs text-label-xs text-on-surface-variant shadow-[0_1px_2px_rgba(0,0,0,0.05)]">⌘K</kbd></div></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-2 px-space-sm py-1.5 rounded-lg bg-surface-container-low text-on-surface"><span class="material-symbols-outlined text-[18px] text-secondary">business</span><span class="font-label-sm text-label-sm font-semibold">Acme Corp</span></div><button class="relative p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-[22px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error"></span></button><div class="flex items-center gap-space-sm pl-2 border-l border-surface-container-high"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7njDn8PZQFj42VRJp-FHtEUNuwDwQVGc4AcgRpiMgufkB6i49MEhczhtBelwChZADSuRuqolLl_Qw-KSr51g19GaG8Gzi8v0dJuEWSBcjUaiCPJxCVZJytqCRS0-LoXOg0Rn7BibGkAkGDnBpBgsSF8FJtgOx-clz0QOu1XonQTFpg0S88KsahrDuUskWWPmyPGjVG26DI5InQvlk5sfu_x59l0M3fv-6k9ezBi3ae9VZKR2QN2Tp"/><div class="hidden lg:flex flex-col"><span class="font-label-sm text-label-sm font-semibold text-on-surface leading-tight">Carlos Mendoza</span><span class="font-label-xs text-label-xs text-on-surface-variant leading-tight">Director Ops • Approver</span></div><span class="material-symbols-outlined text-[16px] text-on-surface-variant cursor-pointer">more_vert</span></div></div></header><main class="relative pt-16 bg-background min-h-screen px-space-lg py-space-lg max-w-7xl mx-auto"><div class="flex flex-col w-full space-y-space-lg">
+<!-- Sincronización de Sidebar y Rol Activo -->
+<script>
+    (function() {
+      // Sincronizar navegación activa a "Usuarios"
+      const navLinks = document.querySelectorAll('aside nav a');
+      navLinks.forEach(link => {
+        const text = link.textContent.trim();
+        if (text.includes('Usuarios') || link.getAttribute('data-path') === 'usuarios') {
+          link.className = 'flex items-center justify-between px-space-sm py-space-sm rounded-lg bg-surface-container-high text-on-surface font-semibold shadow-sm transition-colors';
+          const icon = link.querySelector('.material-symbols-outlined');
+          if (icon) icon.className = 'material-symbols-outlined text-[20px] text-secondary';
+        } else if (link.getAttribute('data-path') === 'dashboard' || text.includes('Dashboard')) {
+          link.className = 'flex items-center justify-between px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors';
+        }
+      });
+
+      // Configurar selector de rol en sidebar a Administrador
+      const roleSelect = document.querySelector('aside select');
+      if (roleSelect) {
+        roleSelect.value = 'Admin (Administrador)';
+      }
+    })();
+  </script>
+<!-- Encabezado y Barra Superior -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<div class="space-y-1">
+<div class="flex items-center gap-2 font-label-xs text-label-xs text-on-surface-variant mb-1">
+<span class="hover:text-on-surface cursor-pointer">Inicio</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="hover:text-on-surface cursor-pointer">Configuración de Empresa</span>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-on-surface font-semibold">Usuarios</span>
+</div>
+<div class="flex items-center gap-3">
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Gestión de Usuarios</h1>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container-high text-secondary font-label-xs text-label-xs font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+          48 usuarios registrados
+        </span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">
+        Administra las cuentas de usuario, asignación de roles, departamentos y estados de acceso al sistema de compras.
+      </p>
+</div>
+<!-- Botones de Acción de Cabecera -->
+<div class="flex items-center gap-space-sm shrink-0">
+<button class="inline-flex items-center gap-2 px-space-md py-2 rounded-lg bg-surface-container-lowest text-on-surface shadow-sm hover:bg-surface-container-low transition-colors font-label-md text-label-md active:scale-[0.98]">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">download</span>
+<span>Exportar listado</span>
+</button>
+<button class="inline-flex items-center gap-2 px-space-md py-2 rounded-lg bg-primary text-on-primary shadow-sm hover:bg-inverse-surface transition-colors font-label-md text-label-md active:scale-[0.98]">
+<span class="material-symbols-outlined text-[18px]">add</span>
+<span>Agregar usuario</span>
+</button>
+</div>
+</div>
+<!-- Fila de Métricas Clave (KPIs) -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+<!-- Card 1: Usuarios Totales -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm relative overflow-hidden flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Usuarios Totales</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">48</span>
+<span class="inline-flex items-center font-label-xs text-label-xs text-on-tertiary-container font-semibold">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+              +4 este mes
+            </span>
+</div>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-low text-on-surface">
+<span class="material-symbols-outlined text-[22px]">group</span>
+</div>
+</div>
+<div class="mt-4 pt-3 flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<span>Capacidad de licencias</span>
+<span class="font-numeric-data text-on-surface font-semibold">48 / 60 asientos</span>
+</div>
+<div class="w-full bg-surface-container-low h-1.5 rounded-full overflow-hidden mt-1.5">
+<div class="bg-secondary h-full rounded-full w-[80%]"></div>
+</div>
+</div>
+<!-- Card 2: Roles Asignados -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm relative overflow-hidden flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Roles Asignados</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">3 Roles</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant">Matriz RBAC</span>
+</div>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-low text-on-surface">
+<span class="material-symbols-outlined text-[22px]">admin_panel_settings</span>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-2 mt-4 pt-3">
+<div class="bg-surface-container-low rounded-lg p-2 text-center">
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold block">34</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant">Requester</span>
+</div>
+<div class="bg-surface-container-low rounded-lg p-2 text-center">
+<span class="font-headline-sm text-headline-sm text-secondary font-bold block">11</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant">Approver</span>
+</div>
+<div class="bg-surface-container-low rounded-lg p-2 text-center">
+<span class="font-headline-sm text-headline-sm text-primary font-bold block">3</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant">Admin</span>
+</div>
+</div>
+</div>
+<!-- Card 3: Usuarios Activos -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm relative overflow-hidden flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Usuarios Activos</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">45</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-surface-container-high text-on-tertiary-container font-label-xs text-label-xs font-semibold">
+              94% tasa de actividad
+            </span>
+</div>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-low text-tertiary-container">
+<span class="material-symbols-outlined text-[22px] text-on-tertiary-container">check_circle</span>
+</div>
+</div>
+<div class="mt-4 pt-3 flex items-center justify-between text-on-surface-variant font-body-sm text-body-sm">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim"></span>
+<span>45 con acceso activo</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-outline-variant"></span>
+<span class="text-on-surface-variant">3 inactivos</span>
+</div>
+</div>
+<div class="w-full bg-surface-container-low h-1.5 rounded-full overflow-hidden mt-1.5 flex">
+<div class="bg-on-tertiary-container h-full w-[94%]"></div>
+<div class="bg-outline-variant h-full w-[6%]"></div>
+</div>
+</div>
+</div>
+<!-- Barra de Filtros y Búsqueda -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm space-y-space-md">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<!-- Campo de Búsqueda -->
+<div class="relative flex-1 max-w-xl">
+<span class="material-symbols-outlined absolute left-3 top-2.5 text-[20px] text-outline">search</span>
+<input class="w-full pl-10 pr-12 py-2 rounded-lg bg-surface-container-low text-body-md font-body-md text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest shadow-sm transition-all" id="user-search-input" placeholder="Buscar usuario por nombre, email o ID..." type="text"/>
+<kbd class="absolute right-3 top-2.5 px-1.5 py-0.5 rounded bg-surface-container-lowest font-label-xs text-label-xs text-on-surface-variant shadow-sm">⌘F</kbd>
+</div>
+<!-- Filtros desplegables y acciones -->
+<div class="flex flex-wrap items-center gap-space-sm">
+<!-- Filtro Rol -->
+<div class="flex items-center gap-1.5 bg-surface-container-low px-3 py-2 rounded-lg">
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase tracking-wider">Rol:</span>
+<select class="bg-transparent font-label-sm text-label-sm text-on-surface font-semibold focus:outline-none cursor-pointer" id="role-filter">
+<option value="todos">Todos</option>
+<option value="Admin">Admin</option>
+<option value="Approver">Approver</option>
+<option value="Requester">Requester</option>
+</select>
+</div>
+<!-- Filtro Departamento -->
+<div class="flex items-center gap-1.5 bg-surface-container-low px-3 py-2 rounded-lg">
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase tracking-wider">Depto:</span>
+<select class="bg-transparent font-label-sm text-label-sm text-on-surface font-semibold focus:outline-none cursor-pointer" id="dept-filter">
+<option value="todos">Todos</option>
+<option value="Tecnología">Tecnología e Infraestructura IT</option>
+<option value="Finanzas">Finanzas y Control</option>
+<option value="Marketing">Marketing Global</option>
+<option value="Operaciones">Operaciones</option>
+<option value="Recursos Humanos">Recursos Humanos</option>
+</select>
+</div>
+<!-- Filtro Estado -->
+<div class="flex items-center gap-1.5 bg-surface-container-low px-3 py-2 rounded-lg">
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase tracking-wider">Estado:</span>
+<select class="bg-transparent font-label-sm text-label-sm text-on-surface font-semibold focus:outline-none cursor-pointer" id="status-filter">
+<option value="todos">Todos</option>
+<option value="activo">Activo</option>
+<option value="inactivo">Inactivo</option>
+</select>
+</div>
+<!-- Limpiar Filtros -->
+<button class="flex items-center gap-1 px-3 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors font-label-sm text-label-sm" id="reset-filters">
+<span class="material-symbols-outlined text-[16px]">filter_alt_off</span>
+<span>Limpiar filtros</span>
+</button>
+</div>
+</div>
+<div class="flex items-center justify-between pt-2 text-on-surface-variant font-label-xs text-label-xs">
+<span id="users-count-label">Mostrando 8 de 48 usuarios</span>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim"></span>
+<span>Directorio sincronizado vía SCIM 2.0</span>
+</div>
+</div>
+</div>
+<!-- Tabla Principal de Usuarios -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low text-on-surface-variant font-label-xs text-label-xs uppercase tracking-wider">
+<th class="py-3.5 px-space-md font-semibold">ID</th>
+<th class="py-3.5 px-space-md font-semibold">Nombre</th>
+<th class="py-3.5 px-space-md font-semibold">Email</th>
+<th class="py-3.5 px-space-md font-semibold">Departamento</th>
+<th class="py-3.5 px-space-md font-semibold">Rol</th>
+<th class="py-3.5 px-space-md font-semibold">Activo</th>
+<th class="py-3.5 px-space-md font-semibold text-right">Acciones</th>
+</tr>
+</thead>
+<tbody class="divide-y-0 text-body-md font-body-md text-on-surface" id="users-table-body">
+<!-- Fila 1: Carlos Mendoza (Admin) -->
+<tr class="hover:bg-surface-container-low/60 transition-colors group user-row" data-dept="Operaciones" data-role="Admin" data-status="activo">
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="font-numeric-data font-semibold text-label-xs text-on-surface-variant bg-surface-container px-2 py-1 rounded">USR-001</span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="flex items-center gap-3">
+<img class="w-9 h-9 rounded-full object-cover shadow-sm ring-0" data-alt="Professional modern executive portrait of a Hispanic man with glasses in business casual navy blue shirt against a minimalist clean office background, high contrast, warm lighting, corporate headshot." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBoqOLeu2t4XLMhMEhjIZK5I0mYygpVUNuDFL65Fgl-jeYvOINO5oFq9lDxyJTgpDDCRgNCoXoHW9MZjBx7GcmJ_U5qr0pYeYkhnP9zCQGDw5b-ehn8UcXMk3vlat2jYcI7asCP0hXTgGLEir5Gd-dqdV9MWjUxdi93S6YkoscB7uu-VQHQGehP6QMcf5pFjfQryGDJ454pL1Ok78dXxj3mHQMV4JBz1Shu4a7n7ZQ"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold text-on-surface group-hover:text-secondary transition-colors">Carlos Mendoza</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant">Director Ops</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap font-numeric-data text-on-surface-variant text-body-sm">
+              carlos.mendoza@acmecorp.com
+            </td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 text-on-surface font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-outline">precision_manufacturing</span>
+                Operaciones
+              </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-primary-container text-on-secondary-container font-label-xs text-label-xs font-semibold">
+                Admin
+              </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container text-on-tertiary-container font-label-xs text-label-xs font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim"></span>
+                Activo
+              </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" title="Editar usuario">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:bg-error-container hover:text-error transition-colors" title="Suspender usuario">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Fila 2: Elena Torres (Approver) -->
+<tr class="hover:bg-surface-container-low/60 transition-colors group user-row" data-dept="Finanzas" data-role="Approver" data-status="activo">
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="font-numeric-data font-semibold text-label-xs text-on-surface-variant bg-surface-container px-2 py-1 rounded">USR-002</span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-secondary-fixed text-on-secondary-fixed flex items-center justify-center font-label-md text-label-md font-bold shadow-sm">
+                  ET
+                </div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold text-on-surface group-hover:text-secondary transition-colors">Elena Torres</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant">CFO &amp; Contralora</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap font-numeric-data text-on-surface-variant text-body-sm">
+              elena.torres@acmecorp.com
+            </td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 text-on-surface font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-outline">account_balance</span>
+                Finanzas y Control
+              </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-xs text-label-xs font-semibold">
+                Approver
+              </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container text-on-tertiary-container font-label-xs text-label-xs font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim"></span>
+                Activo
+              </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" title="Editar usuario">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:bg-error-container hover:text-error transition-colors" title="Suspender usuario">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Fila 3: Marcos Rivas (Requester) -->
+<tr class="hover:bg-surface-container-low/60 transition-colors group user-row" data-dept="Tecnología" data-role="Requester" data-status="activo">
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="font-numeric-data font-semibold text-label-xs text-on-surface-variant bg-surface-container px-2 py-1 rounded">USR-003</span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="flex items-center gap-3">
+<img class="w-9 h-9 rounded-full object-cover shadow-sm ring-0" data-alt="Editorial close up portrait of an engineer professional with confident smile, soft daylight in a modern high tech startup software studio, subtle blue background tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAutVpX6B451T6YVJUwTtMzYv-wPklN6SG-9Pfykly3FaXBUBAphXr5vxnzOyXSjbNbVpKaPj_tvaQF4wO0O88KIx7cJR5AIT36dBdyiREzJej5GChn9oXJG3nedsV8L-eV1it3BT5gvWrpzvQGVxM3laP1CNHVKT1nslEZ9De_BCWFdUc0VMbaHE2R39MMfjflycNQC2eboFgj-UwaxRKIu6NpmjGTXwp81ujSLHA"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold text-on-surface group-hover:text-secondary transition-colors">Marcos Rivas</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant">Líder DevOps</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap font-numeric-data text-on-surface-variant text-body-sm">
+              marcos.rivas@acmecorp.com
+            </td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 text-on-surface font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-outline">terminal</span>
+                Tecnología e Infraestructura IT
+              </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-surface-container text-on-surface font-label-xs text-label-xs font-semibold">
+                Requester
+              </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container text-on-tertiary-container font-label-xs text-label-xs font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim"></span>
+                Activo
+              </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" title="Editar usuario">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:bg-error-container hover:text-error transition-colors" title="Suspender usuario">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Fila 4: Sofía Alarcón (Approver) -->
+<tr class="hover:bg-surface-container-low/60 transition-colors group user-row" data-dept="Marketing" data-role="Approver" data-status="activo">
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="font-numeric-data font-semibold text-label-xs text-on-surface-variant bg-surface-container px-2 py-1 rounded">USR-004</span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center font-label-md text-label-md font-bold shadow-sm">
+                  SA
+                </div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold text-on-surface group-hover:text-secondary transition-colors">Sofía Alarcón</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant">VP Mercadeo</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap font-numeric-data text-on-surface-variant text-body-sm">
+              sofia.alarcon@acmecorp.com
+            </td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 text-on-surface font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-outline">campaign</span>
+                Marketing Global
+              </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-xs text-label-xs font-semibold">
+                Approver
+              </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container text-on-tertiary-container font-label-xs text-label-xs font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim"></span>
+                Activo
+              </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" title="Editar usuario">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:bg-error-container hover:text-error transition-colors" title="Suspender usuario">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Fila 5: Javier Morales (Requester) -->
+<tr class="hover:bg-surface-container-low/60 transition-colors group user-row" data-dept="Operaciones" data-role="Requester" data-status="activo">
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="font-numeric-data font-semibold text-label-xs text-on-surface-variant bg-surface-container px-2 py-1 rounded">USR-005</span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-surface-container-high text-on-surface flex items-center justify-center font-label-md text-label-md font-bold shadow-sm">
+                  JM
+                </div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold text-on-surface group-hover:text-secondary transition-colors">Javier Morales</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant">Supervisor Planta</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap font-numeric-data text-on-surface-variant text-body-sm">
+              javier.morales@acmecorp.com
+            </td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 text-on-surface font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-outline">precision_manufacturing</span>
+                Operaciones
+              </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-surface-container text-on-surface font-label-xs text-label-xs font-semibold">
+                Requester
+              </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container text-on-tertiary-container font-label-xs text-label-xs font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim"></span>
+                Activo
+              </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" title="Editar usuario">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:bg-error-container hover:text-error transition-colors" title="Suspender usuario">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Fila 6: Patricia Gómez (Admin) -->
+<tr class="hover:bg-surface-container-low/60 transition-colors group user-row" data-dept="Tecnología" data-role="Admin" data-status="activo">
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="font-numeric-data font-semibold text-label-xs text-on-surface-variant bg-surface-container px-2 py-1 rounded">USR-006</span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="flex items-center gap-3">
+<img class="w-9 h-9 rounded-full object-cover shadow-sm ring-0" data-alt="Modern corporate portrait of an IT security specialist woman with confident smile, soft ambient corporate background in crisp sharp lighting, wearing grey blazer." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2N9Dc8N_KZmZRKOX-WxbI2QAJXdZxwH0XUBq69Y0-JdGKDODiLRjJXtmPUu5XWqjbSUW66PcPe3T6GAXnSnKztcla_72E9L4G6-pb8smtYmXwi5BbSZWB0i36czqEuQ4Q9gPbY2JT7gbUN2cjPWgvoU8voMSRQT4FI2vWC8Z5WbhyeeV7wFyZkrxXx0s1fYIeQYg-zMiC7p9TFhr1GD9U_H_eEU3Iikr4dgxScqw"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold text-on-surface group-hover:text-secondary transition-colors">Patricia Gómez</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant">SecOps &amp; Compliance</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap font-numeric-data text-on-surface-variant text-body-sm">
+              patricia.gomez@acmecorp.com
+            </td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 text-on-surface font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-outline">terminal</span>
+                Tecnología e Infraestructura IT
+              </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-primary-container text-on-secondary-container font-label-xs text-label-xs font-semibold">
+                Admin
+              </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container text-on-tertiary-container font-label-xs text-label-xs font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim"></span>
+                Activo
+              </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" title="Editar usuario">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:bg-error-container hover:text-error transition-colors" title="Suspender usuario">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Fila 7: Rodrigo Fuentes (Requester) - Inactivo -->
+<tr class="hover:bg-surface-container-low/60 transition-colors group user-row opacity-75" data-dept="Finanzas" data-role="Requester" data-status="inactivo">
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="font-numeric-data font-semibold text-label-xs text-on-surface-variant bg-surface-container px-2 py-1 rounded">USR-007</span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-label-md text-label-md font-bold shadow-sm">
+                  RF
+                </div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold text-on-surface group-hover:text-secondary transition-colors">Rodrigo Fuentes</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant">Analista Contable</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap font-numeric-data text-on-surface-variant text-body-sm">
+              rodrigo.fuentes@acmecorp.com
+            </td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 text-on-surface font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-outline">account_balance</span>
+                Finanzas y Control
+              </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-surface-container text-on-surface font-label-xs text-label-xs font-semibold">
+                Requester
+              </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-xs text-label-xs font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+                Inactivo
+              </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" title="Reactivar usuario">
+<span class="material-symbols-outlined text-[18px]">restore</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:bg-error-container hover:text-error transition-colors" title="Eliminar cuenta">
+<span class="material-symbols-outlined text-[18px]">delete_forever</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Fila 8: Lucía Valenzuela (Approver) -->
+<tr class="hover:bg-surface-container-low/60 transition-colors group user-row" data-dept="Recursos Humanos" data-role="Approver" data-status="activo">
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="font-numeric-data font-semibold text-label-xs text-on-surface-variant bg-surface-container px-2 py-1 rounded">USR-008</span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-secondary-fixed text-on-secondary-fixed flex items-center justify-center font-label-md text-label-md font-bold shadow-sm">
+                  LV
+                </div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md font-semibold text-on-surface group-hover:text-secondary transition-colors">Lucía Valenzuela</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant">Directora Personas</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap font-numeric-data text-on-surface-variant text-body-sm">
+              lucia.valenzuela@acmecorp.com
+            </td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 text-on-surface font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-outline">badge</span>
+                Recursos Humanos
+              </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-xs text-label-xs font-semibold">
+                Approver
+              </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-surface-container text-on-tertiary-container font-label-xs text-label-xs font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed-dim"></span>
+                Activo
+              </span>
+</td>
+<td class="py-3.5 px-space-md whitespace-nowrap text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" title="Editar usuario">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:bg-error-container hover:text-error transition-colors" title="Suspender usuario">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+<button class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Paginación y Selector de Filas -->
+<div class="p-space-md bg-surface-container-lowest flex flex-col sm:flex-row items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-md text-on-surface-variant font-label-sm text-label-sm">
+<span>Mostrando 1 a 8 de 48 usuarios</span>
+<div class="flex items-center gap-1 bg-surface-container-low px-2 py-1 rounded">
+<span>Filas por pág:</span>
+<select class="bg-transparent font-semibold text-on-surface focus:outline-none cursor-pointer">
+<option>10</option>
+<option>20</option>
+<option>50</option>
+</select>
+</div>
+</div>
+<div class="flex items-center gap-1">
+<button class="px-2.5 py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors font-label-sm text-label-sm flex items-center gap-1 disabled:opacity-40" disabled="">
+<span class="material-symbols-outlined text-[16px]">chevron_left</span>
+<span>Anterior</span>
+</button>
+<button class="w-8 h-8 rounded-lg bg-primary text-on-primary font-label-sm text-label-sm font-semibold shadow-sm">
+          1
+        </button>
+<button class="w-8 h-8 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors font-label-sm text-label-sm">
+          2
+        </button>
+<button class="w-8 h-8 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors font-label-sm text-label-sm">
+          3
+        </button>
+<span class="px-1 text-on-surface-variant font-label-xs text-label-xs">...</span>
+<button class="w-8 h-8 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors font-label-sm text-label-sm">
+          6
+        </button>
+<button class="px-2.5 py-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors font-label-sm text-label-sm flex items-center gap-1">
+<span>Siguiente</span>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Tarjeta Informativa de Sincronización SSO / Active Directory -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md">
+<div class="flex items-start gap-3">
+<div class="p-2.5 rounded-lg bg-surface-container-low text-secondary shrink-0">
+<span class="material-symbols-outlined text-[24px]">cloud_sync</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold">Sincronización de Directorio Activo (Azure AD &amp; Okta SCIM)</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-surface-container text-on-tertiary-container font-label-xs text-label-xs font-semibold">
+            Activo
+          </span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">
+          El aprovisionamiento automático de usuarios (Just-in-Time y SCIM) está sincronizando altas, bajas y departamentos en tiempo real. Última sincronización hace 10 minutos.
+        </p>
+</div>
+</div>
+<div class="flex items-center gap-space-sm shrink-0 self-end md:self-auto">
+<button class="px-3 py-1.5 rounded-lg bg-surface-container-low text-on-surface hover:bg-surface-container transition-colors font-label-sm text-label-sm flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">sync</span>
+<span>Forzar sincronización</span>
+</button>
+<button class="px-3 py-1.5 rounded-lg text-secondary hover:bg-surface-container-low transition-colors font-label-sm text-label-sm flex items-center gap-1">
+<span>Ajustes SSO</span>
+<span class="material-symbols-outlined text-[16px]">open_in_new</span>
+</button>
+</div>
+</div>
+<!-- Micro-interacción: Filtrado Dinámico en Tiempo Real -->
+<script>
+    (function() {
+      const searchInput = document.getElementById('user-search-input');
+      const roleFilter = document.getElementById('role-filter');
+      const deptFilter = document.getElementById('dept-filter');
+      const statusFilter = document.getElementById('status-filter');
+      const resetBtn = document.getElementById('reset-filters');
+      const countLabel = document.getElementById('users-count-label');
+      const rows = document.querySelectorAll('.user-row');
+
+      function filterTable() {
+        const query = searchInput.value.toLowerCase().trim();
+        const role = roleFilter.value;
+        const dept = deptFilter.value;
+        const status = statusFilter.value;
+
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+          const text = row.textContent.toLowerCase();
+          const rowRole = row.getAttribute('data-role');
+          const rowDept = row.getAttribute('data-dept');
+          const rowStatus = row.getAttribute('data-status');
+
+          const matchesQuery = !query || text.includes(query);
+          const matchesRole = role === 'todos' || rowRole === role;
+          const matchesDept = dept === 'todos' || rowDept.includes(dept);
+          const matchesStatus = status === 'todos' || rowStatus === status;
+
+          if (matchesQuery && matchesRole && matchesDept && matchesStatus) {
+            row.style.display = '';
+            visibleCount++;
+          } else {
+            row.style.display = 'none';
+          }
+        });
+
+        countLabel.textContent = `Mostrando ${visibleCount} de 48 usuarios`;
+      }
+
+      searchInput.addEventListener('input', filterTable);
+      roleFilter.addEventListener('change', filterTable);
+      deptFilter.addEventListener('change', filterTable);
+      statusFilter.addEventListener('change', filterTable);
+
+      resetBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        roleFilter.value = 'todos';
+        deptFilter.value = 'todos';
+        statusFilter.value = 'todos';
+        filterTable();
+      });
+    })();
+  </script>
+</div></main></div>
+</body></html>
