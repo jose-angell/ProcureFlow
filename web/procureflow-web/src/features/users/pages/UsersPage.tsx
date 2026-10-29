@@ -11,6 +11,7 @@ import { getDepartments } from '@/features/departments/api/departments'
 import type { Department } from '@/features/departments/types'
 import { getUsers } from '../api/users'
 import UserStatsCards from '../components/UserStatsCards'
+import UsersTable from '../components/UsersTable'
 import { getUserErrorMessage } from '../userErrors'
 import type { User } from '../types'
 
@@ -21,11 +22,15 @@ function sortByName(users: User[]): User[] {
   return [...users].sort((a, b) => a.fullName.localeCompare(b.fullName, 'es'))
 }
 
+function sortDepartments(departments: Department[]): Department[] {
+  return [...departments].sort((a, b) => a.name.localeCompare(b.name, 'es'))
+}
+
 function UsersContent() {
   const [reloadKey] = useState(0)
   const [state, setState] = useState<UsersState | null>(null)
   // Un fallo al cargar departamentos no bloquea la lista: solo limita filtro y modal.
-  const [, setDepartmentsState] = useState<DepartmentsState | null>(null)
+  const [departmentsState, setDepartmentsState] = useState<DepartmentsState | null>(null)
 
   // Al recargar se conserva la lista anterior hasta que llega la nueva.
   useEffect(() => {
@@ -41,7 +46,7 @@ function UsersContent() {
 
     getDepartments()
       .then((departments) => {
-        if (!cancelled) setDepartmentsState({ departments })
+        if (!cancelled) setDepartmentsState({ departments: sortDepartments(departments) })
       })
       .catch((error: unknown) => {
         if (!cancelled) setDepartmentsState({ error })
@@ -54,6 +59,8 @@ function UsersContent() {
 
   const users = state && 'users' in state ? state.users : null
   const error = state && 'error' in state ? state.error : null
+  const departments =
+    departmentsState && 'departments' in departmentsState ? departmentsState.departments : []
 
   return (
     <section className="flex flex-col gap-6">
@@ -108,9 +115,7 @@ function UsersContent() {
       ) : (
         <>
           <UserStatsCards users={users} />
-          {users.length === 0 && (
-            <p className="text-sm text-muted-foreground">No hay usuarios registrados.</p>
-          )}
+          <UsersTable users={users} departments={departments} />
         </>
       )}
     </section>
