@@ -23,6 +23,7 @@ import {
 import type { UserRole } from '@/features/auth/types'
 import type { Department } from '@/features/departments/types'
 import { cn } from '@/lib/utils'
+import DeleteUserButton from './DeleteUserButton'
 import { USER_ROLE_INFO, USER_ROLES_ORDER } from '../userRoles'
 import type { User, UserRoleFilter, UserStatusFilter } from '../types'
 
@@ -74,9 +75,19 @@ interface UsersTableProps {
   users: User[]
   /** Todos los departamentos; vacío si no se pudieron cargar. */
   departments: Department[]
+  /** Usuario de la sesión: su fila no tiene botón Eliminar. */
+  currentUserId: string | undefined
+  onDeleted: (fullName: string) => void
+  onDeleteError: (error: unknown) => void
 }
 
-function UsersTable({ users, departments }: UsersTableProps) {
+function UsersTable({
+  users,
+  departments,
+  currentUserId,
+  onDeleted,
+  onDeleteError,
+}: UsersTableProps) {
   const [search, setSearch] = useState('')
   const [role, setRole] = useState<UserRoleFilter>('all')
   const [departmentId, setDepartmentId] = useState('all')
@@ -313,6 +324,9 @@ function UsersTable({ users, departments }: UsersTableProps) {
                     >
                       <Pencil aria-hidden="true" />
                     </Button>
+                    {user.id !== currentUserId && (
+                      <DeleteUserButton user={user} onDeleted={onDeleted} onError={onDeleteError} />
+                    )}
                   </div>
                 </TableCell>
               </TableRow>

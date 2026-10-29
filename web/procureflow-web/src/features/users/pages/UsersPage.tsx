@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { CircleAlert, Plus } from 'lucide-react'
+import { CircleAlert, CircleCheck, Plus } from 'lucide-react'
 import { Link, Navigate } from 'react-router'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -12,10 +12,15 @@ import type { Department } from '@/features/departments/types'
 import { getUsers } from '../api/users'
 import UserStatsCards from '../components/UserStatsCards'
 import UsersTable from '../components/UsersTable'
-import { getUserErrorMessage } from '../userErrors'
+import {
+  getUserDeletedMessage,
+  getUserErrorMessage,
+  type UserOperation,
+} from '../userErrors'
 import type { User } from '../types'
 
 type UsersState = { users: User[] } | { error: unknown }
+type ActionResult = { success: string } | { error: unknown; operation: UserOperation }
 type DepartmentsState = { departments: Department[] } | { error: unknown }
 
 function sortByName(users: User[]): User[] {
@@ -27,8 +32,9 @@ function sortDepartments(departments: Department[]): Department[] {
 }
 
 function UsersContent() {
-  const [reloadKey] = useState(0)
+  const [reloadKey, setReloadKey] = useState(0)
   const [state, setState] = useState<UsersState | null>(null)
+  const [actionResult, setActionResult] = useState<ActionResult | null>(null)
   // Un fallo al cargar departamentos no bloquea la lista: solo limita filtro y modal.
   const [departmentsState, setDepartmentsState] = useState<DepartmentsState | null>(null)
 
@@ -62,6 +68,17 @@ function UsersContent() {
   const departments =
     departmentsState && 'departments' in departmentsState ? departmentsState.departments : []
 
+  function handleDeleted(fullName: string) {
+    setActionResult({ success: getUserDeletedMessage(fullName) })
+    setReloadKey((key) => key + 1)
+  }
+
+  function handleDeleteError(error: unknown) {
+    setActionResult({ error, operation: 'delete' })
+    // El estado pudo cambiar (p. ej. otro Admin lo eliminó): se vuelve a cargar.
+    setReloadKey((key) => key + 1)
+  }
+
   return (
     <section className="flex flex-col gap-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -87,6 +104,27 @@ function UsersContent() {
           Agregar usuario
         </Button>
       </div>
+
+      {actionResult && (
+        <Alert variant={'error' in actionResult ? 'destructive' : 'default'}>
+          {'error' in actionResult ? (
+            <CircleAlert aria-hidden="true" />
+          ) : (
+            <CircleCheck aria-hidden="true" />
+          )}
+          <AlertDescription>
+            {'error' in actionResult
+              ? getUserErrorMessage(actionResult.error, actionResult.operation)
+              : actionResult.success}
+            {'error' in actionResult && isSessionError(actionResult.error) && (
+              <>
+                {' '}
+                <Link to="/login">Iniciar sesión</Link>
+              </>
+            )}
+          </AlertDescription>
+        </Alert>
+      )}
 
       {error !== null ? (
         <Alert variant="destructive">
@@ -115,7 +153,13 @@ function UsersContent() {
       ) : (
         <>
           <UserStatsCards users={users} />
-          <UsersTable users={users} departments={departments} />
+          <UsersTable
+            users={users}
+            departments={departments}
+            currentUserId={getSession()?.user.userId}
+            onDeleted={handleDeleted}
+            onDeleteError={handleDeleteError}
+          />
         </>
       )}
     </section>
