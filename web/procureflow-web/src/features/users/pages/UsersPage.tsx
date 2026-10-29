@@ -10,6 +10,7 @@ import { isSessionError } from '@/features/dashboard/dashboardErrors'
 import { getDepartments } from '@/features/departments/api/departments'
 import type { Department } from '@/features/departments/types'
 import { getUsers } from '../api/users'
+import UserStatsCards from '../components/UserStatsCards'
 import { getUserErrorMessage } from '../userErrors'
 import type { User } from '../types'
 
@@ -95,14 +96,23 @@ function UsersContent() {
         </Alert>
       ) : users === null ? (
         <div className="flex flex-col gap-2" aria-busy="true">
-          <Skeleton className="h-24 w-full" />
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <Skeleton className="h-28 w-full" />
+            <Skeleton className="h-28 w-full" />
+            <Skeleton className="h-28 w-full" />
+          </div>
           <Skeleton className="h-10 w-full" />
           <Skeleton className="h-10 w-full" />
           <Skeleton className="h-10 w-full" />
         </div>
-      ) : users.length === 0 ? (
-        <p className="text-sm text-muted-foreground">No hay usuarios registrados.</p>
-      ) : null}
+      ) : (
+        <>
+          <UserStatsCards users={users} />
+          {users.length === 0 && (
+            <p className="text-sm text-muted-foreground">No hay usuarios registrados.</p>
+          )}
+        </>
+      )}
     </section>
   )
 }
