@@ -1,6 +1,6 @@
 # SPEC 08 — Gestión de usuarios
 
-> **Estado:** aprobado
+> **Estado:** implementado
 > **Depende de:** SPEC 03, SPEC 06, SPEC 07
 > **Fecha:** 2026-10-28
 > **Objetivo:** Crear la página `/users`, solo para Admin, con métricas, listado filtrable de usuarios y las acciones crear, editar (datos, rol, departamento, estado y contraseña opcional) y eliminar, según `design/users.html` y `design/userModal.html`.
@@ -241,38 +241,38 @@ Estados de la lista:
 
 ## Criterios de aceptación
 
-- [ ] `dotnet build`, `dotnet test`, `npm run lint` y `npm run build` pasan.
-- [ ] `PUT /api/users/{id}` sin `password` (o vacío) responde 204 y el usuario sigue entrando con su contraseña anterior.
-- [ ] `PUT /api/users/{id}` con `password` cambia la contraseña.
-- [ ] Como Admin, "Usuarios" del menú está habilitado y lleva a `/users`.
-- [ ] Como Requester o Approver, abrir `/users` por URL redirige a `/dashboard`.
-- [ ] Las migas muestran "Inicio > Usuarios".
-- [ ] La cabecera muestra "Gestión de Usuarios" y "N usuarios registrados".
-- [ ] Las tarjetas muestran total, conteo por rol y activos/inactivos correctos para la lista cargada.
-- [ ] La tabla lista los usuarios de `GET /api/users?pageSize=100` ordenados por nombre.
-- [ ] Usuarios inactivos muestran "Inactivo" y fila atenuada.
-- [ ] Escribir "gomez" encuentra "Gómez"; escribir parte de un email lo encuentra.
-- [ ] Filtros Rol, Depto y Estado se combinan, y el contador se actualiza.
-- [ ] "Limpiar filtros" vuelve búsqueda y los tres filtros a su valor inicial.
-- [ ] Con más de 10 usuarios hay 2 páginas; con 25 filas por página hay 1 (si hay ≤ 25).
-- [ ] "Agregar usuario" abre "Crear nuevo usuario" con Contraseña y sin Estado.
-- [ ] El selector Departamento del modal solo lista departamentos activos.
-- [ ] Crear envía `POST /api/users` con `Authorization: Bearer <token>` y `role` numérico; el usuario aparece Activo.
-- [ ] Crear con un correo existente muestra "Ya existe un usuario con ese correo." en el modal abierto.
-- [ ] Contraseña de menos de 8 caracteres o correo inválido muestran su mensaje y no envían petición.
-- [ ] Editar abre el modal con los valores actuales y "Nueva contraseña" vacía.
-- [ ] Editar solo el estado envía un `PATCH` y ningún `PUT`. Editar solo el nombre envía `PUT` con `password: null` y ningún `PATCH`.
-- [ ] Cambiar el rol muestra la descripción del rol nuevo en el recuadro.
-- [ ] En la fila del Admin de la sesión no hay papelera; en su modal Rol y Estado están deshabilitados.
-- [ ] La papelera abre "¿Eliminar al usuario {fullName}?". "Cancelar" o Esc cierran sin peticiones.
-- [ ] Eliminar un usuario sin solicitudes envía `DELETE`, muestra "Usuario {fullName} eliminado." y lo quita.
-- [ ] Eliminar un usuario con solicitudes muestra "No se puede eliminar un usuario con solicitudes o decisiones de aprobación." sobre la tabla.
-- [ ] Con la API apagada, la página muestra "No se pudo conectar con el servidor. Intenta de nuevo.".
-- [ ] Mientras guarda o elimina, botones deshabilitados y el diálogo no se cierra con Esc.
-- [ ] Modal y `AlertDialog` usables solo con teclado.
-- [ ] Sin scroll horizontal de página a 375px (la tabla puede desplazarse en su contenedor).
-- [ ] No hay cargo, foto, ID corto, licencias, "Exportar listado", `more_vert`, checkboxes ni tarjeta SCIM.
-- [ ] No hay dependencias npm nuevas.
+- [x] `dotnet build`, `dotnet test`, `npm run lint` y `npm run build` pasan.
+- [x] `PUT /api/users/{id}` sin `password` (o vacío) responde 204 y el usuario sigue entrando con su contraseña anterior.
+- [x] `PUT /api/users/{id}` con `password` cambia la contraseña.
+- [x] Como Admin, "Usuarios" del menú está habilitado y lleva a `/users`.
+- [x] Como Requester o Approver, abrir `/users` por URL redirige a `/dashboard`.
+- [x] Las migas muestran "Inicio > Usuarios".
+- [x] La cabecera muestra "Gestión de Usuarios" y "N usuarios registrados".
+- [x] Las tarjetas muestran total, conteo por rol y activos/inactivos correctos para la lista cargada.
+- [x] La tabla lista los usuarios de `GET /api/users?pageSize=100` ordenados por nombre.
+- [x] Usuarios inactivos muestran "Inactivo" y fila atenuada.
+- [x] Escribir "gomez" encuentra "Gómez"; escribir parte de un email lo encuentra.
+- [x] Filtros Rol, Depto y Estado se combinan, y el contador se actualiza.
+- [x] "Limpiar filtros" vuelve búsqueda y los tres filtros a su valor inicial.
+- [x] Con más de 10 usuarios hay 2 páginas; con 25 filas por página hay 1 (si hay ≤ 25).
+- [x] "Agregar usuario" abre "Crear nuevo usuario" con Contraseña y sin Estado.
+- [x] El selector Departamento del modal solo lista departamentos activos.
+- [x] Crear envía `POST /api/users` con `Authorization: Bearer <token>` y `role` numérico; el usuario aparece Activo.
+- [x] Crear con un correo existente muestra "Ya existe un usuario con ese correo." en el modal abierto.
+- [x] Contraseña de menos de 8 caracteres o correo inválido muestran su mensaje y no envían petición.
+- [x] Editar abre el modal con los valores actuales y "Nueva contraseña" vacía.
+- [x] Editar solo el estado envía un `PATCH` y ningún `PUT`. Editar solo el nombre envía `PUT` con `password: null` y ningún `PATCH`.
+- [x] Cambiar el rol muestra la descripción del rol nuevo en el recuadro.
+- [x] En la fila del Admin de la sesión no hay papelera; en su modal Rol y Estado están deshabilitados.
+- [x] La papelera abre "¿Eliminar al usuario {fullName}?". "Cancelar" o Esc cierran sin peticiones.
+- [x] Eliminar un usuario sin solicitudes envía `DELETE`, muestra "Usuario {fullName} eliminado." y lo quita.
+- [x] Eliminar un usuario con solicitudes muestra "No se puede eliminar un usuario con solicitudes o decisiones de aprobación." sobre la tabla.
+- [x] Con la API apagada, la página muestra "No se pudo conectar con el servidor. Intenta de nuevo.".
+- [x] Mientras guarda o elimina, botones deshabilitados y el diálogo no se cierra con Esc.
+- [x] Modal y `AlertDialog` usables solo con teclado.
+- [x] Sin scroll horizontal de página a 375px (la tabla puede desplazarse en su contenedor).
+- [x] No hay cargo, foto, ID corto, licencias, "Exportar listado", `more_vert`, checkboxes ni tarjeta SCIM.
+- [x] No hay dependencias npm nuevas.
 
 ## Decisiones
 
