@@ -9,6 +9,7 @@ const PAGE_TITLES: Record<string, string> = {
   '/dashboard': 'Dashboard',
   '/purchases': 'Mis solicitudes',
   '/departments': 'Departamentos',
+  '/users': 'Usuarios',
 }
 
 const AUDIENCE_BY_ROLE: Record<UserRole, NavAudience> = {

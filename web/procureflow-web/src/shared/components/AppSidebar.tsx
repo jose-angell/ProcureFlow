@@ -28,7 +28,7 @@ const navItems: NavItem[] = [
   { label: 'Mis solicitudes', icon: ReceiptText, to: '/purchases' },
   { label: 'Aprobaciones', icon: BadgeCheck, visibleTo: ['approver', 'admin'] },
   { label: 'Departamentos', icon: Building2, to: '/departments', visibleTo: ['admin'] },
-  { label: 'Usuarios', icon: Users, visibleTo: ['admin'] },
+  { label: 'Usuarios', icon: Users, to: '/users', visibleTo: ['admin'] },
 ]
 
 const footerNavItems: NavItem[] = [

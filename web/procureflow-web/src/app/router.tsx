@@ -6,6 +6,7 @@ import type { LoginLocationState } from '@/features/auth/types'
 import DashboardPage from '@/features/dashboard/pages/DashboardPage'
 import DepartmentsPage from '@/features/departments/pages/DepartmentsPage'
 import PurchaseRequestsPage from '@/features/purchase-requests/pages/PurchaseRequestsPage'
+import UsersPage from '@/features/users/pages/UsersPage'
 import { setUnauthorizedHandler } from '@/shared/api/httpClient'
 import NotFoundPage from '@/shared/components/NotFoundPage'
 import AppLayout from '@/shared/layouts/AppLayout'
@@ -33,6 +34,7 @@ export const router = createBrowserRouter([
           { path: 'dashboard', element: <DashboardPage /> },
           { path: 'purchases', element: <PurchaseRequestsPage /> },
           { path: 'departments', element: <DepartmentsPage /> },
+          { path: 'users', element: <UsersPage /> },
         ],
       },
     ],
