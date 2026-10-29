@@ -52,7 +52,9 @@ namespace ProcureFlow.Application.Users
             var existDepartment = await _context.Departments.AnyAsync(d => d.Id == request.DepartmentId);
             if (!existDepartment) throw new NotFoundException("El departamento no esta en el sistema.");
 
-            var passwordHash = _passwordHashService.Hash(request.Password!);
+            var passwordHash = string.IsNullOrWhiteSpace(request.Password)
+                ? user.PasswordHash
+                : _passwordHashService.Hash(request.Password);
 
             user.Update(request.FullName!, request.Email!, passwordHash, request.Role!.Value, request.DepartmentId!.Value);
             await _context.SaveChangesAsync();

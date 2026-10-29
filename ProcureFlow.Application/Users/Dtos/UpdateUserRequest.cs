@@ -14,7 +14,6 @@ namespace ProcureFlow.Application.Users.Dtos
         [EmailAddress(ErrorMessage = "El formato del correo electrónico no es válido.")]
         public string? Email { get; set; }
 
-        [Required(ErrorMessage = "La contraseña es obligatorio.")]
         [StringLength(500, ErrorMessage = "La contraseña no puede tener mas de 500 caracteres")]
         public string? Password { get; set; }
 
