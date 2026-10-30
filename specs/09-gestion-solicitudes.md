@@ -1,6 +1,6 @@
 # SPEC 09 — Gestión de solicitudes de compra
 
-> **Estado:** borrador
+> **Estado:** aprobado
 > **Depende de:** SPEC 03, SPEC 04, SPEC 06
 > **Fecha:** 2026-10-29
 > **Objetivo:** Implementar la página `/purchases`, para Requester y Admin, con métricas, listado paginado y filtrable en la API, y un modal para crear y editar borradores con sus ítems, guardarlos o enviarlos a aprobación, según `design/request.html` y `design/requestModal.html`.
