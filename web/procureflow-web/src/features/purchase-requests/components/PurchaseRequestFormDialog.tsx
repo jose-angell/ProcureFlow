@@ -1,4 +1,4 @@
-import { useId, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { CircleAlert, Save, Send } from 'lucide-react'
 import { Link } from 'react-router'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -13,6 +13,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Textarea } from '@/components/ui/textarea'
 import { isSessionError } from '@/features/dashboard/dashboardErrors'
 import { cn } from '@/lib/utils'
@@ -20,6 +21,7 @@ import {
   addPurchaseRequestItem,
   createPurchaseRequest,
   deletePurchaseRequestItem,
+  getPurchaseRequest,
   submitPurchaseRequest,
   updatePurchaseRequest,
 } from '../api/purchaseRequests'
@@ -29,8 +31,12 @@ import {
   getPurchaseRequestErrorMessage,
   getPurchaseRequestSubmittedMessage,
 } from '../purchaseRequestErrors'
-import { PurchaseRequestPriority } from '../types'
-import type { PurchaseRequestBody, PurchaseRequestItemBody } from '../types'
+import { PurchaseRequestPriority, PurchaseRequestStatus } from '../types'
+import type {
+  PurchaseRequest,
+  PurchaseRequestBody,
+  PurchaseRequestItemBody,
+} from '../types'
 import PurchaseRequestItemsEditor, { type DraftItem } from './PurchaseRequestItemsEditor'
 
 const JUSTIFICATION_MIN_LENGTH = 20
@@ -57,6 +63,8 @@ interface FormState {
 type SaveMode = 'draft' | 'submit'
 
 interface PurchaseRequestFormDialogProps {
+  /** Solicitud a editar; `null` para crear una nueva. */
+  request: PurchaseRequest | null
   /** Se llama con el mensaje de éxito; el padre cierra el diálogo y recarga. */
   onSaved: (message: string) => void
   /** `hasFailed` indica que hubo un error: la lista pudo cambiar y conviene recargarla. */
@@ -67,14 +75,14 @@ interface PurchaseRequestFormDialogProps {
  * Modal de crear y editar. Se monta abierto y el padre lo desmonta al cerrarlo,
  * así cada apertura empieza con el formulario limpio.
  */
-function PurchaseRequestFormDialog({ onSaved, onClose }: PurchaseRequestFormDialogProps) {
+function PurchaseRequestFormDialog({ request, onSaved, onClose }: PurchaseRequestFormDialogProps) {
   const priorityName = useId()
   const justificationId = useId()
   const nextItemKey = useRef(0)
 
   const [form, setForm] = useState<FormState>({
-    requestId: null,
-    requestNumber: null,
+    requestId: request?.id ?? null,
+    requestNumber: request?.requestNumber ?? null,
     priority: PurchaseRequestPriority.Medium,
     justification: '',
     items: [],
@@ -87,8 +95,53 @@ function PurchaseRequestFormDialog({ onSaved, onClose }: PurchaseRequestFormDial
   const [showSubmitError, setShowSubmitError] = useState(false)
   const [failure, setFailure] = useState<unknown>(null)
   const [hasFailed, setHasFailed] = useState(false)
+  // Al editar, los datos llegan de `GET /api/purchases/{id}`; al crear no hay nada que cargar.
+  const [loadState, setLoadState] = useState<
+    { status: 'loading' } | { status: 'ready'; requestStatus: PurchaseRequestStatus | null } | { status: 'error'; error: unknown }
+  >(request ? { status: 'loading' } : { status: 'ready', requestStatus: null })
+
+  useEffect(() => {
+    if (!request) return
+
+    let cancelled = false
+
+    getPurchaseRequest(request.id)
+      .then((detail) => {
+        if (cancelled) return
+
+        setForm({
+          requestId: detail.id,
+          requestNumber: detail.requestNumber,
+          priority: detail.priority,
+          justification: detail.justification,
+          items: detail.items.map((item) => ({
+            key: `item-${item.id}`,
+            id: item.id,
+            description: item.description,
+            quantity: item.quantity,
+            unitPrice: item.unitPrice,
+          })),
+          removedItemIds: [],
+        })
+        setSavedHeader({ priority: detail.priority, justification: detail.justification.trim() })
+        setLoadState({ status: 'ready', requestStatus: detail.status })
+      })
+      .catch((error: unknown) => {
+        if (!cancelled) setLoadState({ status: 'error', error })
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [request])
 
   const isSaving = savingMode !== null
+  const isLoading = loadState.status === 'loading'
+  const isNotDraft =
+    loadState.status === 'ready' &&
+    loadState.requestStatus !== null &&
+    loadState.requestStatus !== PurchaseRequestStatus.Draft
+  const canSave = loadState.status === 'ready' && !isNotDraft
   const isEditing = form.requestId !== null
   const trimmedJustification = form.justification.trim()
   const justificationTooShort = trimmedJustification.length < JUSTIFICATION_MIN_LENGTH
@@ -114,7 +167,7 @@ function PurchaseRequestFormDialog({ onSaved, onClose }: PurchaseRequestFormDial
   }
 
   async function handleSave(mode: SaveMode) {
-    if (isSaving) return
+    if (isSaving || !canSave) return
 
     setShowErrors(true)
     if (justificationTooShort) return
@@ -232,75 +285,107 @@ function PurchaseRequestFormDialog({ onSaved, onClose }: PurchaseRequestFormDial
             </Alert>
           )}
 
-          <fieldset className="flex flex-col gap-1.5" disabled={isSaving}>
-            <legend className="mb-1.5 text-sm font-semibold">Prioridad de tramitación</legend>
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-              {PRIORITY_OPTIONS.map((option) => (
-                <label
-                  key={option.value}
-                  className={cn(
-                    'flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm transition-colors hover:bg-muted',
-                    'has-checked:border-primary has-checked:bg-muted has-checked:font-semibold',
-                    'has-focus-visible:ring-3 has-focus-visible:ring-ring/50',
-                    'has-disabled:cursor-not-allowed has-disabled:opacity-50',
-                  )}
-                >
-                  <input
-                    type="radio"
-                    name={priorityName}
-                    value={option.value}
-                    checked={form.priority === option.value}
-                    className="accent-primary"
-                    onChange={() => setForm((current) => ({ ...current, priority: option.value }))}
-                  />
-                  {option.label}
-                </label>
-              ))}
+          {loadState.status === 'error' && (
+            <Alert variant="destructive">
+              <CircleAlert aria-hidden="true" />
+              <AlertDescription>
+                {getPurchaseRequestErrorMessage(loadState.error, 'load')}
+                {isSessionError(loadState.error) && (
+                  <>
+                    {' '}
+                    <Link to="/login">Iniciar sesión</Link>
+                  </>
+                )}
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {isNotDraft && (
+            <Alert variant="destructive">
+              <CircleAlert aria-hidden="true" />
+              <AlertDescription>Solo se pueden editar solicitudes en borrador.</AlertDescription>
+            </Alert>
+          )}
+
+          {isLoading ? (
+            <div className="flex flex-col gap-3" aria-busy="true">
+              <Skeleton className="h-16 w-full" />
+              <Skeleton className="h-24 w-full" />
+              <Skeleton className="h-40 w-full" />
             </div>
-          </fieldset>
+          ) : loadState.status === 'error' ? null : (
+            <>
+              <fieldset className="flex flex-col gap-1.5" disabled={isSaving}>
+                <legend className="mb-1.5 text-sm font-semibold">Prioridad de tramitación</legend>
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                  {PRIORITY_OPTIONS.map((option) => (
+                    <label
+                      key={option.value}
+                      className={cn(
+                        'flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm transition-colors hover:bg-muted',
+                        'has-checked:border-primary has-checked:bg-muted has-checked:font-semibold',
+                        'has-focus-visible:ring-3 has-focus-visible:ring-ring/50',
+                        'has-disabled:cursor-not-allowed has-disabled:opacity-50',
+                      )}
+                    >
+                      <input
+                        type="radio"
+                        name={priorityName}
+                        value={option.value}
+                        checked={form.priority === option.value}
+                        className="accent-primary"
+                        onChange={() => setForm((current) => ({ ...current, priority: option.value }))}
+                      />
+                      {option.label}
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
 
-          <div className="flex flex-col gap-1.5">
-            <div className="flex items-center justify-between gap-2">
-              <Label htmlFor={justificationId} className="font-semibold">
-                Justificación del gasto o necesidad
-              </Label>
-              <span className="text-xs text-muted-foreground">
-                {form.justification.length}/{JUSTIFICATION_MAX_LENGTH}
-              </span>
-            </div>
-            <Textarea
-              id={justificationId}
-              value={form.justification}
-              maxLength={JUSTIFICATION_MAX_LENGTH}
-              rows={3}
-              placeholder="Describe el motivo de la adquisición, el proyecto o equipo destinatario y el beneficio esperado..."
-              disabled={isSaving}
-              aria-invalid={showErrors && justificationTooShort ? true : undefined}
-              aria-describedby={
-                showErrors && justificationTooShort ? `${justificationId}-error` : undefined
-              }
-              onChange={(event) =>
-                setForm((current) => ({ ...current, justification: event.target.value }))
-              }
-            />
-            {showErrors && justificationTooShort && (
-              <p id={`${justificationId}-error`} className="text-xs text-destructive">
-                La justificación debe tener al menos {JUSTIFICATION_MIN_LENGTH} caracteres.
-              </p>
-            )}
-          </div>
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center justify-between gap-2">
+                  <Label htmlFor={justificationId} className="font-semibold">
+                    Justificación del gasto o necesidad
+                  </Label>
+                  <span className="text-xs text-muted-foreground">
+                    {form.justification.length}/{JUSTIFICATION_MAX_LENGTH}
+                  </span>
+                </div>
+                <Textarea
+                  id={justificationId}
+                  value={form.justification}
+                  maxLength={JUSTIFICATION_MAX_LENGTH}
+                  rows={3}
+                  placeholder="Describe el motivo de la adquisición, el proyecto o equipo destinatario y el beneficio esperado..."
+                  disabled={isSaving}
+                  aria-invalid={showErrors && justificationTooShort ? true : undefined}
+                  aria-describedby={
+                    showErrors && justificationTooShort ? `${justificationId}-error` : undefined
+                  }
+                  onChange={(event) =>
+                    setForm((current) => ({ ...current, justification: event.target.value }))
+                  }
+                />
+                {showErrors && justificationTooShort && (
+                  <p id={`${justificationId}-error`} className="text-xs text-destructive">
+                    La justificación debe tener al menos {JUSTIFICATION_MIN_LENGTH} caracteres.
+                  </p>
+                )}
+              </div>
 
-          <PurchaseRequestItemsEditor
-            items={form.items}
-            disabled={isSaving}
-            onAdd={handleAddItem}
-            onRemove={handleRemoveItem}
-          />
+              <PurchaseRequestItemsEditor
+                items={form.items}
+                disabled={isSaving}
+                onAdd={handleAddItem}
+                onRemove={handleRemoveItem}
+              />
 
-          {showSubmitError && !canSubmit && (
-            <p role="alert" className="text-sm text-destructive">
-              Agrega al menos un ítem con importe mayor a cero para enviar.
-            </p>
+              {showSubmitError && !canSubmit && (
+                <p role="alert" className="text-sm text-destructive">
+                  Agrega al menos un ítem con importe mayor a cero para enviar.
+                </p>
+              )}
+            </>
           )}
         </div>
 
@@ -317,13 +402,17 @@ function PurchaseRequestFormDialog({ onSaved, onClose }: PurchaseRequestFormDial
             <Button
               type="button"
               variant="outline"
-              disabled={isSaving}
+              disabled={isSaving || !canSave}
               onClick={() => handleSave('draft')}
             >
               <Save aria-hidden="true" />
               {savingMode === 'draft' ? 'Guardando...' : 'Guardar como borrador'}
             </Button>
-            <Button type="button" disabled={isSaving} onClick={() => handleSave('submit')}>
+            <Button
+              type="button"
+              disabled={isSaving || !canSave}
+              onClick={() => handleSave('submit')}
+            >
               <Send aria-hidden="true" />
               {savingMode === 'submit' ? 'Enviando...' : 'Enviar solicitud para aprobación'}
             </Button>

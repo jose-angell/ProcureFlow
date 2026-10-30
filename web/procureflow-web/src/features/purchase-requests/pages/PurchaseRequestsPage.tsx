@@ -18,7 +18,7 @@ import {
   getPurchaseRequestErrorMessage,
   type PurchaseRequestOperation,
 } from '../purchaseRequestErrors'
-import type { PurchaseRequestSummary } from '../types'
+import type { PurchaseRequest, PurchaseRequestSummary } from '../types'
 
 type SummaryState = { summary: PurchaseRequestSummary } | { error: unknown }
 type ActionResult =
@@ -34,7 +34,8 @@ function getErrorMessage(error: unknown, operation: PurchaseRequestOperation | '
 function PurchaseRequestsContent({ isAdmin }: { isAdmin: boolean }) {
   const [actionResult, setActionResult] = useState<ActionResult | null>(null)
   const [reloadKey, setReloadKey] = useState(0)
-  const [isFormOpen, setIsFormOpen] = useState(false)
+  // `null` = modal cerrado; `{ request: null }` = crear; `{ request }` = editar.
+  const [formDialog, setFormDialog] = useState<{ request: PurchaseRequest | null } | null>(null)
   // Al recargar se conservan las tarjetas anteriores hasta que llegan las nuevas.
   const [summaryState, setSummaryState] = useState<SummaryState | null>(null)
 
@@ -60,12 +61,12 @@ function PurchaseRequestsContent({ isAdmin }: { isAdmin: boolean }) {
 
   function handleSaved(message: string) {
     setActionResult({ success: message })
-    setIsFormOpen(false)
+    setFormDialog(null)
     reload()
   }
 
   function handleFormClose(hasFailed: boolean) {
-    setIsFormOpen(false)
+    setFormDialog(null)
     // Un guardado a medias deja la solicitud creada o modificada: la lista está desactualizada.
     if (hasFailed) reload()
   }
@@ -94,7 +95,7 @@ function PurchaseRequestsContent({ isAdmin }: { isAdmin: boolean }) {
           </p>
         </div>
 
-        <Button type="button" onClick={() => setIsFormOpen(true)}>
+        <Button type="button" onClick={() => setFormDialog({ request: null })}>
           <Plus aria-hidden="true" />
           Nueva solicitud
         </Button>
@@ -130,13 +131,19 @@ function PurchaseRequestsContent({ isAdmin }: { isAdmin: boolean }) {
       <PurchaseRequestsTable
         isAdmin={isAdmin}
         reloadKey={reloadKey}
-        // Editar se conecta en el paso 8.
-        onEdit={() => undefined}
+        onEdit={(request) => setFormDialog({ request })}
         onCancelled={handleCancelled}
         onCancelError={handleCancelError}
       />
 
-      {isFormOpen && <PurchaseRequestFormDialog onSaved={handleSaved} onClose={handleFormClose} />}
+      {formDialog && (
+        <PurchaseRequestFormDialog
+          key={formDialog.request?.id ?? 'new'}
+          request={formDialog.request}
+          onSaved={handleSaved}
+          onClose={handleFormClose}
+        />
+      )}
     </section>
   )
 }
