@@ -25,7 +25,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { label: 'Dashboard', icon: LayoutGrid, to: '/dashboard' },
-  { label: 'Mis solicitudes', icon: ReceiptText, to: '/purchases' },
+  { label: 'Mis solicitudes', icon: ReceiptText, to: '/purchases', visibleTo: ['requester', 'admin'] },
   { label: 'Aprobaciones', icon: BadgeCheck, visibleTo: ['approver', 'admin'] },
   { label: 'Departamentos', icon: Building2, to: '/departments', visibleTo: ['admin'] },
   { label: 'Usuarios', icon: Users, to: '/users', visibleTo: ['admin'] },
