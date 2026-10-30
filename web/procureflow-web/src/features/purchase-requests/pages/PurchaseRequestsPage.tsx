@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CircleAlert, CircleCheck, Plus } from 'lucide-react'
 import { Link, Navigate } from 'react-router'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -7,11 +7,15 @@ import { getSession } from '@/features/auth/session'
 import { UserRole } from '@/features/auth/types'
 import { getCancelRequestErrorMessage } from '@/features/dashboard/cancelRequestErrors'
 import { isSessionError } from '@/features/dashboard/dashboardErrors'
+import { getPurchaseRequestSummary } from '../api/purchaseRequests'
+import PurchaseRequestStatsCards from '../components/PurchaseRequestStatsCards'
 import {
   getPurchaseRequestErrorMessage,
   type PurchaseRequestOperation,
 } from '../purchaseRequestErrors'
+import type { PurchaseRequestSummary } from '../types'
 
+type SummaryState = { summary: PurchaseRequestSummary } | { error: unknown }
 type ActionResult =
   | { success: string }
   | { error: unknown; operation: PurchaseRequestOperation | 'cancel' }
@@ -25,6 +29,23 @@ function getErrorMessage(error: unknown, operation: PurchaseRequestOperation | '
 function PurchaseRequestsContent() {
   // Lo asignan guardar, enviar y cancelar cuando se conecten (pasos siguientes).
   const [actionResult] = useState<ActionResult | null>(null)
+  const [summaryState, setSummaryState] = useState<SummaryState | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+
+    getPurchaseRequestSummary()
+      .then((summary) => {
+        if (!cancelled) setSummaryState({ summary })
+      })
+      .catch((error: unknown) => {
+        if (!cancelled) setSummaryState({ error })
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   return (
     <section className="flex flex-col gap-6">
@@ -65,6 +86,12 @@ function PurchaseRequestsContent() {
           </AlertDescription>
         </Alert>
       )}
+
+      <PurchaseRequestStatsCards
+        summary={summaryState && 'summary' in summaryState ? summaryState.summary : null}
+        isLoading={summaryState === null}
+        error={summaryState && 'error' in summaryState ? summaryState.error : null}
+      />
     </section>
   )
 }

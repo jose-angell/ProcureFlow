@@ -7,8 +7,9 @@ export interface KpiCardProps {
   icon: LucideIcon
   iconClassName: string
   note: string
-  badge: string
-  badgeClassName: string
+  /** Sin `badge` la tarjeta solo muestra la nota. */
+  badge?: string
+  badgeClassName?: string
 }
 
 function KpiCard({ label, value, icon: Icon, iconClassName, note, badge, badgeClassName }: KpiCardProps) {
@@ -27,9 +28,11 @@ function KpiCard({ label, value, icon: Icon, iconClassName, note, badge, badgeCl
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 border-t border-border pt-3">
         <span className="text-[11px] text-muted-foreground">{note}</span>
-        <span className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium ${badgeClassName}`}>
-          {badge}
-        </span>
+        {badge && (
+          <span className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium ${badgeClassName}`}>
+            {badge}
+          </span>
+        )}
       </div>
     </Card>
   )
