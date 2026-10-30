@@ -5,10 +5,14 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { getSession } from '@/features/auth/session'
 import { UserRole } from '@/features/auth/types'
-import { getCancelRequestErrorMessage } from '@/features/dashboard/cancelRequestErrors'
+import {
+  getCancelRequestErrorMessage,
+  getCancelRequestSuccessMessage,
+} from '@/features/dashboard/cancelRequestErrors'
 import { isSessionError } from '@/features/dashboard/dashboardErrors'
 import { getPurchaseRequestSummary } from '../api/purchaseRequests'
 import PurchaseRequestStatsCards from '../components/PurchaseRequestStatsCards'
+import PurchaseRequestsTable from '../components/PurchaseRequestsTable'
 import {
   getPurchaseRequestErrorMessage,
   type PurchaseRequestOperation,
@@ -26,9 +30,10 @@ function getErrorMessage(error: unknown, operation: PurchaseRequestOperation | '
     : getPurchaseRequestErrorMessage(error, operation)
 }
 
-function PurchaseRequestsContent() {
-  // Lo asignan guardar, enviar y cancelar cuando se conecten (pasos siguientes).
-  const [actionResult] = useState<ActionResult | null>(null)
+function PurchaseRequestsContent({ isAdmin }: { isAdmin: boolean }) {
+  const [actionResult, setActionResult] = useState<ActionResult | null>(null)
+  const [reloadKey, setReloadKey] = useState(0)
+  // Al recargar se conservan las tarjetas anteriores hasta que llegan las nuevas.
   const [summaryState, setSummaryState] = useState<SummaryState | null>(null)
 
   useEffect(() => {
@@ -45,7 +50,22 @@ function PurchaseRequestsContent() {
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [reloadKey])
+
+  function reload() {
+    setReloadKey((key) => key + 1)
+  }
+
+  function handleCancelled(requestNumber: string) {
+    setActionResult({ success: getCancelRequestSuccessMessage(requestNumber) })
+    reload()
+  }
+
+  function handleCancelError(error: unknown) {
+    setActionResult({ error, operation: 'cancel' })
+    // El estado pudo cambiar (p. ej. ya no está en borrador o enviada): se vuelve a cargar.
+    reload()
+  }
 
   return (
     <section className="flex flex-col gap-6">
@@ -92,6 +112,15 @@ function PurchaseRequestsContent() {
         isLoading={summaryState === null}
         error={summaryState && 'error' in summaryState ? summaryState.error : null}
       />
+
+      <PurchaseRequestsTable
+        isAdmin={isAdmin}
+        reloadKey={reloadKey}
+        // Editar se conecta en el paso 8.
+        onEdit={() => undefined}
+        onCancelled={handleCancelled}
+        onCancelError={handleCancelError}
+      />
     </section>
   )
 }
@@ -104,7 +133,7 @@ function PurchaseRequestsPage() {
     return <Navigate to="/dashboard" replace />
   }
 
-  return <PurchaseRequestsContent />
+  return <PurchaseRequestsContent isAdmin={role === UserRole.Admin} />
 }
 
 export default PurchaseRequestsPage
