@@ -34,6 +34,33 @@ export interface PurchaseRequest {
   itemsCount: number
 }
 
+// Copia ProcureFlow.Application/PurchaseRequests/Dtos/PurchaseRequestItemDto.cs
+export interface PurchaseRequestItem {
+  id: string
+  purchaseRequestId: string
+  description: string
+  quantity: number
+  unitPrice: number
+}
+
+// Copia ProcureFlow.Application/PurchaseRequests/Dtos/PurchaseRequestDetailDto.cs
+export interface PurchaseRequestDetail extends PurchaseRequest {
+  items: PurchaseRequestItem[]
+}
+
+// Copia CreatePurchaseRequestRequest.cs y UpdatePurchaseRequestRequest.cs
+export interface PurchaseRequestBody {
+  priority: PurchaseRequestPriority
+  justification: string
+}
+
+// Copia CreatePurchaseRequestItemRequest.cs
+export interface PurchaseRequestItemBody {
+  description: string
+  quantity: number
+  unitPrice: number
+}
+
 export interface PagedResult<T> {
   items: T[]
   totalCount: number
@@ -45,6 +72,8 @@ export interface PurchaseRequestFilters {
   requestNumber?: string
   /** Nombre del estado: la API lo parsea como `PurchaseRequestStatus`. */
   status?: keyof typeof PurchaseRequestStatus
+  /** Nombre de la prioridad: la API lo parsea como `PurchaseRequestPriority`. */
+  priority?: keyof typeof PurchaseRequestPriority
   page: number
   pageSize: number
 }

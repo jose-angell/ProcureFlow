@@ -88,6 +88,17 @@ export async function patch(
   })
 }
 
+/** PUT sin cuerpo; no parsea la respuesta (la API responde 204). */
+export async function put(
+  path: string,
+  options?: GetJsonOptions,
+): Promise<void> {
+  await request(path, {
+    method: 'PUT',
+    headers: options?.token ? { Authorization: `Bearer ${options.token}` } : undefined,
+  })
+}
+
 /** PATCH con cuerpo JSON; no parsea la respuesta (la API responde 204). */
 export async function patchJson<TBody>(
   path: string,
