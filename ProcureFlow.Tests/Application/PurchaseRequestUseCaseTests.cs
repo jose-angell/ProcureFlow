@@ -4,6 +4,7 @@ using ProcureFlow.Application.PurchaseRequests;
 using ProcureFlow.Application.PurchaseRequests.Dtos;
 using ProcureFlow.Domain.Entities;
 using ProcureFlow.Domain.Enums;
+using ProcureFlow.Domain.Exceptions;
 using ProcureFlow.Tests.TestSupport;
 
 namespace ProcureFlow.Tests.Application
@@ -295,6 +296,92 @@ namespace ProcureFlow.Tests.Application
             var oldest = Assert.Single(lastPage.Items);
             Assert.Equal(seed.Requests[0].Id, oldest.Id);
             Assert.Equal(7, lastPage.TotalCount);
+        }
+
+        [Fact]
+        public async Task GetById_ShouldReturnItems()
+        {
+            // Arrange
+            using var db = new TestDbContextFactory();
+            var department = new Department("IT");
+            var user = new User("Solicitante IT", "req-it@test.com", "hashed-password", UserRole.Requester, department.Id);
+            var request = new PurchaseRequest(user.Id, department.Id, PurchaseRequestPriority.High, "Equipo para nuevo colaborador");
+            var laptop = request.AddItem("Laptop", 2, 1500m);
+            var mouse = request.AddItem("Mouse", 3, 20m);
+
+            using (var seedContext = db.CreateContext())
+            {
+                seedContext.Departments.Add(department);
+                seedContext.Users.Add(user);
+                seedContext.PurchaseRequests.Add(request);
+                await seedContext.SaveChangesAsync();
+            }
+
+            using var context = db.CreateContext();
+            var useCase = new PurchaseRequestUseCase(context, new FakeCurrentUserService(user.Id, UserRole.Requester));
+
+            // Act
+            var result = await useCase.GetById(request.Id);
+
+            // Assert
+            Assert.Equal(2, result.Items.Count);
+            Assert.Equal(2, result.ItemsCount);
+            var laptopDto = Assert.Single(result.Items, i => i.Id == laptop.Id);
+            Assert.Equal(request.Id, laptopDto.PurchaseRequestId);
+            Assert.Equal("Laptop", laptopDto.Description);
+            Assert.Equal(2, laptopDto.Quantity);
+            Assert.Equal(1500m, laptopDto.UnitPrice);
+            Assert.Contains(result.Items, i => i.Id == mouse.Id && i.Description == "Mouse");
+        }
+
+        [Fact]
+        public async Task GetAll_ShouldFilterByPriority()
+        {
+            // Arrange
+            using var db = new TestDbContextFactory();
+            var seed = await SeedSummaryDataAsync(db);
+
+            using (var seedContext = db.CreateContext())
+            {
+                seedContext.PurchaseRequests.Add(new PurchaseRequest(
+                    seed.RequesterIt.Id,
+                    seed.It.Id,
+                    PurchaseRequestPriority.High,
+                    "Solicitud de prioridad alta"));
+                await seedContext.SaveChangesAsync();
+            }
+
+            using var context = db.CreateContext();
+            var useCase = new PurchaseRequestUseCase(
+                context,
+                new FakeCurrentUserService(seed.Admin.Id, UserRole.Admin));
+
+            // Act
+            var high = await useCase.GetAll(new PurchaseRequestQuery { Priority = "high" });
+            var medium = await useCase.GetAll(new PurchaseRequestQuery { Priority = "Medium" });
+
+            // Assert
+            Assert.Equal(1, high.TotalCount);
+            Assert.All(high.Items, i => Assert.Equal(PurchaseRequestPriority.High, i.Priority));
+            Assert.Equal(7, medium.TotalCount);
+        }
+
+        [Fact]
+        public async Task GetAll_ShouldThrowDomainException_WhenPriorityIsInvalid()
+        {
+            // Arrange
+            using var db = new TestDbContextFactory();
+            var seed = await SeedSummaryDataAsync(db);
+
+            using var context = db.CreateContext();
+            var useCase = new PurchaseRequestUseCase(
+                context,
+                new FakeCurrentUserService(seed.Admin.Id, UserRole.Admin));
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<DomainException>(
+                () => useCase.GetAll(new PurchaseRequestQuery { Priority = "foo" }));
+            Assert.Equal("La prioridad no es válida.", exception.Message);
         }
 
         private sealed class SummarySeed

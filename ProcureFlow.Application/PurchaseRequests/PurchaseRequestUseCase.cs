@@ -6,6 +6,7 @@ using ProcureFlow.Application.Exceptions;
 using ProcureFlow.Application.PurchaseRequests.Dtos;
 using ProcureFlow.Domain.Entities;
 using ProcureFlow.Domain.Enums;
+using ProcureFlow.Domain.Exceptions;
 
 namespace ProcureFlow.Application.PurchaseRequests
 {
@@ -246,7 +247,7 @@ namespace ProcureFlow.Application.PurchaseRequests
             purchaseRequest.Reject(currentUserId, request.Comments!);
             await _context.SaveChangesAsync();
         }
-        public async Task<PurchaseRequestDto> GetById(Guid id)
+        public async Task<PurchaseRequestDetailDto> GetById(Guid id)
         {
             var currentRole = _currentUserService.Role;
             var currentUserId = _currentUserService.UserId;
@@ -272,7 +273,7 @@ namespace ProcureFlow.Application.PurchaseRequests
             if (purchaseRequest == null) throw new NotFoundException("Solicitud de compra no encontrada.");
 
 
-            return new PurchaseRequestDto
+            return new PurchaseRequestDetailDto
             {
                 Id = purchaseRequest.Id,
                 RequestNumber = purchaseRequest.RequestNumber,
@@ -289,7 +290,15 @@ namespace ProcureFlow.Application.PurchaseRequests
                 ApprovedAt = purchaseRequest.ApprovedAt,
                 RejectedAt = purchaseRequest.RejectedAt,
                 CancelledAt = purchaseRequest.CancelledAt,
-                ItemsCount = purchaseRequest.Items.Count
+                ItemsCount = purchaseRequest.Items.Count,
+                Items = purchaseRequest.Items.Select(i => new PurchaseRequestItemDto
+                {
+                    Id = i.Id,
+                    PurchaseRequestId = i.PurchaseRequestId,
+                    Description = i.Description,
+                    Quantity = i.Quantity,
+                    UnitPrice = i.UnitPrice
+                }).ToList()
             };
         }
         public async Task<PagedResult<PurchaseRequestDto>> GetAll(PurchaseRequestQuery query)
@@ -331,6 +340,15 @@ namespace ProcureFlow.Application.PurchaseRequests
             {
                 var status = Enum.Parse<PurchaseRequestStatus>(query.Status, true);
                 purchaseRequestsQuery = purchaseRequestsQuery.Where(pr => pr.Status == status);
+            }
+            if (!string.IsNullOrEmpty(query.Priority))
+            {
+                if (!Enum.TryParse<PurchaseRequestPriority>(query.Priority, true, out var priority)
+                    || !Enum.IsDefined(priority))
+                {
+                    throw new DomainException("La prioridad no es válida.");
+                }
+                purchaseRequestsQuery = purchaseRequestsQuery.Where(pr => pr.Priority == priority);
             }
             var totalCount = await purchaseRequestsQuery.CountAsync();
             var skip = (query.Page - 1) * query.PageSize;
