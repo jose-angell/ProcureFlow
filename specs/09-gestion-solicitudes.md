@@ -1,6 +1,6 @@
 # SPEC 09 — Gestión de solicitudes de compra
 
-> **Estado:** aprobado
+> **Estado:** implementado
 > **Depende de:** SPEC 03, SPEC 04, SPEC 06
 > **Fecha:** 2026-10-29
 > **Objetivo:** Implementar la página `/purchases`, para Requester y Admin, con métricas, listado paginado y filtrable en la API, y un modal para crear y editar borradores con sus ítems, guardarlos o enviarlos a aprobación, según `design/request.html` y `design/requestModal.html`.
@@ -280,35 +280,35 @@ Estados de la lista:
 
 ## Criterios de aceptación
 
-- [ ] `dotnet build`, `dotnet test`, `npm run lint` y `npm run build` pasan.
-- [ ] `GET /api/purchases/{id}` devuelve `items` con id, descripción, cantidad y precio.
-- [ ] `GET /api/purchases?priority=High` devuelve solo solicitudes de prioridad alta; `priority=foo` responde 400.
-- [ ] Como Approver, "Mis solicitudes" no aparece en el menú y abrir `/purchases` redirige a `/dashboard`.
-- [ ] Como Requester, la tabla no muestra Solicitante ni Departamento. Como Admin, sí.
-- [ ] Las cuatro tarjetas muestran valores de `summary` coherentes con la tabla sin filtros.
-- [ ] Buscar un número y pulsar Enter filtra la tabla. Estado y Prioridad se combinan con la búsqueda.
-- [ ] "Limpiar filtros" vuelve búsqueda, Estado y Prioridad a su valor inicial.
-- [ ] Con 11 solicitudes y 10 filas por página hay 2 páginas; con 25 hay 1.
-- [ ] El lápiz solo aparece en filas `Draft`. Cancelar solo en `Draft` y `Submitted`.
-- [ ] "Nueva solicitud" abre el modal con prioridad Media, justificación vacía y sin ítems.
-- [ ] Añadir dos ítems muestra "2 artículos añadidos" y el total correcto.
-- [ ] Quitar un ítem actualiza contador y total.
-- [ ] Justificación de 19 caracteres muestra su mensaje y no envía peticiones.
-- [ ] "Enviar" sin ítems muestra su mensaje y no envía peticiones.
-- [ ] "Guardar como borrador" crea la solicitud en `Draft` con sus ítems y muestra "Solicitud {requestNumber} guardada como borrador.".
-- [ ] "Enviar solicitud para aprobación" deja la solicitud en `Submitted` y muestra "Solicitud {requestNumber} enviada para aprobación.".
-- [ ] Todas las peticiones llevan `Authorization: Bearer <token>`; `priority` viaja numérica en el cuerpo.
-- [ ] Si falla `add-item` tras crear, el modal pasa a "Editar solicitud" con el número; reintentar no crea otra solicitud ni duplica ítems.
-- [ ] Editar abre el modal con prioridad, justificación e ítems actuales.
-- [ ] Editar solo los ítems no envía `PUT /api/purchases/{id}`.
-- [ ] Quitar un ítem existente y guardar envía `PUT .../delete-item/{itemId}`.
-- [ ] Cancelar desde la tabla funciona como en SPEC 04 y recarga tarjetas y tabla.
-- [ ] Con la API apagada, la página muestra "No se pudo conectar con el servidor. Intenta de nuevo.".
-- [ ] Mientras guarda, los botones están deshabilitados y el modal no se cierra con Esc.
-- [ ] Modal usable solo con teclado, incluido el grupo de prioridad.
-- [ ] Sin scroll horizontal de página a 375px (la tabla puede desplazarse en su contenedor).
-- [ ] No hay categoría, rango de fechas, CSV, checkboxes, "Ver detalles", badge "v2" ni banner de SLA.
-- [ ] No hay dependencias npm nuevas.
+- [x] `dotnet build`, `dotnet test`, `npm run lint` y `npm run build` pasan.
+- [x] `GET /api/purchases/{id}` devuelve `items` con id, descripción, cantidad y precio.
+- [x] `GET /api/purchases?priority=High` devuelve solo solicitudes de prioridad alta; `priority=foo` responde 400.
+- [x] Como Approver, "Mis solicitudes" no aparece en el menú y abrir `/purchases` redirige a `/dashboard`.
+- [x] Como Requester, la tabla no muestra Solicitante ni Departamento. Como Admin, sí.
+- [x] Las cuatro tarjetas muestran valores de `summary` coherentes con la tabla sin filtros.
+- [x] Buscar un número y pulsar Enter filtra la tabla. Estado y Prioridad se combinan con la búsqueda.
+- [x] "Limpiar filtros" vuelve búsqueda, Estado y Prioridad a su valor inicial.
+- [x] Con 11 solicitudes y 10 filas por página hay 2 páginas; con 25 hay 1.
+- [x] El lápiz solo aparece en filas `Draft`. Cancelar solo en `Draft` y `Submitted`.
+- [x] "Nueva solicitud" abre el modal con prioridad Media, justificación vacía y sin ítems.
+- [x] Añadir dos ítems muestra "2 artículos añadidos" y el total correcto.
+- [x] Quitar un ítem actualiza contador y total.
+- [x] Justificación de 19 caracteres muestra su mensaje y no envía peticiones.
+- [x] "Enviar" sin ítems muestra su mensaje y no envía peticiones.
+- [x] "Guardar como borrador" crea la solicitud en `Draft` con sus ítems y muestra "Solicitud {requestNumber} guardada como borrador.".
+- [x] "Enviar solicitud para aprobación" deja la solicitud en `Submitted` y muestra "Solicitud {requestNumber} enviada para aprobación.".
+- [x] Todas las peticiones llevan `Authorization: Bearer <token>`; `priority` viaja numérica en el cuerpo.
+- [x] Si falla `add-item` tras crear, el modal pasa a "Editar solicitud" con el número; reintentar no crea otra solicitud ni duplica ítems.
+- [x] Editar abre el modal con prioridad, justificación e ítems actuales.
+- [x] Editar solo los ítems no envía `PUT /api/purchases/{id}`.
+- [x] Quitar un ítem existente y guardar envía `PUT .../delete-item/{itemId}`.
+- [x] Cancelar desde la tabla funciona como en SPEC 04 y recarga tarjetas y tabla.
+- [x] Con la API apagada, la página muestra "No se pudo conectar con el servidor. Intenta de nuevo.".
+- [x] Mientras guarda, los botones están deshabilitados y el modal no se cierra con Esc.
+- [x] Modal usable solo con teclado, incluido el grupo de prioridad.
+- [x] Sin scroll horizontal de página a 375px (la tabla puede desplazarse en su contenedor).
+- [x] No hay categoría, rango de fechas, CSV, checkboxes, "Ver detalles", badge "v2" ni banner de SLA.
+- [x] No hay dependencias npm nuevas.
 
 ## Decisiones
 
