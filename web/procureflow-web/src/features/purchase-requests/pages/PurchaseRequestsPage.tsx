@@ -11,6 +11,7 @@ import {
 } from '@/features/dashboard/cancelRequestErrors'
 import { isSessionError } from '@/features/dashboard/dashboardErrors'
 import { getPurchaseRequestSummary } from '../api/purchaseRequests'
+import PurchaseRequestFormDialog from '../components/PurchaseRequestFormDialog'
 import PurchaseRequestStatsCards from '../components/PurchaseRequestStatsCards'
 import PurchaseRequestsTable from '../components/PurchaseRequestsTable'
 import {
@@ -33,6 +34,7 @@ function getErrorMessage(error: unknown, operation: PurchaseRequestOperation | '
 function PurchaseRequestsContent({ isAdmin }: { isAdmin: boolean }) {
   const [actionResult, setActionResult] = useState<ActionResult | null>(null)
   const [reloadKey, setReloadKey] = useState(0)
+  const [isFormOpen, setIsFormOpen] = useState(false)
   // Al recargar se conservan las tarjetas anteriores hasta que llegan las nuevas.
   const [summaryState, setSummaryState] = useState<SummaryState | null>(null)
 
@@ -54,6 +56,18 @@ function PurchaseRequestsContent({ isAdmin }: { isAdmin: boolean }) {
 
   function reload() {
     setReloadKey((key) => key + 1)
+  }
+
+  function handleSaved(message: string) {
+    setActionResult({ success: message })
+    setIsFormOpen(false)
+    reload()
+  }
+
+  function handleFormClose(hasFailed: boolean) {
+    setIsFormOpen(false)
+    // Un guardado a medias deja la solicitud creada o modificada: la lista está desactualizada.
+    if (hasFailed) reload()
   }
 
   function handleCancelled(requestNumber: string) {
@@ -80,7 +94,7 @@ function PurchaseRequestsContent({ isAdmin }: { isAdmin: boolean }) {
           </p>
         </div>
 
-        <Button type="button" disabled>
+        <Button type="button" onClick={() => setIsFormOpen(true)}>
           <Plus aria-hidden="true" />
           Nueva solicitud
         </Button>
@@ -121,6 +135,8 @@ function PurchaseRequestsContent({ isAdmin }: { isAdmin: boolean }) {
         onCancelled={handleCancelled}
         onCancelError={handleCancelError}
       />
+
+      {isFormOpen && <PurchaseRequestFormDialog onSaved={handleSaved} onClose={handleFormClose} />}
     </section>
   )
 }
