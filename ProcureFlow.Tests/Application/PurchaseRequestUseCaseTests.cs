@@ -447,6 +447,69 @@ namespace ProcureFlow.Tests.Application
             Assert.Null(draft.DecidedByName);
         }
 
+        [Fact]
+        public async Task GetAll_ShouldReturnOnlyDecidedByCurrentUser_WhenDecidedByMe()
+        {
+            // Arrange
+            using var db = new TestDbContextFactory();
+            var seed = await SeedSummaryDataAsync(db);
+            var decidedByAdmin = CreateRequestInStatus(seed.RequesterIt, seed.It, PurchaseRequestStatus.Approved, seed.Admin);
+
+            using (var seedContext = db.CreateContext())
+            {
+                seedContext.PurchaseRequests.Add(decidedByAdmin);
+                await seedContext.SaveChangesAsync();
+            }
+
+            using var approverContext = db.CreateContext();
+            var approverUseCase = new PurchaseRequestUseCase(
+                approverContext,
+                new FakeCurrentUserService(seed.ApproverIt.Id, UserRole.Approver));
+            using var adminContext = db.CreateContext();
+            var adminUseCase = new PurchaseRequestUseCase(
+                adminContext,
+                new FakeCurrentUserService(seed.Admin.Id, UserRole.Admin));
+
+            // Act
+            var approverResult = await approverUseCase.GetAll(new PurchaseRequestQuery { DecidedByMe = true });
+            var adminResult = await adminUseCase.GetAll(new PurchaseRequestQuery { DecidedByMe = true });
+            var adminAll = await adminUseCase.GetAll(new PurchaseRequestQuery { DecidedByMe = false });
+
+            // Assert
+            // El Approver solo ve su departamento (IT): la decisión suya en RRHH queda fuera.
+            var approverItem = Assert.Single(approverResult.Items);
+            Assert.Equal(seed.ApproverIt.FullName, approverItem.DecidedByName);
+            var adminItem = Assert.Single(adminResult.Items);
+            Assert.Equal(decidedByAdmin.Id, adminItem.Id);
+            Assert.Equal(seed.Admin.FullName, adminItem.DecidedByName);
+            Assert.Equal(8, adminAll.TotalCount);
+        }
+
+        [Fact]
+        public async Task GetAll_ShouldFilterByDepartmentId()
+        {
+            // Arrange
+            using var db = new TestDbContextFactory();
+            var seed = await SeedSummaryDataAsync(db);
+
+            using var context = db.CreateContext();
+            var useCase = new PurchaseRequestUseCase(
+                context,
+                new FakeCurrentUserService(seed.Admin.Id, UserRole.Admin));
+
+            // Act
+            var it = await useCase.GetAll(new PurchaseRequestQuery { DepartmentId = seed.It.Id });
+            var hr = await useCase.GetAll(new PurchaseRequestQuery { DepartmentId = seed.Hr.Id });
+            var none = await useCase.GetAll(new PurchaseRequestQuery { DepartmentId = Guid.NewGuid() });
+
+            // Assert
+            Assert.Equal(4, it.TotalCount);
+            Assert.All(it.Items, i => Assert.Equal(seed.It.Id, i.DepartmentId));
+            Assert.Equal(3, hr.TotalCount);
+            Assert.All(hr.Items, i => Assert.Equal(seed.Hr.Id, i.DepartmentId));
+            Assert.Equal(0, none.TotalCount);
+        }
+
         private sealed class SummarySeed
         {
             public Department It { get; init; } = null!;

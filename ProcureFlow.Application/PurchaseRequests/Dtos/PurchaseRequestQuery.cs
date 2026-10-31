@@ -12,6 +12,8 @@ namespace ProcureFlow.Application.PurchaseRequests.Dtos
         public DateTime? CreatedDateTo { get; set; }
         public string? Status { get; set; }
         public string? Priority { get; set; } // nombre del enum: Low, Medium, High, Urgent
+        public bool DecidedByMe { get; set; } // true: solo solicitudes decididas por el usuario actual
+        public Guid? DepartmentId { get; set; }
         public int Page { get; set; } = 1;
         public int PageSize { get; set; } = 10;
     }

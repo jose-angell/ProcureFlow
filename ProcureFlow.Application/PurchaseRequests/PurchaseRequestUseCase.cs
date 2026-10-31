@@ -355,6 +355,15 @@ namespace ProcureFlow.Application.PurchaseRequests
                 }
                 purchaseRequestsQuery = purchaseRequestsQuery.Where(pr => pr.Priority == priority);
             }
+            if (query.DecidedByMe)
+            {
+                purchaseRequestsQuery = purchaseRequestsQuery.Where(pr =>
+                    pr.ApprovalDecision != null && pr.ApprovalDecision.ApproverUserId == currentUserId);
+            }
+            if (query.DepartmentId.HasValue)
+            {
+                purchaseRequestsQuery = purchaseRequestsQuery.Where(pr => pr.DepartmentId == query.DepartmentId.Value);
+            }
             var totalCount = await purchaseRequestsQuery.CountAsync();
             var skip = (query.Page - 1) * query.PageSize;
             var take = query.PageSize;
