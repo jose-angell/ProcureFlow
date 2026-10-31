@@ -258,7 +258,9 @@ namespace ProcureFlow.Application.PurchaseRequests
             IQueryable<PurchaseRequest> query = _context.PurchaseRequests
                .Include(pr => pr.Items)
                .Include(pr => pr.RequestedByUser)
-               .Include(pr => pr.Department);
+               .Include(pr => pr.Department)
+               .Include(pr => pr.ApprovalDecision)
+                   .ThenInclude(d => d!.ApproverUser);
 
             if(currentRole == UserRole.Approver)
             {
@@ -291,7 +293,10 @@ namespace ProcureFlow.Application.PurchaseRequests
                 RejectedAt = purchaseRequest.RejectedAt,
                 CancelledAt = purchaseRequest.CancelledAt,
                 ItemsCount = purchaseRequest.Items.Count,
-                Items = purchaseRequest.Items.Select(i => new PurchaseRequestItemDto
+                DecidedAt = purchaseRequest.ApprovalDecision?.DecidedAt,
+                DecisionComment = purchaseRequest.ApprovalDecision?.Comment,
+                DecidedByName = purchaseRequest.ApprovalDecision?.ApproverUser.FullName,
+                Items =purchaseRequest.Items.Select(i => new PurchaseRequestItemDto
                 {
                     Id = i.Id,
                     PurchaseRequestId = i.PurchaseRequestId,
@@ -372,7 +377,10 @@ namespace ProcureFlow.Application.PurchaseRequests
                     ApprovedAt = pr.ApprovedAt,
                     RejectedAt = pr.RejectedAt,
                     CancelledAt = pr.CancelledAt,
-                    ItemsCount = pr.Items.Count
+                    ItemsCount = pr.Items.Count,
+                    DecidedAt = pr.ApprovalDecision != null ? pr.ApprovalDecision.DecidedAt : null,
+                    DecisionComment = pr.ApprovalDecision != null ? pr.ApprovalDecision.Comment : null,
+                    DecidedByName = pr.ApprovalDecision != null ? pr.ApprovalDecision.ApproverUser.FullName : null
                 })
                 .Skip(skip)
                 .Take(take)

@@ -384,6 +384,69 @@ namespace ProcureFlow.Tests.Application
             Assert.Equal("La prioridad no es válida.", exception.Message);
         }
 
+        [Fact]
+        public async Task GetAll_ShouldMapDecisionFields()
+        {
+            // Arrange
+            using var db = new TestDbContextFactory();
+            var seed = await SeedSummaryDataAsync(db);
+
+            using var context = db.CreateContext();
+            var useCase = new PurchaseRequestUseCase(
+                context,
+                new FakeCurrentUserService(seed.Admin.Id, UserRole.Admin));
+
+            // Act
+            var result = await useCase.GetAll(new PurchaseRequestQuery { Page = 1, PageSize = 50 });
+
+            // Assert
+            var rejected = Assert.Single(result.Items, i => i.Status == PurchaseRequestStatus.Rejected);
+            Assert.NotNull(rejected.DecidedAt);
+            Assert.Equal("Sin presupuesto", rejected.DecisionComment);
+            Assert.Equal(seed.ApproverIt.FullName, rejected.DecidedByName);
+
+            var approved = Assert.Single(result.Items, i => i.Status == PurchaseRequestStatus.Approved);
+            Assert.NotNull(approved.DecidedAt);
+            Assert.Null(approved.DecisionComment);
+            Assert.Equal(seed.ApproverIt.FullName, approved.DecidedByName);
+
+            Assert.All(
+                result.Items.Where(i => i.Status != PurchaseRequestStatus.Approved && i.Status != PurchaseRequestStatus.Rejected),
+                i =>
+                {
+                    Assert.Null(i.DecidedAt);
+                    Assert.Null(i.DecisionComment);
+                    Assert.Null(i.DecidedByName);
+                });
+        }
+
+        [Fact]
+        public async Task GetById_ShouldMapDecisionFields()
+        {
+            // Arrange
+            using var db = new TestDbContextFactory();
+            var seed = await SeedSummaryDataAsync(db);
+            var rejectedId = seed.Requests.Single(r => r.Status == PurchaseRequestStatus.Rejected).Id;
+            var draftId = seed.Requests.First(r => r.Status == PurchaseRequestStatus.Draft).Id;
+
+            using var context = db.CreateContext();
+            var useCase = new PurchaseRequestUseCase(
+                context,
+                new FakeCurrentUserService(seed.Admin.Id, UserRole.Admin));
+
+            // Act
+            var rejected = await useCase.GetById(rejectedId);
+            var draft = await useCase.GetById(draftId);
+
+            // Assert
+            Assert.NotNull(rejected.DecidedAt);
+            Assert.Equal("Sin presupuesto", rejected.DecisionComment);
+            Assert.Equal(seed.ApproverIt.FullName, rejected.DecidedByName);
+            Assert.Null(draft.DecidedAt);
+            Assert.Null(draft.DecisionComment);
+            Assert.Null(draft.DecidedByName);
+        }
+
         private sealed class SummarySeed
         {
             public Department It { get; init; } = null!;

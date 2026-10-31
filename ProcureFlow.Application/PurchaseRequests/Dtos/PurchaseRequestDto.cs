@@ -20,5 +20,8 @@ namespace ProcureFlow.Application.PurchaseRequests.Dtos
         public DateTime? RejectedAt { get; set; }
         public DateTime? CancelledAt { get; set; }
         public int ItemsCount { get; set; } = 0;
+        public DateTime? DecidedAt { get; set; }
+        public string? DecisionComment { get; set; }
+        public string? DecidedByName { get; set; }
     }
 }
