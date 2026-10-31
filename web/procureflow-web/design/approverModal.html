@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+
+<html lang="es" style=""><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-secondary-fixed":"#00174b","primary-container":"#131b2e","on-primary-container":"#7c839b","on-surface-variant":"#45464d","secondary-container":"#316bf3","tertiary-fixed-dim":"#68dba9","error-container":"#ffdad6","outline-variant":"#c6c6cd","on-secondary-container":"#fefcff","surface-bright":"#f8f9ff","inverse-primary":"#bec6e0","secondary":"#0051d5","on-error":"#ffffff","primary-fixed-dim":"#bec6e0","surface-container-highest":"#d3e4fe","surface":"#f8f9ff","surface-tint":"#565e74","on-primary-fixed":"#131b2e","tertiary-container":"#002114","secondary-fixed":"#dbe1ff","tertiary":"#000000","on-secondary-fixed-variant":"#003ea8","on-primary":"#ffffff","on-background":"#0b1c30","on-secondary":"#ffffff","surface-container":"#e5eeff","surface-container-lowest":"#ffffff","error":"#ba1a1a","inverse-on-surface":"#eaf1ff","surface-container-high":"#dce9ff","secondary-fixed-dim":"#b4c5ff","background":"#f8f9ff","surface-variant":"#d3e4fe","on-error-container":"#93000a","inverse-surface":"#213145","surface-container-low":"#eff4ff","on-tertiary-fixed-variant":"#005137","on-primary-fixed-variant":"#3f465c","primary":"#000000","on-tertiary-fixed":"#002114","on-surface":"#0b1c30","on-tertiary":"#ffffff","primary-fixed":"#dae2fd","outline":"#76777d","tertiary-fixed":"#85f8c4","surface-dim":"#cbdbf5","on-tertiary-container":"#069669"},borderRadius:{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},spacing:{"space-xs":"0.25rem","margin-mobile":"1rem","space-sm":"0.5rem","space-md":"1rem","gutter-mobile":"1rem","space-xl":"2rem","gutter":"1.5rem","margin":"2rem","space-lg":"1.5rem"},fontFamily:{"body-sm":["Inter"],"label-sm":["Inter"],"headline-display-mobile":["Plus Jakarta Sans"],"body-lg":["Inter"],"body-md":["Inter"],"headline-lg-mobile":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"numeric-data":["Inter"],"headline-md":["Plus Jakarta Sans"],"label-xs":["Inter"],"headline-display":["Plus Jakarta Sans"],"headline-sm":["Plus Jakarta Sans"],"label-md":["Inter"]},fontSize:{"body-sm":["12px",{lineHeight:"16px",fontWeight:"400"}],"label-sm":["12px",{lineHeight:"16px",fontWeight:"500"}],"headline-display-mobile":["28px",{lineHeight:"36px",letterSpacing:"-0.02em",fontWeight:"700"}],"body-lg":["16px",{lineHeight:"24px",fontWeight:"400"}],"body-md":["14px",{lineHeight:"20px",fontWeight:"400"}],"headline-lg-mobile":["24px",{lineHeight:"32px",letterSpacing:"-0.015em",fontWeight:"600"}],"headline-lg":["30px",{lineHeight:"38px",letterSpacing:"-0.02em",fontWeight:"600"}],"numeric-data":["14px",{lineHeight:"20px",letterSpacing:"0",fontWeight:"500"}],"headline-md":["20px",{lineHeight:"28px",letterSpacing:"-0.015em",fontWeight:"600"}],"label-xs":["11px",{lineHeight:"14px",letterSpacing:"0.02em",fontWeight:"600"}],"headline-display":["36px",{lineHeight:"44px",letterSpacing:"-0.025em",fontWeight:"700"}],"headline-sm":["16px",{lineHeight:"24px",letterSpacing:"-0.01em",fontWeight:"600"}],"label-md":["14px",{lineHeight:"20px",fontWeight:"500"}]}}}};</script></head><body class="bg-background font-body-md text-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between"><div class="flex flex-col"><div class="h-16 px-space-md flex items-center justify-between"><div class="flex items-center gap-space-sm"><img alt="ProcureFlow Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1U-aQBeadItr5DtNMGdIOCp2D1z58gA_e5IJGUD0nhG42AnnA5aCKVJXMvXU-PS97ZtBiDmJN8U4INU3d3zZOsFVcZhegY-LluPSvMPC-dQLV11Qe8YbAoHMDEzhbwCIz1R6CH03VI1WyEg16gaUGwSjegsUbG42F_K4yNGsmPbwiYuYRI-gJlgTlYjYG0eOivkO6IAKfsVkMoASRZNuD8oA7Qdt9HMkVhk9nBS7pTuoFZifqCG0zKLPfM"/><span class="font-headline-sm text-headline-sm text-on-surface tracking-tight">ProcureFlow</span></div><span class="inline-flex items-center px-space-xs py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-xs text-label-xs">v2.4</span></div><div class="px-space-md py-space-sm"><div class="bg-surface-container-low rounded-lg p-space-sm"><div class="flex items-center justify-between text-on-surface-variant font-label-xs text-label-xs mb-1"><span class="">ROL ACTIVO</span><span class="material-symbols-outlined text-[16px]">swap_horiz</span></div><div class="flex items-center justify-between"><select class="bg-transparent font-label-md text-label-md text-on-surface font-semibold focus:outline-none cursor-pointer pr-1 w-full"><option selected="">Approver (Aprobador)</option><option>Requester (Solicitante)</option><option>Admin (Administrador)</option></select><span class="w-2 h-2 rounded-full bg-secondary shrink-0"></span></div></div></div><div class="px-space-md pt-space-xs"><p class="px-space-sm pb-space-xs font-label-xs text-label-xs text-on-surface-variant tracking-wider uppercase">Principal</p><nav class="space-y-1" data-active-classes="bg-surface-container-high text-on-surface font-semibold"><a class="flex items-center justify-between px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="dashboard" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">grid_view</span><span class="font-label-md text-label-md">Dashboard</span></div></a><a class="flex items-center justify-between px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="mis-solicitudes" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">receipt_long</span><span class="font-label-md text-label-md">Mis solicitudes</span></div><span class="px-1.5 py-0.5 rounded-full bg-surface-container font-numeric-data text-label-xs text-on-surface-variant">12</span></a><a class="flex items-center justify-between px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="aprobaciones" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">verified</span><span class="font-label-md text-label-md">Aprobaciones</span></div><span class="px-1.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-numeric-data text-label-xs font-semibold">4</span></a><a class="flex items-center justify-between px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="departamentos" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">domain</span><span class="font-label-md text-label-md">Departamentos</span></div></a><a class="flex items-center justify-between px-space-sm py-space-sm rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" data-path="usuarios" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[20px]">group</span><span class="font-label-md text-label-md">Usuarios</span></div></a></nav></div></div><div class="p-space-md space-y-space-md"><div class="bg-surface-container-low rounded-lg p-space-sm"><div class="flex items-center justify-between"><div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim"></span><span class="font-label-xs text-label-xs text-on-surface-variant">Sistema Operativo</span></div><span class="font-numeric-data text-label-xs text-on-surface font-medium">En línea</span></div></div><nav class="space-y-1" data-active-classes="bg-surface-container-high text-on-surface font-semibold"><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-label-md text-label-md" data-path="documentacion" href="#"><span class="material-symbols-outlined text-[20px]">help_center</span><span class="">Centro de Ayuda</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors font-label-md text-label-md" data-path="configuracion" href="#"><span class="material-symbols-outlined text-[20px]">settings</span><span class="">Configuración</span></a></nav></div></aside><div class="pl-64"><header class="fixed top-0 left-64 right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-md shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 px-space-lg flex items-center justify-between"><div class="flex items-center gap-space-md"><div class="flex items-center gap-2 font-label-sm text-label-sm text-on-surface-variant"><span class="hover:text-on-surface cursor-pointer">Inicio</span><span class="material-symbols-outlined text-[14px]">chevron_right</span><span class="text-on-surface font-medium">Dashboard general</span></div><div class="hidden md:flex items-center gap-2 bg-surface-container-low px-3 py-1.5 rounded-lg text-on-surface-variant"><span class="material-symbols-outlined text-[18px]">search</span><input class="bg-transparent border-none text-body-sm font-body-sm text-on-surface placeholder:text-outline focus:outline-none w-56 lg:w-72" placeholder="Buscar por número, solicitante o justificación..." type="text"/><kbd class="bg-surface-container-lowest px-1.5 py-0.5 rounded font-label-xs text-label-xs text-on-surface-variant shadow-[0_1px_2px_rgba(0,0,0,0.05)]">⌘K</kbd></div></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-2 px-space-sm py-1.5 rounded-lg bg-surface-container-low text-on-surface"><span class="material-symbols-outlined text-[18px] text-secondary">business</span><span class="font-label-sm text-label-sm font-semibold">Acme Corp</span></div><button class="relative p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-[22px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error"></span></button><div class="flex items-center gap-space-sm pl-2 border-l border-surface-container-high"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7njDn8PZQFj42VRJp-FHtEUNuwDwQVGc4AcgRpiMgufkB6i49MEhczhtBelwChZADSuRuqolLl_Qw-KSr51g19GaG8Gzi8v0dJuEWSBcjUaiCPJxCVZJytqCRS0-LoXOg0Rn7BibGkAkGDnBpBgsSF8FJtgOx-clz0QOu1XonQTFpg0S88KsahrDuUskWWPmyPGjVG26DI5InQvlk5sfu_x59l0M3fv-6k9ezBi3ae9VZKR2QN2Tp"/><div class="hidden lg:flex flex-col"><span class="font-label-sm text-label-sm font-semibold text-on-surface leading-tight">Carlos Mendoza</span><span class="font-label-xs text-label-xs text-on-surface-variant leading-tight">Director Ops • Approver</span></div><span class="material-symbols-outlined text-[16px] text-on-surface-variant cursor-pointer">more_vert</span></div></div></header><main class="relative pt-16 bg-background min-h-screen px-space-lg py-space-lg max-w-7xl mx-auto"><div class="flex flex-col w-full space-y-space-lg">
+<!-- Sub-header navigation breadcrumbs & context row -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm pb-space-xs">
+<nav aria-label="Breadcrumb" class="flex items-center gap-2">
+<a class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1" href="#">
+<span class="material-symbols-outlined text-[16px]">home</span>
+<span class="">Inicio</span>
+</a>
+<span class="material-symbols-outlined text-[14px] text-outline-variant">chevron_right</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Aprobaciones</span>
+<span class="material-symbols-outlined text-[14px] text-outline-variant">chevron_right</span>
+<span class="font-label-sm text-label-sm font-semibold text-secondary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+        Bandeja de Entrada
+      </span>
+</nav>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface font-label-xs text-label-xs">
+<span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim animate-pulse"></span>
+        Sincronizado con ERP SAP
+      </span>
+<span class="font-label-xs text-label-xs text-on-surface-variant">Actualizado hace 2m</span>
+</div>
+</div>
+<!-- Page Hero Header Block -->
+<div class="relative overflow-hidden bg-surface-container-lowest rounded-xl p-space-lg shadow-sm">
+<div class="absolute -right-8 -top-8 w-64 h-64 rounded-full bg-secondary-fixed/25 blur-3xl pointer-events-none"></div>
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md relative z-10">
+<div class="space-y-1.5 max-w-3xl">
+<div class="flex items-center gap-2.5">
+<span class="p-2 rounded-lg bg-surface-container text-secondary inline-flex items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">verified</span>
+</span>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Gestión de Aprobaciones</h1>
+<span class="px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-numeric-data text-label-xs font-semibold">
+            Cola activa
+          </span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+          Revisa, autoriza o devuelve las solicitudes de compra asignadas a tu centro de costes y nivel de autorización delegada corporativa.
+        </p>
+</div>
+<div class="flex flex-wrap items-center gap-space-sm pt-2 lg:pt-0">
+<!-- Delegations Policy pill badge/button -->
+<button class="group flex items-center gap-2 px-3.5 py-2 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface transition-all active:scale-[0.98]" type="button">
+<span class="material-symbols-outlined text-[18px] text-secondary">verified_user</span>
+<div class="flex flex-col text-left">
+<span class="font-label-xs text-label-xs text-on-surface-variant leading-none">Mi Nivel Delegado</span>
+<span class="font-label-sm text-label-sm font-semibold text-on-surface leading-tight">Límite: € 50.000</span>
+</div>
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant group-hover:translate-x-0.5 transition-transform">info</span>
+</button>
+<!-- Batch approval trigger -->
+<button class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-container text-outline font-label-md text-label-md font-semibold cursor-not-allowed transition-all opacity-60" disabled="" id="batch-approve-btn" type="button">
+<span class="material-symbols-outlined text-[18px]">done_all</span>
+<span class="" id="batch-text">Aprobar lote seleccionado (0)</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Key Metrics / KPI Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-md">
+<!-- Stat 1: Pendientes de firma -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm relative overflow-hidden flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Pendientes de mi firma</span>
+<span class="w-8 h-8 rounded-lg bg-error-container text-on-error-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">pending_actions</span>
+</span>
+</div>
+<div class="mt-space-sm">
+<div class="flex items-baseline gap-2">
+<span class="font-headline-display text-headline-display text-on-surface">4</span>
+<span class="font-numeric-data text-body-sm text-on-surface-variant font-medium">solicitudes</span>
+</div>
+<div class="mt-space-xs flex items-center gap-1.5 flex-wrap">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-xs text-label-xs font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+            2 urgentes &gt;48h
+          </span>
+<span class="font-numeric-data text-label-xs text-on-surface-variant">€ 42.150 retenidos</span>
+</div>
+</div>
+<div class="mt-3 w-full bg-surface-container rounded-full h-1.5 overflow-hidden">
+<div class="bg-error h-full rounded-full" style="width: 50%"></div>
+</div>
+</div>
+<!-- Stat 2: Aprobadas este mes -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm relative overflow-hidden flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Aprobadas este mes</span>
+<span class="w-8 h-8 rounded-lg bg-surface-container-high text-on-tertiary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">task_alt</span>
+</span>
+</div>
+<div class="mt-space-sm">
+<div class="flex items-baseline gap-2">
+<span class="font-headline-display text-headline-display text-on-surface">28</span>
+<span class="font-numeric-data text-body-sm text-on-surface-variant font-medium">órdenes</span>
+</div>
+<div class="mt-space-xs flex items-center gap-1.5 flex-wrap">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-on-tertiary-container font-label-xs text-label-xs font-semibold">
+<span class="material-symbols-outlined text-[12px]">trending_up</span>
+            +14% vs mes anterior
+          </span>
+<span class="font-numeric-data text-label-xs text-on-surface-variant">€ 184.200 autorizados</span>
+</div>
+</div>
+<div class="mt-3 w-full bg-surface-container rounded-full h-1.5 overflow-hidden">
+<div class="bg-on-tertiary-container h-full rounded-full" style="width: 84%"></div>
+</div>
+</div>
+<!-- Stat 3: Rechazadas / Devueltas -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm relative overflow-hidden flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Rechazadas / Devueltas</span>
+<span class="w-8 h-8 rounded-lg bg-surface-container text-outline flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">replay</span>
+</span>
+</div>
+<div class="mt-space-sm">
+<div class="flex items-baseline gap-2">
+<span class="font-headline-display text-headline-display text-on-surface">3</span>
+<span class="font-numeric-data text-body-sm text-on-surface-variant font-medium">casos</span>
+</div>
+<div class="mt-space-xs flex items-center gap-1.5 flex-wrap">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-xs text-label-xs">
+            2 para ajuste de ppto.
+          </span>
+<span class="font-numeric-data text-label-xs text-outline">1 desestimada</span>
+</div>
+</div>
+<div class="mt-3 w-full bg-surface-container rounded-full h-1.5 overflow-hidden">
+<div class="bg-outline h-full rounded-full" style="width: 12%"></div>
+</div>
+</div>
+<!-- Stat 4: SLA y Tiempo de respuesta -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm relative overflow-hidden flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Tiempo medio resolución</span>
+<span class="w-8 h-8 rounded-lg bg-secondary-fixed text-on-secondary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">timer</span>
+</span>
+</div>
+<div class="mt-space-sm">
+<div class="flex items-baseline gap-2">
+<span class="font-headline-display text-headline-display text-on-surface">1,2</span>
+<span class="font-numeric-data text-body-sm text-on-surface-variant font-medium">días</span>
+</div>
+<div class="mt-space-xs flex items-center gap-1.5 flex-wrap">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-xs text-label-xs font-semibold">
+<span class="material-symbols-outlined text-[12px]">check_circle</span>
+            SLA 96% cumplido
+          </span>
+<span class="font-numeric-data text-label-xs text-secondary font-medium">Meta &lt; 2 días</span>
+</div>
+</div>
+<div class="mt-3 w-full bg-surface-container rounded-full h-1.5 overflow-hidden">
+<div class="bg-secondary h-full rounded-full" style="width: 96%"></div>
+</div>
+</div>
+</div>
+<!-- Operational Workspace: Tabs, Filters, Table and Sidebar -->
+<div class="space-y-space-md">
+<!-- Tab Navigation Strip -->
+<div class="flex items-center justify-between border-b-0 pb-1">
+<div class="flex items-center gap-2 p-1 bg-surface-container-low rounded-xl">
+<button class="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md font-semibold shadow-sm transition-all" type="button">
+<span class="">Pendientes</span>
+<span class="px-1.5 py-0.2 rounded-full bg-secondary text-on-secondary font-numeric-data text-label-xs font-bold">4</span>
+</button>
+<button class="flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all font-label-md text-label-md" type="button">
+<span class="">Historial de mis decisiones</span>
+<span class="px-1.5 py-0.2 rounded-full bg-surface-container text-on-surface-variant font-numeric-data text-label-xs">31</span>
+</button>
+<button class="flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all font-label-md text-label-md" type="button">
+<span class="">Delegadas / En custodia</span>
+<span class="px-1.5 py-0.2 rounded-full bg-surface-container text-on-surface-variant font-numeric-data text-label-xs">1</span>
+</button>
+</div>
+<div class="hidden sm:flex items-center gap-2">
+<button class="p-2 rounded-lg bg-surface-container-lowest hover:bg-surface-container text-on-surface-variant hover:text-on-surface shadow-sm transition-colors" title="Descargar reporte en Excel/CSV" type="button">
+<span class="material-symbols-outlined text-[18px]">download</span>
+</button>
+<button class="p-2 rounded-lg bg-surface-container-lowest hover:bg-surface-container text-on-surface-variant hover:text-on-surface shadow-sm transition-colors" title="Refrescar lista" type="button">
+<span class="material-symbols-outlined text-[18px]">refresh</span>
+</button>
+</div>
+</div>
+<!-- Filter Control Toolbar -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm space-y-3">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-space-sm items-center">
+<!-- Search input with icon and badge shortcut -->
+<div class="md:col-span-4 relative flex items-center">
+<span class="material-symbols-outlined text-[18px] text-outline absolute left-3 pointer-events-none">search</span>
+<input class="w-full bg-surface-container-low pl-9 pr-14 py-2 rounded-lg text-body-md font-body-md text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest shadow-inner" id="filter-search" placeholder="Buscar por ID, solicitante, justificación..." type="text"/>
+<kbd class="absolute right-2.5 bg-surface-container-lowest px-1.5 py-0.5 rounded font-label-xs text-label-xs text-on-surface-variant shadow-sm border border-outline-variant/30 pointer-events-none">⌘K</kbd>
+</div>
+<!-- Filters group -->
+<div class="md:col-span-8 flex flex-wrap items-center gap-2 justify-start md:justify-end">
+<div class="flex items-center gap-1.5 bg-surface-container-low px-2.5 py-1.5 rounded-lg text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">domain</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">Depto:</span>
+<select class="bg-transparent font-label-sm text-label-sm text-on-surface font-semibold focus:outline-none cursor-pointer pr-1">
+<option>Todos</option>
+<option>Ingeniería &amp; IT</option>
+<option>Operaciones</option>
+<option>Marketing</option>
+<option>Recursos Humanos</option>
+</select>
+</div>
+<div class="flex items-center gap-1.5 bg-surface-container-low px-2.5 py-1.5 rounded-lg text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">flag</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">Prioridad:</span>
+<select class="bg-transparent font-label-sm text-label-sm text-on-surface font-semibold focus:outline-none cursor-pointer pr-1">
+<option>Todas</option>
+<option>Urgente</option>
+<option>Alta</option>
+<option>Media</option>
+</select>
+</div>
+<div class="flex items-center gap-1.5 bg-surface-container-low px-2.5 py-1.5 rounded-lg text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">payments</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">Importe:</span>
+<select class="bg-transparent font-label-sm text-label-sm text-on-surface font-semibold focus:outline-none cursor-pointer pr-1">
+<option>Cualquiera</option>
+<option>&lt; € 5.000</option>
+<option>€ 5.000 - € 20.000</option>
+<option>&gt; € 20.000</option>
+</select>
+</div>
+<div class="flex items-center gap-1.5 bg-surface-container-low px-2.5 py-1.5 rounded-lg text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">sort</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant uppercase">Orden:</span>
+<select class="bg-transparent font-label-sm text-label-sm text-on-surface font-semibold focus:outline-none cursor-pointer pr-1">
+<option>Más urgentes primero</option>
+<option>Mayor importe</option>
+<option>Menor importe</option>
+<option>Más recientes</option>
+</select>
+</div>
+<button class="p-2 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface-variant transition-colors" title="Limpiar filtros" type="button">
+<span class="material-symbols-outlined text-[18px]">filter_alt_off</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Data Table Container -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+<!-- Batch Action Floating Info Banner (Appears when row selected) -->
+<div class="hidden px-space-md py-2.5 bg-surface-container-high items-center justify-between text-on-surface" id="selection-banner">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-secondary">check_box</span>
+<span class="font-label-sm text-label-sm font-semibold" id="selection-count">0 solicitudes seleccionadas</span>
+<span class="text-outline text-label-xs">• Importe acumulado: <strong class="text-on-surface" id="selection-total">€ 0,00</strong></span>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-3 py-1 rounded-md bg-surface-container hover:bg-surface text-on-surface font-label-xs text-label-xs font-semibold transition-colors" onclick="clearSelections()" type="button">
+            Deseleccionar
+          </button>
+<button class="px-3 py-1 rounded-md bg-secondary text-on-secondary font-label-xs text-label-xs font-semibold hover:bg-secondary-container transition-colors" onclick="batchApproveSelected()" type="button">
+            Aprobar seleccionadas
+          </button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low text-on-surface-variant font-label-xs text-label-xs uppercase">
+<th class="py-3 px-4 w-10 text-center" scope="col">
+<input class="w-4 h-4 rounded text-secondary focus:ring-0 cursor-pointer accent-secondary" id="select-all" type="checkbox"/>
+</th>
+<th class="py-3 px-4 font-semibold" scope="col">N° Solicitud</th>
+<th class="py-3 px-4 font-semibold" scope="col">Solicitante / Dpto.</th>
+<th class="py-3 px-4 font-semibold" scope="col">Justificación &amp; Partidas</th>
+<th class="py-3 px-4 font-semibold text-right" scope="col">Importe Total</th>
+<th class="py-3 px-4 font-semibold" scope="col">Estatus / Fecha Decisión</th>
+<th class="py-3 px-4 font-semibold text-center" scope="col">Prioridad</th>
+<th class="py-3 px-4 font-semibold" scope="col">Comentarios</th><th class="py-3 px-4 font-semibold text-right" scope="col">Acciones</th>
+</tr>
+</thead>
+<tbody class="text-body-sm font-body-sm text-on-surface divide-y divide-surface-container-high/40">
+<!-- Row 1: AWS Infra Renewal -->
+<tr class="hover:bg-surface-container-low/60 transition-colors group" data-amount="14850" data-req="REQ-2024-0891">
+<td class="py-3.5 px-4 text-center">
+<input class="row-checkbox w-4 h-4 rounded text-secondary focus:ring-0 cursor-pointer accent-secondary" type="checkbox"/>
+</td>
+<td class="py-3.5 px-4 whitespace-nowrap">
+<div class="flex items-center gap-1.5">
+<a class="font-numeric-data text-label-sm font-semibold text-secondary hover:underline" href="#">#REQ-2024-0891</a>
+<span class="material-symbols-outlined text-[15px] text-outline" title="Adjuntos disponibles">attachment</span>
+</div>
+<span class="font-label-xs text-label-xs text-on-surface-variant">PO-Prep: #PO-9921</span>
+</td>
+<td class="py-3.5 px-4 whitespace-nowrap">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest text-secondary font-label-xs font-bold flex items-center justify-center shrink-0">
+                    MR
+                  </div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm font-semibold text-on-surface leading-tight">Marcos Rivas</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant">Cloud &amp; DevOps</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-4 max-w-xs">
+<div class="flex flex-col gap-1">
+<span class="font-body-sm text-body-sm font-medium text-on-surface truncate" title="Renovación anual infra AWS &amp; Datadog">
+                    Renovación anual infra AWS &amp; Datadog
+                  </span>
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="inline-flex items-center px-2 py-0.2 rounded bg-surface-container font-label-xs text-label-xs text-on-surface-variant">
+                      2 partidas
+                    </span>
+<span class="font-label-xs text-label-xs text-outline">Proveedor: Amazon Web Services EMEA</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-4 text-right whitespace-nowrap">
+<span class="font-numeric-data text-label-md font-bold text-on-surface">€ 14.850,00</span>
+<span class="block font-label-xs text-label-xs text-on-surface-variant font-numeric-data">+IVA 21%</span>
+</td>
+<td class="py-3.5 px-4 whitespace-nowrap min-w-[130px]"><div class="flex flex-col gap-1 items-start"><span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-error-container text-on-error-container font-label-xs text-label-xs font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-error"></span>Pendiente de firma</span><span class="font-label-xs text-[10px] text-on-surface-variant font-numeric-data">Decisión: Hoy, 18:00</span></div></td>
+<td class="py-3.5 px-4 text-center whitespace-nowrap">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-error-container text-on-error-container font-label-xs text-label-xs font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                  Urgente
+                </span>
+</td>
+<td class="py-3.5 px-4 max-w-xs"><div class="flex items-start gap-1.5 text-on-surface-variant font-body-sm text-body-sm"><span class="material-symbols-outlined text-[16px] text-on-tertiary-container shrink-0 mt-0.5">chat_bubble_outline</span><span class="line-clamp-2 leading-tight" title="Partida validada por finanzas preliminarmente">Partida validada por finanzas preliminarmente</span></div></td><td class="py-3.5 px-4 text-right whitespace-nowrap">
+<div class="flex items-center justify-end gap-1"><button class="p-1.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" title="Ver detalles y documentación" type="button"><span class="material-symbols-outlined text-[18px]">visibility</span></button><button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-on-primary font-label-xs text-label-xs font-semibold hover:bg-inverse-surface active:scale-[0.98] transition-all shadow-sm" title="Tomar decisión sobre la solicitud" type="button"><span class="material-symbols-outlined text-[16px]">gavel</span><span class="">Decidir</span></button></div>
+</td>
+</tr>
+<!-- Row 2: Licencias Figma Enterprise -->
+<tr class="hover:bg-surface-container-low/60 transition-colors group" data-amount="6400" data-req="REQ-2024-0889">
+<td class="py-3.5 px-4 text-center">
+<input class="row-checkbox w-4 h-4 rounded text-secondary focus:ring-0 cursor-pointer accent-secondary" type="checkbox"/>
+</td>
+<td class="py-3.5 px-4 whitespace-nowrap">
+<div class="flex items-center gap-1.5">
+<a class="font-numeric-data text-label-sm font-semibold text-secondary hover:underline" href="#">#REQ-2024-0889</a>
+<span class="material-symbols-outlined text-[15px] text-outline" title="Adjuntos disponibles">attachment</span>
+</div>
+<span class="font-label-xs text-label-xs text-on-surface-variant">PO-Prep: #PO-9918</span>
+</td>
+<td class="py-3.5 px-4 whitespace-nowrap">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-xs font-bold flex items-center justify-center shrink-0">
+                    SL
+                  </div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm font-semibold text-on-surface leading-tight">Sofía Luque</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant">Product Design</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-4 max-w-xs">
+<div class="flex flex-col gap-1">
+<span class="font-body-sm text-body-sm font-medium text-on-surface truncate" title="Ampliación licencias Figma Enterprise &amp; FigJam">
+                    Ampliación licencias Figma Enterprise &amp; FigJam
+                  </span>
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="inline-flex items-center px-2 py-0.2 rounded bg-surface-container font-label-xs text-label-xs text-on-surface-variant">
+                      12 puestos
+                    </span>
+<span class="font-label-xs text-label-xs text-outline">Figma Inc.</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-4 text-right whitespace-nowrap">
+<span class="font-numeric-data text-label-md font-bold text-on-surface">€ 6.400,00</span>
+<span class="block font-label-xs text-label-xs text-on-surface-variant font-numeric-data">Suscripción anual</span>
+</td>
+<td class="py-3.5 px-4 whitespace-nowrap min-w-[130px]"><div class="flex flex-col gap-1 items-start"><span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-xs text-label-xs font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>En revisión</span><span class="font-label-xs text-[10px] text-on-surface-variant font-numeric-data">Límite: 25 Oct 2024</span></div></td>
+<td class="py-3.5 px-4 text-center whitespace-nowrap">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-xs text-label-xs font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                  Alta
+                </span>
+</td>
+<td class="py-3.5 px-4 max-w-xs"><div class="flex items-start gap-1.5 text-on-surface-variant font-body-sm text-body-sm"><span class="material-symbols-outlined text-[16px] text-secondary shrink-0 mt-0.5">chat_bubble_outline</span><span class="line-clamp-2 leading-tight" title="Pendiente adjuntar comparativo de 3 ofertas">Pendiente adjuntar comparativo de 3 ofertas</span></div></td><td class="py-3.5 px-4 text-right whitespace-nowrap">
+<div class="flex items-center justify-end gap-1"><button class="p-1.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" title="Ver detalles y documentación" type="button"><span class="material-symbols-outlined text-[18px]">visibility</span></button><button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-on-primary font-label-xs text-label-xs font-semibold hover:bg-inverse-surface active:scale-[0.98] transition-all shadow-sm" title="Tomar decisión sobre la solicitud" type="button"><span class="material-symbols-outlined text-[16px]">gavel</span><span class="">Decidir</span></button></div>
+</td>
+</tr>
+<!-- Row 3: Equipamiento Laptops Mac M3 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors group" data-amount="18200" data-req="REQ-2024-0885">
+<td class="py-3.5 px-4 text-center">
+<input class="row-checkbox w-4 h-4 rounded text-secondary focus:ring-0 cursor-pointer accent-secondary" type="checkbox"/>
+</td>
+<td class="py-3.5 px-4 whitespace-nowrap">
+<div class="flex items-center gap-1.5">
+<a class="font-numeric-data text-label-sm font-semibold text-secondary hover:underline" href="#">#REQ-2024-0885</a>
+<span class="material-symbols-outlined text-[15px] text-outline" title="Adjuntos disponibles">attachment</span>
+</div>
+<span class="font-label-xs text-label-xs text-on-surface-variant">PO-Prep: #PO-9912</span>
+</td>
+<td class="py-3.5 px-4 whitespace-nowrap">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-surface-container-high text-on-surface font-label-xs font-bold flex items-center justify-center shrink-0">
+                    AV
+                  </div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm font-semibold text-on-surface leading-tight">Alejandro Vega</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant">IT Operations</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-4 max-w-xs">
+<div class="flex flex-col gap-1">
+<span class="font-body-sm text-body-sm font-medium text-on-surface truncate" title="Lote 7x MacBook Pro M3 Pro - Nuevas incorporaciones">
+                    Lote 7x MacBook Pro M3 Pro - Onboarding Q4
+                  </span>
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="inline-flex items-center px-2 py-0.2 rounded bg-surface-container font-label-xs text-label-xs text-on-surface-variant">
+                      7 unidades
+                    </span>
+<span class="font-label-xs text-label-xs text-outline">Bechtle Direct S.L.</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-4 text-right whitespace-nowrap">
+<span class="font-numeric-data text-label-md font-bold text-on-surface">€ 18.200,00</span>
+<span class="block font-label-xs text-label-xs text-on-surface-variant font-numeric-data">Capex Hardware</span>
+</td>
+<td class="py-3.5 px-4 whitespace-nowrap min-w-[130px]"><div class="flex flex-col gap-1 items-start"><span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-error-container text-on-error-container font-label-xs text-label-xs font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-error"></span>Pendiente de firma</span><span class="font-label-xs text-[10px] text-error font-numeric-data font-medium">Decisión esperada: 23 Oct</span></div></td>
+<td class="py-3.5 px-4 text-center whitespace-nowrap">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-error-container text-on-error-container font-label-xs text-label-xs font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                  Urgente
+                </span>
+</td>
+<td class="py-3.5 px-4 max-w-xs"><div class="flex items-start gap-1.5 text-on-surface-variant font-body-sm text-body-sm"><span class="material-symbols-outlined text-[16px] text-error shrink-0 mt-0.5">chat_bubble_outline</span><span class="line-clamp-2 leading-tight" title="Urgente por incorporación de nuevos empleados">Urgente por incorporación de nuevos empleados</span></div></td><td class="py-3.5 px-4 text-right whitespace-nowrap">
+<div class="flex items-center justify-end gap-1"><button class="p-1.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" title="Ver detalles y documentación" type="button"><span class="material-symbols-outlined text-[18px]">visibility</span></button><button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-on-primary font-label-xs text-label-xs font-semibold hover:bg-inverse-surface active:scale-[0.98] transition-all shadow-sm" title="Tomar decisión sobre la solicitud" type="button"><span class="material-symbols-outlined text-[16px]">gavel</span><span class="">Decidir</span></button></div>
+</td>
+</tr>
+<!-- Row 4: Campaña Performance Ads -->
+<tr class="hover:bg-surface-container-low/60 transition-colors group" data-amount="2700" data-req="REQ-2024-0882">
+<td class="py-3.5 px-4 text-center">
+<input class="row-checkbox w-4 h-4 rounded text-secondary focus:ring-0 cursor-pointer accent-secondary" type="checkbox"/>
+</td>
+<td class="py-3.5 px-4 whitespace-nowrap">
+<div class="flex items-center gap-1.5">
+<a class="font-numeric-data text-label-sm font-semibold text-secondary hover:underline" href="#">#REQ-2024-0882</a>
+<span class="material-symbols-outlined text-[15px] text-outline" title="Adjuntos disponibles">attachment</span>
+</div>
+<span class="font-label-xs text-label-xs text-on-surface-variant">PO-Prep: #PO-9905</span>
+</td>
+<td class="py-3.5 px-4 whitespace-nowrap">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-surface-container text-on-surface-variant font-label-xs font-bold flex items-center justify-center shrink-0">
+                    EG
+                  </div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm font-semibold text-on-surface leading-tight">Elena Gallego</span>
+<span class="font-label-xs text-label-xs text-on-surface-variant">Growth Marketing</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-4 max-w-xs">
+<div class="flex flex-col gap-1">
+<span class="font-body-sm text-body-sm font-medium text-on-surface truncate" title="Crédito publicitario LinkedIn Ads campaña B2B Enterprise">
+                    Crédito publicitario LinkedIn Ads campaña B2B Enterprise
+                  </span>
+<div class="flex items-center gap-1.5 flex-wrap">
+<span class="inline-flex items-center px-2 py-0.2 rounded bg-surface-container font-label-xs text-label-xs text-on-surface-variant">
+                      Partida Opex
+                    </span>
+<span class="font-label-xs text-label-xs text-outline">LinkedIn Ireland Ltd</span>
+</div>
+</div>
+</td>
+<td class="py-3.5 px-4 text-right whitespace-nowrap">
+<span class="font-numeric-data text-label-md font-bold text-on-surface">€ 2.700,00</span>
+<span class="block font-label-xs text-label-xs text-on-surface-variant font-numeric-data">Inversión mensual</span>
+</td>
+<td class="py-3.5 px-4 whitespace-nowrap min-w-[130px]"><div class="flex flex-col gap-1 items-start"><span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-xs text-label-xs font-medium"><span class="w-1.5 h-1.5 rounded-full bg-outline"></span>En espera</span><span class="font-label-xs text-[10px] text-on-surface-variant font-numeric-data">Límite: 26 Oct 2024</span></div></td>
+<td class="py-3.5 px-4 text-center whitespace-nowrap">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-xs text-label-xs font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+                  Media
+                </span>
+</td>
+<td class="py-3.5 px-4 max-w-xs"><div class="flex items-start gap-1.5 text-on-surface-variant font-body-sm text-body-sm"><span class="material-symbols-outlined text-[16px] text-outline shrink-0 mt-0.5">chat_bubble_outline</span><span class="line-clamp-2 leading-tight" title="Gasto contemplado en plan trimestral">Gasto contemplado en plan trimestral</span></div></td><td class="py-3.5 px-4 text-right whitespace-nowrap">
+<div class="flex items-center justify-end gap-1"><button class="p-1.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" title="Ver detalles y documentación" type="button"><span class="material-symbols-outlined text-[18px]">visibility</span></button><button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-on-primary font-label-xs text-label-xs font-semibold hover:bg-inverse-surface active:scale-[0.98] transition-all shadow-sm" title="Tomar decisión sobre la solicitud" type="button"><span class="material-symbols-outlined text-[16px]">gavel</span><span class="">Decidir</span></button></div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination and Record Counter Footer -->
+<div class="p-space-md bg-surface-container-low/40 flex flex-col sm:flex-row items-center justify-between gap-space-sm">
+<div class="flex items-center gap-4 text-body-sm font-body-sm text-on-surface-variant">
+<span class="">Mostrando <strong>1</strong> a <strong>4</strong> de <strong>4</strong> pendientes de autorizar</span>
+<div class="flex items-center gap-1.5">
+<span class="font-label-xs text-label-xs">Filas:</span>
+<select class="bg-surface-container-lowest px-2 py-1 rounded-md font-label-xs text-label-xs text-on-surface focus:outline-none cursor-pointer">
+<option selected="">10</option>
+<option>25</option>
+<option>50</option>
+</select>
+</div>
+</div>
+<div class="flex items-center gap-1">
+<button class="p-1.5 rounded-lg text-outline cursor-not-allowed opacity-50" disabled="" type="button">
+<span class="material-symbols-outlined text-[18px]">first_page</span>
+</button>
+<button class="p-1.5 rounded-lg text-outline cursor-not-allowed opacity-50" disabled="" type="button">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<span class="px-3 py-1 rounded-lg bg-primary text-on-primary font-numeric-data text-label-xs font-semibold">1</span>
+<button class="p-1.5 rounded-lg text-outline cursor-not-allowed opacity-50" disabled="" type="button">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+<button class="p-1.5 rounded-lg text-outline cursor-not-allowed opacity-50" disabled="" type="button">
+<span class="material-symbols-outlined text-[18px]">last_page</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Governance Context Box / Signature Delegation Banner -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+<div class="flex items-start gap-3.5">
+<div class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-secondary shrink-0">
+<span class="material-symbols-outlined text-[22px]">policy</span>
+</div>
+<div class="space-y-0.5">
+<div class="flex items-center gap-2">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Límite de firma delegada activo</h2>
+<span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-xs text-label-xs font-medium">Nivel Operativo II</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+<strong>Carlos Mendoza</strong> cuenta con facultad de autorización directa de hasta <strong class="text-on-surface">€ 50.000,00</strong> por orden de compra. Cualquier requerimiento superior será redirigido en bifurcación automática al Comité Financiero (CFO).
+            </p>
+</div>
+</div>
+<div class="flex items-center gap-space-sm shrink-0 pl-12 md:pl-0">
+<a class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-surface-container-low hover:bg-surface-container text-secondary font-label-sm text-label-sm font-semibold transition-colors" href="#">
+<span class="material-symbols-outlined text-[16px]">edit_calendar</span>
+<span class="">Gestionar sustituto temporal por vacaciones</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+  // Client-side micro-interactions for batch selection & approvals
+  const selectAll = document.getElementById('select-all');
+  const rowCheckboxes = document.querySelectorAll('.row-checkbox');
+  const batchApproveBtn = document.getElementById('batch-approve-btn');
+  const batchText = document.getElementById('batch-text');
+  const banner = document.getElementById('selection-banner');
+  const selectionCount = document.getElementById('selection-count');
+  const selectionTotal = document.getElementById('selection-total');
+
+  function updateSelectionState() {
+    let count = 0;
+    let sum = 0;
+
+    rowCheckboxes.forEach((cb) => {
+      if (cb.checked) {
+        count++;
+        const row = cb.closest('tr');
+        const amount = parseFloat(row.getAttribute('data-amount') || '0');
+        sum += amount;
+      }
+    });
+
+    if (count > 0) {
+      batchApproveBtn.disabled = false;
+      batchApproveBtn.classList.remove('bg-surface-container', 'text-outline', 'cursor-not-allowed', 'opacity-60');
+      batchApproveBtn.classList.add('bg-primary', 'text-on-primary', 'hover:bg-inverse-surface', 'active:scale-[0.98]', 'shadow-sm', 'cursor-pointer');
+      batchText.textContent = `Aprobar lote seleccionado (${count})`;
+
+      banner.classList.remove('hidden');
+      banner.classList.add('flex');
+      selectionCount.textContent = `${count} ${count === 1 ? 'solicitud seleccionada' : 'solicitudes seleccionadas'}`;
+      selectionTotal.textContent = `€ ${sum.toLocaleString('es-ES', { minimumFractionDigits: 2 })}`;
+    } else {
+      batchApproveBtn.disabled = true;
+      batchApproveBtn.classList.add('bg-surface-container', 'text-outline', 'cursor-not-allowed', 'opacity-60');
+      batchApproveBtn.classList.remove('bg-primary', 'text-on-primary', 'hover:bg-inverse-surface', 'active:scale-[0.98]', 'shadow-sm', 'cursor-pointer');
+      batchText.textContent = 'Aprobar lote seleccionado (0)';
+
+      banner.classList.add('hidden');
+      banner.classList.remove('flex');
+    }
+
+    if (selectAll) {
+      selectAll.checked = count === rowCheckboxes.length && rowCheckboxes.length > 0;
+    }
+  }
+
+  if (selectAll) {
+    selectAll.addEventListener('change', () => {
+      rowCheckboxes.forEach((cb) => {
+        cb.checked = selectAll.checked;
+      });
+      updateSelectionState();
+    });
+  }
+
+  rowCheckboxes.forEach((cb) => {
+    cb.addEventListener('change', updateSelectionState);
+  });
+
+  window.clearSelections = function() {
+    rowCheckboxes.forEach((cb) => { cb.checked = false; });
+    if (selectAll) selectAll.checked = false;
+    updateSelectionState();
+  };
+
+  window.batchApproveSelected = function() {
+    alert('Se han enviado las solicitudes seleccionadas al proceso de firma y emisión de Orden de Compra.');
+    window.clearSelections();
+  };
+</script></main></div>
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-on-background/50 backdrop-blur-sm overflow-y-auto" id="decision-modal-overlay"><div class="relative w-full max-w-3xl my-8 bg-surface-container-lowest rounded-xl shadow-2xl border border-outline-variant/30 overflow-hidden flex flex-col transition-all"><div class="px-space-lg pt-space-lg pb-space-md border-b border-surface-container-high flex items-start justify-between gap-4"><div class="space-y-1"><div class="flex items-center gap-2.5 flex-wrap"><h2 class="font-headline-md text-headline-md text-on-surface tracking-tight">Decisión de Solicitud de Compra</h2><span class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-numeric-data text-label-xs font-semibold">#REQ-2024-0891</span><span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-error-container text-on-error-container font-label-xs text-label-xs font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-error"></span>Urgente</span></div><p class="font-body-sm text-body-sm text-on-surface-variant">Revisa los detalles de la solicitud y las partidas antes de registrar tu dictamen oficial.</p></div><button class="p-1.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors" onclick="document.getElementById('decision-modal-overlay').remove()" title="Cerrar modal" type="button"><span class="material-symbols-outlined text-[20px]">close</span></button></div><div class="p-space-lg space-y-space-md max-h-[calc(85vh-160px)] overflow-y-auto"><div class="grid grid-cols-1 md:grid-cols-3 gap-3 bg-surface-container-low/60 rounded-xl p-space-md border border-surface-container-high"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-surface-container-highest text-secondary font-label-sm font-bold flex items-center justify-center shrink-0">MR</div><div class="flex flex-col min-w-0"><span class="font-label-xs text-label-xs text-on-surface-variant uppercase tracking-wider">Solicitante</span><span class="font-label-sm text-label-sm font-semibold text-on-surface truncate">Marcos Rivas</span><span class="font-label-xs text-[11px] text-on-surface-variant truncate">Cloud &amp; DevOps</span></div></div><div class="flex flex-col justify-center"><span class="font-label-xs text-label-xs text-on-surface-variant uppercase tracking-wider">Departamento</span><span class="font-label-sm text-label-sm font-semibold text-on-surface">Tecnología / Infra Cloud</span><span class="font-label-xs text-[11px] text-on-surface-variant">CC-4100 • Opex Cloud</span></div><div class="flex flex-col justify-center"><span class="font-label-xs text-label-xs text-on-surface-variant uppercase tracking-wider">Proveedor Propuesto</span><span class="font-label-sm text-label-sm font-semibold text-on-surface truncate">Amazon Web Services EMEA</span><span class="font-label-xs text-[11px] text-secondary font-medium">Contrato Marco Activo</span></div><div class="md:col-span-2 pt-2 border-t border-surface-container-high/60"><span class="font-label-xs text-label-xs text-on-surface-variant uppercase tracking-wider block mb-0.5">Justificación del Gasto</span><p class="font-body-sm text-body-sm text-on-surface leading-relaxed">Renovación anual de infraestructura AWS (instancias reservadas EC2 y Datadog APM). Necesario para soportar la carga proyectada de Q4 y evitar tarifas bajo demanda.</p></div><div class="pt-2 border-t border-surface-container-high/60 flex flex-col justify-center bg-surface-container-lowest/80 rounded-lg p-2.5 border border-surface-container-high"><span class="font-label-xs text-label-xs text-on-surface-variant uppercase tracking-wider">Importe Total Neto</span><span class="font-numeric-data text-headline-sm text-headline-sm font-bold text-on-surface">€ 14.850,00</span><span class="font-numeric-data text-label-xs text-on-surface-variant">+IVA 21% = € 17.968,50</span></div></div><div class="space-y-2"><div class="flex items-center justify-between"><h3 class="font-label-sm text-label-sm font-semibold text-on-surface flex items-center gap-1.5"><span class="material-symbols-outlined text-[18px] text-secondary">format_list_bulleted</span>Partidas y Conceptos Incluidos (2 partidas)</h3><span class="font-label-xs text-label-xs text-on-surface-variant">Moneda base: EUR (€)</span></div><div class="border border-surface-container-high rounded-lg overflow-hidden"><table class="w-full text-left border-collapse"><thead class="bg-surface-container-low text-on-surface-variant font-label-xs text-label-xs uppercase"><tr><th class="py-2.5 px-3 font-semibold" scope="col">Descripción / Partida</th><th class="py-2.5 px-3 font-semibold text-center" scope="col">Cantidad</th><th class="py-2.5 px-3 font-semibold text-right" scope="col">Precio Ud.</th><th class="py-2.5 px-3 font-semibold text-right" scope="col">Subtotal</th></tr></thead><tbody class="text-body-sm divide-y divide-surface-container-high"><tr class="hover:bg-surface-container-low/40 transition-colors"><td class="py-2.5 px-3"><span class="font-label-sm text-label-sm font-semibold text-on-surface block">Instancias EC2 C6i.2xlarge Reservadas 1 año</span><span class="font-label-xs text-label-xs text-on-surface-variant">SKU: AWS-RES-C6I-2XL • Descuento 38% sobre On-Demand</span></td><td class="py-2.5 px-3 text-center font-numeric-data text-label-sm text-on-surface">3</td><td class="py-2.5 px-3 text-right font-numeric-data text-label-sm text-on-surface">€ 3.200,00</td><td class="py-2.5 px-3 text-right font-numeric-data text-label-sm font-semibold text-on-surface">€ 9.600,00</td></tr><tr class="hover:bg-surface-container-low/40 transition-colors"><td class="py-2.5 px-3"><span class="font-label-sm text-label-sm font-semibold text-on-surface block">Licencias Datadog APM Enterprise Anual</span><span class="font-label-xs text-label-xs text-on-surface-variant">SKU: DD-APM-ENT-YR • 15 hosts distribuidos</span></td><td class="py-2.5 px-3 text-center font-numeric-data text-label-sm text-on-surface">15 hosts</td><td class="py-2.5 px-3 text-right font-numeric-data text-label-sm text-on-surface">€ 350,00</td><td class="py-2.5 px-3 text-right font-numeric-data text-label-sm font-semibold text-on-surface">€ 5.250,00</td></tr></tbody><tfoot class="bg-surface-container-low/60 border-t border-surface-container-high"><tr><td class="py-2.5 px-3 font-label-sm text-label-sm font-semibold text-on-surface-variant" colspan="3">Total partidas sin impuestos</td><td class="py-2.5 px-3 text-right font-numeric-data text-label-md font-bold text-on-surface">€ 14.850,00</td></tr></tfoot></table></div></div><div class="space-y-1.5"><div class="flex items-center justify-between"><label class="font-label-sm text-label-sm font-semibold text-on-surface flex items-center gap-1.5" for="decision-comment"><span class="material-symbols-outlined text-[18px] text-on-surface-variant">rate_review</span>Comentarios u observaciones de la decisión</label><span class="font-label-xs text-label-xs text-on-surface-variant">Obligatorio si se rechaza • Opcional si se aprueba</span></div><textarea class="w-full bg-surface-container-low rounded-lg p-3 text-body-sm font-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest border border-outline-variant/30 shadow-inner resize-none" id="decision-comment" placeholder="Escribe las observaciones o motivos de tu decisión (obligatorio en caso de rechazo o devolución)..." rows="3"></textarea></div></div><div class="px-space-lg py-space-md bg-surface-container-low/60 border-t border-surface-container-high flex flex-col sm:flex-row items-center justify-between gap-space-sm"><button class="w-full sm:w-auto px-4 py-2 rounded-lg bg-surface-container-lowest hover:bg-surface-container text-on-surface-variant hover:text-on-surface font-label-md text-label-md font-semibold border border-outline-variant/30 transition-colors" onclick="document.getElementById('decision-modal-overlay').remove()" type="button">Cancelar</button><div class="flex items-center gap-2.5 w-full sm:w-auto justify-end"><button class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-error-container text-on-error-container hover:bg-error hover:text-on-error font-label-md text-label-md font-semibold transition-all shadow-sm" onclick="alert('Solicitud REQ-2024-0891 rechazada con éxito.'); document.getElementById('decision-modal-overlay').remove();" type="button"><span class="material-symbols-outlined text-[18px]">cancel</span>Rechazar solicitud</button><button class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-on-primary hover:bg-inverse-surface active:scale-[0.98] font-label-md text-label-md font-semibold transition-all shadow-sm" onclick="alert('Solicitud REQ-2024-0891 aprobada con éxito. Orden de compra emitida.'); document.getElementById('decision-modal-overlay').remove();" type="button"><span class="material-symbols-outlined text-[18px]">check_circle</span>Aprobar solicitud</button></div></div></div></div></body></html>
