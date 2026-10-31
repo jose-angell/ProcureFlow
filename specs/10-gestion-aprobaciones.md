@@ -1,6 +1,6 @@
 # SPEC 10 — Gestión de aprobaciones
 
-> **Estado:** aprobado
+> **Estado:** implementado
 > **Depende de:** SPEC 05, SPEC 06, SPEC 09
 > **Fecha:** 2026-10-30
 > **Objetivo:** Implementar la página `/approvals`, para Approver y Admin, con KPIs, pestañas "Pendientes" e "Historial de mis decisiones" filtrables y paginadas en la API, y un modal con partidas para aprobar, rechazar o consultar una decisión, según `design/approver.html` y `design/approverModal.html`.
@@ -200,37 +200,37 @@ Estados de la lista:
 
 ## Criterios de aceptación
 
-- [ ] `dotnet build`, `dotnet test`, `npm run lint` y `npm run build` pasan.
-- [ ] `GET /api/purchases` y `GET /api/purchases/{id}` devuelven `decidedAt`, `decisionComment` y `decidedByName`; son `null` sin decisión.
-- [ ] `GET /api/purchases?decidedByMe=true` devuelve solo solicitudes decididas por el usuario actual.
-- [ ] `GET /api/purchases?departmentId={id}` devuelve solo solicitudes de ese departamento.
-- [ ] Un Admin aprueba una solicitud de otro departamento y la API responde 204.
-- [ ] Como Requester, abrir `/approvals` redirige a `/dashboard` y "Aprobaciones" no aparece en el menú.
-- [ ] Como Approver y como Admin, "Aprobaciones" del menú abre `/approvals` y se marca activa.
-- [ ] Las cuatro tarjetas muestran valores de `summary`; el contador de "Pendientes" coincide con "Pendientes de mi firma".
-- [ ] "Pendientes" solo muestra solicitudes `Submitted`. Como Approver, solo de su departamento.
-- [ ] "Historial de mis decisiones" solo muestra solicitudes decididas por el usuario, con estado, fecha de decisión y comentario.
-- [ ] Buscar un número con Enter filtra la tabla, y Prioridad se combina con la búsqueda.
-- [ ] El select Departamento solo aparece para Admin y filtra por `departmentId`.
-- [ ] Estado solo aparece en Historial y filtra entre Aprobada y Rechazada.
-- [ ] "Limpiar filtros" y cambiar de pestaña vuelven los filtros a su valor inicial.
-- [ ] Con 11 pendientes y 10 filas hay 2 páginas; con 25 filas hay 1.
-- [ ] "Decidir" abre el modal con solicitante, departamento, justificación, total y las partidas con su subtotal.
-- [ ] "Rechazar solicitud" está deshabilitado con el comentario vacío o solo con espacios. "Aprobar solicitud" está habilitado sin comentario.
-- [ ] El comentario no acepta más de 1000 caracteres.
-- [ ] Aprobar envía `PATCH /api/purchases/{id}/approve` con `Authorization: Bearer <token>` y `{"comments":null}` o el comentario recortado.
-- [ ] Tras aprobar se ve "Solicitud {número} aprobada.", la fila sale de "Pendientes" y aparece en "Historial".
-- [ ] Tras rechazar se ve "Solicitud {número} rechazada." y el comentario aparece en "Historial".
-- [ ] Si la solicitud ya se decidió en otra pestaña, se ve "La solicitud ya no está pendiente de decisión." y se recarga.
-- [ ] El ojo de Historial abre el modal sin botones de decisión, con "Decidida por {nombre} el {fecha}" y el comentario.
-- [ ] Mientras decide, los botones están deshabilitados y el modal no se cierra con Esc.
-- [ ] Con la API apagada, la página muestra "No se pudo conectar con el servidor. Intenta de nuevo.".
-- [ ] "Revisar pendientes" del dashboard del aprobador lleva a `/approvals`.
-- [ ] El dashboard del aprobador y su botón "Decidir" funcionan como en SPEC 05.
-- [ ] Pestañas y modal usables solo con teclado.
-- [ ] Sin scroll horizontal de página a 375px (la tabla puede desplazarse en su contenedor).
-- [ ] No hay checkboxes, lote, "Delegadas", límite delegado, ERP, CSV, filtros Importe ni Orden.
-- [ ] No hay dependencias npm nuevas.
+- [x] `dotnet build`, `dotnet test`, `npm run lint` y `npm run build` pasan.
+- [x] `GET /api/purchases` y `GET /api/purchases/{id}` devuelven `decidedAt`, `decisionComment` y `decidedByName`; son `null` sin decisión.
+- [x] `GET /api/purchases?decidedByMe=true` devuelve solo solicitudes decididas por el usuario actual.
+- [x] `GET /api/purchases?departmentId={id}` devuelve solo solicitudes de ese departamento.
+- [x] Un Admin aprueba una solicitud de otro departamento y la API responde 204.
+- [x] Como Requester, abrir `/approvals` redirige a `/dashboard` y "Aprobaciones" no aparece en el menú.
+- [x] Como Approver y como Admin, "Aprobaciones" del menú abre `/approvals` y se marca activa.
+- [x] Las cuatro tarjetas muestran valores de `summary`; el contador de "Pendientes" coincide con "Pendientes de mi firma".
+- [x] "Pendientes" solo muestra solicitudes `Submitted`. Como Approver, solo de su departamento.
+- [x] "Historial de mis decisiones" solo muestra solicitudes decididas por el usuario, con estado, fecha de decisión y comentario.
+- [x] Buscar un número con Enter filtra la tabla, y Prioridad se combina con la búsqueda.
+- [x] El select Departamento solo aparece para Admin y filtra por `departmentId`.
+- [x] Estado solo aparece en Historial y filtra entre Aprobada y Rechazada.
+- [x] "Limpiar filtros" y cambiar de pestaña vuelven los filtros a su valor inicial.
+- [x] Con 11 pendientes y 10 filas hay 2 páginas; con 25 filas hay 1.
+- [x] "Decidir" abre el modal con solicitante, departamento, justificación, total y las partidas con su subtotal.
+- [x] "Rechazar solicitud" está deshabilitado con el comentario vacío o solo con espacios. "Aprobar solicitud" está habilitado sin comentario.
+- [x] El comentario no acepta más de 1000 caracteres.
+- [x] Aprobar envía `PATCH /api/purchases/{id}/approve` con `Authorization: Bearer <token>` y `{"comments":null}` o el comentario recortado.
+- [x] Tras aprobar se ve "Solicitud {número} aprobada.", la fila sale de "Pendientes" y aparece en "Historial".
+- [x] Tras rechazar se ve "Solicitud {número} rechazada." y el comentario aparece en "Historial".
+- [x] Si la solicitud ya se decidió en otra pestaña, se ve "La solicitud ya no está pendiente de decisión." y se recarga.
+- [x] El ojo de Historial abre el modal sin botones de decisión, con "Decidida por {nombre} el {fecha}" y el comentario.
+- [x] Mientras decide, los botones están deshabilitados y el modal no se cierra con Esc.
+- [x] Con la API apagada, la página muestra "No se pudo conectar con el servidor. Intenta de nuevo.".
+- [x] "Revisar pendientes" del dashboard del aprobador lleva a `/approvals`.
+- [x] El dashboard del aprobador y su botón "Decidir" funcionan como en SPEC 05.
+- [x] Pestañas y modal usables solo con teclado.
+- [x] Sin scroll horizontal de página a 375px (la tabla puede desplazarse en su contenedor).
+- [x] No hay checkboxes, lote, "Delegadas", límite delegado, ERP, CSV, filtros Importe ni Orden.
+- [x] No hay dependencias npm nuevas.
 
 ## Decisiones
 
