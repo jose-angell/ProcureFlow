@@ -4,6 +4,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>procureflow-api-8f3a2c1e-5b7d-4e69-9a0c-d41b6e2f7a93</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
