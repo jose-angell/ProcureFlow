@@ -37,6 +37,8 @@ export async function getPurchaseRequests(
   if (filters.requestNumber) params.set('requestNumber', filters.requestNumber)
   if (filters.status) params.set('status', filters.status)
   if (filters.priority) params.set('priority', filters.priority)
+  if (filters.decidedByMe) params.set('decidedByMe', 'true')
+  if (filters.departmentId) params.set('departmentId', filters.departmentId)
 
   return getJson<PagedResult<PurchaseRequest>>(`/api/purchases?${params}`, {
     token: getToken(),

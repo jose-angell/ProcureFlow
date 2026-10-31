@@ -32,6 +32,9 @@ export interface PurchaseRequest {
   totalAmount: number
   createdAt: string
   itemsCount: number
+  decidedAt: string | null
+  decisionComment: string | null
+  decidedByName: string | null
 }
 
 // Copia ProcureFlow.Application/PurchaseRequests/Dtos/PurchaseRequestItemDto.cs
@@ -74,6 +77,9 @@ export interface PurchaseRequestFilters {
   status?: keyof typeof PurchaseRequestStatus
   /** Nombre de la prioridad: la API lo parsea como `PurchaseRequestPriority`. */
   priority?: keyof typeof PurchaseRequestPriority
+  /** Solo solicitudes decididas por el usuario actual. */
+  decidedByMe?: boolean
+  departmentId?: string
   page: number
   pageSize: number
 }
