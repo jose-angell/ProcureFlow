@@ -1,5 +1,6 @@
 using ProcureFlow.Api;
 using ProcureFlow.Application;
+using ProcureFlow.Application.Seeding;
 using ProcureFlow.Infrastructure;
 
 
@@ -17,6 +18,12 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 var app = builder.Build();
+
+var adminSeed = app.Configuration.GetSection(AdminSeedOptions.SectionName).Get<AdminSeedOptions>() ?? new();
+using (var scope = app.Services.CreateScope())
+{
+    await scope.ServiceProvider.GetRequiredService<AdminSeeder>().SeedAsync(adminSeed);
+}
 
 // Configure the HTTP request pipeline.
 app.UseExceptionHandler();
