@@ -219,7 +219,7 @@ namespace ProcureFlow.Application.PurchaseRequests
             var purchaseRequest = await _context.PurchaseRequests.FindAsync(id);
             if (purchaseRequest == null) throw new NotFoundException("Solicitud de compra no encontrada.");
 
-            if (user.DepartmentId != purchaseRequest.DepartmentId) 
+            if (currentRole != UserRole.Admin && user.DepartmentId != purchaseRequest.DepartmentId)
                 throw new ForbiddenException("Usuario no autorizado para aprovar esta solicitud de compra.");
 
             purchaseRequest.Approve(currentUserId, request.Comments);

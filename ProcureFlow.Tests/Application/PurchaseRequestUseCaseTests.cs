@@ -510,6 +510,62 @@ namespace ProcureFlow.Tests.Application
             Assert.Equal(0, none.TotalCount);
         }
 
+        [Fact]
+        public async Task Approve_ShouldAllowAdmin_FromOtherDepartment()
+        {
+            // Arrange
+            using var db = new TestDbContextFactory();
+            var seed = await SeedSummaryDataAsync(db);
+            // El Admin del seed pertenece a IT; la solicitud es de RRHH.
+            var hrRequest = CreateRequestInStatus(seed.RequesterIt, seed.Hr, PurchaseRequestStatus.Submitted, seed.ApproverIt);
+
+            using (var seedContext = db.CreateContext())
+            {
+                seedContext.PurchaseRequests.Add(hrRequest);
+                await seedContext.SaveChangesAsync();
+            }
+
+            using var context = db.CreateContext();
+            var useCase = new PurchaseRequestUseCase(
+                context,
+                new FakeCurrentUserService(seed.Admin.Id, UserRole.Admin));
+
+            // Act
+            await useCase.Approve(hrRequest.Id, new DecisionRequest { Comments = "Autorizada por administración" });
+
+            // Assert
+            using var verifyContext = db.CreateContext();
+            var saved = await verifyContext.PurchaseRequests
+                .Include(pr => pr.ApprovalDecision)
+                .SingleAsync(pr => pr.Id == hrRequest.Id);
+            Assert.Equal(PurchaseRequestStatus.Approved, saved.Status);
+            Assert.Equal(seed.Admin.Id, saved.ApprovalDecision!.ApproverUserId);
+        }
+
+        [Fact]
+        public async Task Approve_ShouldThrowForbidden_WhenApproverIsFromOtherDepartment()
+        {
+            // Arrange
+            using var db = new TestDbContextFactory();
+            var seed = await SeedSummaryDataAsync(db);
+            var hrRequest = CreateRequestInStatus(seed.RequesterIt, seed.Hr, PurchaseRequestStatus.Submitted, seed.ApproverIt);
+
+            using (var seedContext = db.CreateContext())
+            {
+                seedContext.PurchaseRequests.Add(hrRequest);
+                await seedContext.SaveChangesAsync();
+            }
+
+            using var context = db.CreateContext();
+            var useCase = new PurchaseRequestUseCase(
+                context,
+                new FakeCurrentUserService(seed.ApproverIt.Id, UserRole.Approver));
+
+            // Act & Assert
+            await Assert.ThrowsAsync<ForbiddenException>(
+                () => useCase.Approve(hrRequest.Id, new DecisionRequest { Comments = null }));
+        }
+
         private sealed class SummarySeed
         {
             public Department It { get; init; } = null!;
