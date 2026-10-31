@@ -7,6 +7,7 @@ import { getPurchaseRequestSummary } from '@/features/purchase-requests/api/purc
 import type { PurchaseRequestSummary } from '@/features/purchase-requests/types'
 import { cn } from '@/lib/utils'
 import ApprovalStatsCards from '../components/ApprovalStatsCards'
+import ApprovalsTable from '../components/ApprovalsTable'
 import type { ApprovalTab } from '../types'
 
 type SummaryState = { summary: PurchaseRequestSummary } | { error: unknown }
@@ -16,7 +17,7 @@ const TABS: { id: ApprovalTab; label: string }[] = [
   { id: 'history', label: 'Historial de mis decisiones' },
 ]
 
-function ApprovalsContent() {
+function ApprovalsContent({ isAdmin }: { isAdmin: boolean }) {
   const [activeTab, setActiveTab] = useState<ApprovalTab>('pending')
   const [summaryState, setSummaryState] = useState<SummaryState | null>(null)
 
@@ -96,7 +97,16 @@ function ApprovalsContent() {
         role="tabpanel"
         id={`approvals-panel-${activeTab}`}
         aria-labelledby={`approvals-tab-${activeTab}`}
-      />
+      >
+        <ApprovalsTable
+          key={activeTab}
+          tab={activeTab}
+          isAdmin={isAdmin}
+          reloadKey={0}
+          onDecide={() => undefined}
+          onView={() => undefined}
+        />
+      </div>
     </section>
   )
 }
@@ -109,7 +119,7 @@ function ApprovalsPage() {
     return <Navigate to="/dashboard" replace />
   }
 
-  return <ApprovalsContent />
+  return <ApprovalsContent isAdmin={role === UserRole.Admin} />
 }
 
 export default ApprovalsPage
