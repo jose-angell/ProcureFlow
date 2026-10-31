@@ -1,16 +1,26 @@
 import { useEffect, useState } from 'react'
-import { Navigate } from 'react-router'
+import { CircleAlert, CircleCheck } from 'lucide-react'
+import { Link, Navigate } from 'react-router'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { getSession } from '@/features/auth/session'
 import { UserRole } from '@/features/auth/types'
+import { isSessionError } from '@/features/dashboard/dashboardErrors'
+import {
+  getDecisionErrorMessage,
+  getDecisionSuccessMessage,
+  type Decision,
+} from '@/features/dashboard/decisionErrors'
 import { getPurchaseRequestSummary } from '@/features/purchase-requests/api/purchaseRequests'
-import type { PurchaseRequestSummary } from '@/features/purchase-requests/types'
+import type { PurchaseRequest, PurchaseRequestSummary } from '@/features/purchase-requests/types'
 import { cn } from '@/lib/utils'
 import ApprovalStatsCards from '../components/ApprovalStatsCards'
 import ApprovalsTable from '../components/ApprovalsTable'
+import DecisionDialog from '../components/DecisionDialog'
 import type { ApprovalTab } from '../types'
 
 type SummaryState = { summary: PurchaseRequestSummary } | { error: unknown }
+type ActionResult = { success: string } | { error: unknown }
 
 const TABS: { id: ApprovalTab; label: string }[] = [
   { id: 'pending', label: 'Pendientes' },
@@ -19,7 +29,11 @@ const TABS: { id: ApprovalTab; label: string }[] = [
 
 function ApprovalsContent({ isAdmin }: { isAdmin: boolean }) {
   const [activeTab, setActiveTab] = useState<ApprovalTab>('pending')
+  // Al recargar se conservan las tarjetas anteriores hasta que llegan las nuevas.
   const [summaryState, setSummaryState] = useState<SummaryState | null>(null)
+  const [reloadKey, setReloadKey] = useState(0)
+  const [actionResult, setActionResult] = useState<ActionResult | null>(null)
+  const [decisionTarget, setDecisionTarget] = useState<PurchaseRequest | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -35,9 +49,26 @@ function ApprovalsContent({ isAdmin }: { isAdmin: boolean }) {
     return () => {
       cancelled = true
     }
-  }, [])
+  }, [reloadKey])
 
   const summary = summaryState && 'summary' in summaryState ? summaryState.summary : null
+
+  function reload() {
+    setReloadKey((key) => key + 1)
+  }
+
+  function handleDecided(requestNumber: string, decision: Decision) {
+    setActionResult({ success: getDecisionSuccessMessage(requestNumber, decision) })
+    setDecisionTarget(null)
+    reload()
+  }
+
+  function handleDecisionError(error: unknown) {
+    setActionResult({ error })
+    setDecisionTarget(null)
+    // El estado pudo cambiar (p. ej. otra pestaña ya decidió): se vuelve a cargar.
+    reload()
+  }
 
   return (
     <section className="flex flex-col gap-6">
@@ -52,6 +83,27 @@ function ApprovalsContent({ isAdmin }: { isAdmin: boolean }) {
           Revisa, autoriza o rechaza las solicitudes de compra pendientes de tu departamento.
         </p>
       </div>
+
+      {actionResult && (
+        <Alert variant={'error' in actionResult ? 'destructive' : 'default'}>
+          {'error' in actionResult ? (
+            <CircleAlert aria-hidden="true" />
+          ) : (
+            <CircleCheck aria-hidden="true" />
+          )}
+          <AlertDescription>
+            {'error' in actionResult
+              ? getDecisionErrorMessage(actionResult.error)
+              : actionResult.success}
+            {'error' in actionResult && isSessionError(actionResult.error) && (
+              <>
+                {' '}
+                <Link to="/login">Iniciar sesión</Link>
+              </>
+            )}
+          </AlertDescription>
+        </Alert>
+      )}
 
       <ApprovalStatsCards
         summary={summary}
@@ -102,11 +154,21 @@ function ApprovalsContent({ isAdmin }: { isAdmin: boolean }) {
           key={activeTab}
           tab={activeTab}
           isAdmin={isAdmin}
-          reloadKey={0}
-          onDecide={() => undefined}
+          reloadKey={reloadKey}
+          onDecide={setDecisionTarget}
           onView={() => undefined}
         />
       </div>
+
+      {decisionTarget && (
+        <DecisionDialog
+          key={decisionTarget.id}
+          request={decisionTarget}
+          onDecided={handleDecided}
+          onError={handleDecisionError}
+          onClose={() => setDecisionTarget(null)}
+        />
+      )}
     </section>
   )
 }
