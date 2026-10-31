@@ -32,9 +32,10 @@ import {
   rejectPurchaseRequest,
 } from '@/features/purchase-requests/api/purchaseRequests'
 import PriorityBadge from '@/features/purchase-requests/components/PriorityBadge'
+import StatusBadge from '@/features/purchase-requests/components/StatusBadge'
 import { PurchaseRequestStatus } from '@/features/purchase-requests/types'
 import type { PurchaseRequest, PurchaseRequestDetail } from '@/features/purchase-requests/types'
-import { formatCurrency } from '@/shared/lib/format'
+import { formatCurrency, formatDate } from '@/shared/lib/format'
 
 const MAX_COMMENT_LENGTH = 1000
 
@@ -43,20 +44,29 @@ type LoadState =
   | { status: 'ready'; detail: PurchaseRequestDetail }
   | { status: 'error'; error: unknown }
 
-interface DecisionDialogProps {
+type DecisionDialogProps = {
   request: PurchaseRequest
-  /** El padre cierra el diálogo, muestra el mensaje y recarga. */
-  onDecided: (requestNumber: string, decision: Decision) => void
-  /** El padre cierra el diálogo, muestra el error y recarga: el estado pudo cambiar. */
-  onError: (error: unknown) => void
   onClose: () => void
-}
+} & (
+  | {
+      mode: 'decide'
+      /** El padre cierra el diálogo, muestra el mensaje y recarga. */
+      onDecided: (requestNumber: string, decision: Decision) => void
+      /** El padre cierra el diálogo, muestra el error y recarga: el estado pudo cambiar. */
+      onError: (error: unknown) => void
+    }
+  // Solo lectura: muestra la decisión ya registrada, sin acciones.
+  | { mode: 'view' }
+)
 
 /**
- * Modal para aprobar o rechazar una solicitud con sus partidas. Se monta abierto
- * y el padre lo desmonta al cerrarlo, así cada apertura empieza limpia.
+ * Modal para aprobar o rechazar una solicitud con sus partidas, o para consultar
+ * la decisión ya tomada. Se monta abierto y el padre lo desmonta al cerrarlo,
+ * así cada apertura empieza limpia.
  */
-function DecisionDialog({ request, onDecided, onError, onClose }: DecisionDialogProps) {
+function DecisionDialog(props: DecisionDialogProps) {
+  const { request, onClose } = props
+  const isView = props.mode === 'view'
   const commentId = useId()
   const [loadState, setLoadState] = useState<LoadState>({ status: 'loading' })
   const [comments, setComments] = useState('')
@@ -81,7 +91,8 @@ function DecisionDialog({ request, onDecided, onError, onClose }: DecisionDialog
   const isSubmitting = pending !== null
   const trimmedComments = comments.trim()
   const detail = loadState.status === 'ready' ? loadState.detail : null
-  const isNotPending = detail !== null && detail.status !== PurchaseRequestStatus.Submitted
+  const isNotPending =
+    !isView && detail !== null && detail.status !== PurchaseRequestStatus.Submitted
   const canDecide = detail !== null && !isNotPending
 
   function handleOpenChange(nextOpen: boolean) {
@@ -90,7 +101,7 @@ function DecisionDialog({ request, onDecided, onError, onClose }: DecisionDialog
   }
 
   async function decide(decision: Decision) {
-    if (isSubmitting || !canDecide) return
+    if (props.mode !== 'decide' || isSubmitting || !canDecide) return
 
     setPending(decision)
 
@@ -100,9 +111,9 @@ function DecisionDialog({ request, onDecided, onError, onClose }: DecisionDialog
       } else {
         await rejectPurchaseRequest(request.id, trimmedComments)
       }
-      onDecided(request.requestNumber, decision)
+      props.onDecided(request.requestNumber, decision)
     } catch (error) {
-      onError(error)
+      props.onError(error)
     } finally {
       setPending(null)
     }
@@ -113,9 +124,13 @@ function DecisionDialog({ request, onDecided, onError, onClose }: DecisionDialog
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl">
         <DialogHeader>
           <div className="flex flex-wrap items-center gap-2">
-            <DialogTitle>Decisión de solicitud de compra</DialogTitle>
+            <DialogTitle>{isView ? 'Detalle de la decisión' : 'Decisión de solicitud de compra'}</DialogTitle>
             <Badge variant="secondary">{request.requestNumber}</Badge>
-            <PriorityBadge priority={request.priority} />
+            {isView ? (
+              <StatusBadge status={request.status} />
+            ) : (
+              <PriorityBadge priority={request.priority} />
+            )}
           </div>
           <DialogDescription>
             Revisa los detalles de la solicitud y las partidas antes de registrar tu decisión.
@@ -179,7 +194,7 @@ function DecisionDialog({ request, onDecided, onError, onClose }: DecisionDialog
                     <dt className="text-xs font-semibold tracking-wider text-muted-foreground uppercase">
                       Justificación
                     </dt>
-                    <dd className="break-words">{detail.justification}</dd>
+                    <dd className="wrap-break-word">{detail.justification}</dd>
                   </div>
                 </dl>
 
@@ -246,52 +261,75 @@ function DecisionDialog({ request, onDecided, onError, onClose }: DecisionDialog
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor={commentId} className="font-semibold">
-                    Comentarios de la decisión
-                  </Label>
-                  <Textarea
-                    id={commentId}
-                    value={comments}
-                    maxLength={MAX_COMMENT_LENGTH}
-                    rows={3}
-                    disabled={isSubmitting || isNotPending}
-                    placeholder="Escribe las observaciones o motivos de tu decisión..."
-                    onChange={(event) => setComments(event.target.value)}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Obligatorio si se rechaza • Opcional si se aprueba
-                  </p>
-                </div>
+                {isView ? (
+                  <div className="flex flex-col gap-1.5 rounded-xl border border-border bg-muted/40 p-4">
+                    <h3 className="text-sm font-semibold">Comentarios de la decisión</h3>
+                    {detail.decidedAt && (
+                      <p className="text-xs text-muted-foreground">
+                        Decidida por {detail.decidedByName ?? 'un aprobador'} el{' '}
+                        {formatDate(detail.decidedAt)}
+                      </p>
+                    )}
+                    <p className="wrap-break-word">
+                      {detail.decisionComment || 'Sin comentario.'}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-1.5">
+                    <Label htmlFor={commentId} className="font-semibold">
+                      Comentarios de la decisión
+                    </Label>
+                    <Textarea
+                      id={commentId}
+                      value={comments}
+                      maxLength={MAX_COMMENT_LENGTH}
+                      rows={3}
+                      disabled={isSubmitting || isNotPending}
+                      placeholder="Escribe las observaciones o motivos de tu decisión..."
+                      onChange={(event) => setComments(event.target.value)}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Obligatorio si se rechaza • Opcional si se aprueba
+                    </p>
+                  </div>
+                )}
               </>
             )
           )}
         </div>
 
-        <DialogFooter className="sm:justify-between">
-          <Button type="button" variant="outline" disabled={isSubmitting} onClick={onClose}>
-            Cancelar
-          </Button>
-          <div className="flex flex-col-reverse gap-2 sm:flex-row">
-            <Button
-              type="button"
-              variant="destructive"
-              disabled={isSubmitting || !canDecide || trimmedComments === ''}
-              onClick={() => decide('rejected')}
-            >
-              <CircleX aria-hidden="true" />
-              {pending === 'rejected' ? 'Rechazando...' : 'Rechazar solicitud'}
+        {isView ? (
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={onClose}>
+              Cerrar
             </Button>
-            <Button
-              type="button"
-              disabled={isSubmitting || !canDecide}
-              onClick={() => decide('approved')}
-            >
-              <CircleCheck aria-hidden="true" />
-              {pending === 'approved' ? 'Aprobando...' : 'Aprobar solicitud'}
+          </DialogFooter>
+        ) : (
+          <DialogFooter className="sm:justify-between">
+            <Button type="button" variant="outline" disabled={isSubmitting} onClick={onClose}>
+              Cancelar
             </Button>
-          </div>
-        </DialogFooter>
+            <div className="flex flex-col-reverse gap-2 sm:flex-row">
+              <Button
+                type="button"
+                variant="destructive"
+                disabled={isSubmitting || !canDecide || trimmedComments === ''}
+                onClick={() => decide('rejected')}
+              >
+                <CircleX aria-hidden="true" />
+                {pending === 'rejected' ? 'Rechazando...' : 'Rechazar solicitud'}
+              </Button>
+              <Button
+                type="button"
+                disabled={isSubmitting || !canDecide}
+                onClick={() => decide('approved')}
+              >
+                <CircleCheck aria-hidden="true" />
+                {pending === 'approved' ? 'Aprobando...' : 'Aprobar solicitud'}
+              </Button>
+            </div>
+          </DialogFooter>
+        )}
       </DialogContent>
     </Dialog>
   )

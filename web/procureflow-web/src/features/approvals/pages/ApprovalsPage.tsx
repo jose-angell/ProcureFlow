@@ -33,7 +33,11 @@ function ApprovalsContent({ isAdmin }: { isAdmin: boolean }) {
   const [summaryState, setSummaryState] = useState<SummaryState | null>(null)
   const [reloadKey, setReloadKey] = useState(0)
   const [actionResult, setActionResult] = useState<ActionResult | null>(null)
-  const [decisionTarget, setDecisionTarget] = useState<PurchaseRequest | null>(null)
+  // `null` = modal cerrado; `decide` abre el modal de decisión y `view` el de solo lectura.
+  const [dialog, setDialog] = useState<{
+    mode: 'decide' | 'view'
+    request: PurchaseRequest
+  } | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -59,13 +63,13 @@ function ApprovalsContent({ isAdmin }: { isAdmin: boolean }) {
 
   function handleDecided(requestNumber: string, decision: Decision) {
     setActionResult({ success: getDecisionSuccessMessage(requestNumber, decision) })
-    setDecisionTarget(null)
+    setDialog(null)
     reload()
   }
 
   function handleDecisionError(error: unknown) {
     setActionResult({ error })
-    setDecisionTarget(null)
+    setDialog(null)
     // El estado pudo cambiar (p. ej. otra pestaña ya decidió): se vuelve a cargar.
     reload()
   }
@@ -155,18 +159,27 @@ function ApprovalsContent({ isAdmin }: { isAdmin: boolean }) {
           tab={activeTab}
           isAdmin={isAdmin}
           reloadKey={reloadKey}
-          onDecide={setDecisionTarget}
-          onView={() => undefined}
+          onDecide={(request) => setDialog({ mode: 'decide', request })}
+          onView={(request) => setDialog({ mode: 'view', request })}
         />
       </div>
 
-      {decisionTarget && (
+      {dialog?.mode === 'decide' && (
         <DecisionDialog
-          key={decisionTarget.id}
-          request={decisionTarget}
+          key={dialog.request.id}
+          mode="decide"
+          request={dialog.request}
           onDecided={handleDecided}
           onError={handleDecisionError}
-          onClose={() => setDecisionTarget(null)}
+          onClose={() => setDialog(null)}
+        />
+      )}
+      {dialog?.mode === 'view' && (
+        <DecisionDialog
+          key={dialog.request.id}
+          mode="view"
+          request={dialog.request}
+          onClose={() => setDialog(null)}
         />
       )}
     </section>
