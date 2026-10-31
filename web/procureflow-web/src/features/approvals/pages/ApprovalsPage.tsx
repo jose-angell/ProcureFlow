@@ -1,10 +1,15 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Navigate } from 'react-router'
 import { Badge } from '@/components/ui/badge'
 import { getSession } from '@/features/auth/session'
 import { UserRole } from '@/features/auth/types'
+import { getPurchaseRequestSummary } from '@/features/purchase-requests/api/purchaseRequests'
+import type { PurchaseRequestSummary } from '@/features/purchase-requests/types'
 import { cn } from '@/lib/utils'
+import ApprovalStatsCards from '../components/ApprovalStatsCards'
 import type { ApprovalTab } from '../types'
+
+type SummaryState = { summary: PurchaseRequestSummary } | { error: unknown }
 
 const TABS: { id: ApprovalTab; label: string }[] = [
   { id: 'pending', label: 'Pendientes' },
@@ -13,6 +18,25 @@ const TABS: { id: ApprovalTab; label: string }[] = [
 
 function ApprovalsContent() {
   const [activeTab, setActiveTab] = useState<ApprovalTab>('pending')
+  const [summaryState, setSummaryState] = useState<SummaryState | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+
+    getPurchaseRequestSummary()
+      .then((summary) => {
+        if (!cancelled) setSummaryState({ summary })
+      })
+      .catch((error: unknown) => {
+        if (!cancelled) setSummaryState({ error })
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const summary = summaryState && 'summary' in summaryState ? summaryState.summary : null
 
   return (
     <section className="flex flex-col gap-6">
@@ -27,6 +51,12 @@ function ApprovalsContent() {
           Revisa, autoriza o rechaza las solicitudes de compra pendientes de tu departamento.
         </p>
       </div>
+
+      <ApprovalStatsCards
+        summary={summary}
+        isLoading={summaryState === null}
+        error={summaryState && 'error' in summaryState ? summaryState.error : null}
+      />
 
       <div
         role="tablist"
@@ -52,6 +82,11 @@ function ApprovalsContent() {
               )}
             >
               {tab.label}
+              {tab.id === 'pending' && summary && (
+                <span className="ml-2 rounded-full bg-secondary px-1.5 py-0.5 text-[11px] font-bold text-secondary-foreground">
+                  {summary.submitted}
+                </span>
+              )}
             </button>
           )
         })}

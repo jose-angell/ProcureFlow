@@ -3,7 +3,7 @@ import { Card } from '@/components/ui/card'
 
 export interface KpiCardProps {
   label: string
-  value: number
+  value: number | string
   icon: LucideIcon
   iconClassName: string
   note: string
