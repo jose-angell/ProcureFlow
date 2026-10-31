@@ -1,5 +1,6 @@
 import { ClipboardCheck } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Link } from 'react-router'
+import { buttonVariants } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { PurchaseRequestSummary } from '@/features/purchase-requests/types'
@@ -14,8 +15,7 @@ interface DepartmentApprovalsProps {
 
 /**
  * Resumen de pendientes del departamento, calculado desde `summary` (sin llamar a
- * `pendingApprovals`). "Revisar pendientes" queda deshabilitado: su destino es la
- * página Aprobaciones, que aún no existe.
+ * `pendingApprovals`). "Revisar pendientes" lleva a la página Aprobaciones.
  */
 function DepartmentApprovals({ summary, isLoading, error }: DepartmentApprovalsProps) {
   const pending = summary?.submitted ?? 0
@@ -75,9 +75,9 @@ function Content({ summary, isLoading, error }: DepartmentApprovalsProps) {
               summary.submitted === 1 ? 'solicitud enviada' : 'solicitudes enviadas'
             } esperando tu decisión.`}
       </p>
-      <Button variant="outline" className="w-full" disabled>
+      <Link to="/approvals" className={buttonVariants({ variant: 'outline', className: 'w-full' })}>
         Revisar pendientes
-      </Button>
+      </Link>
     </div>
   )
 }
