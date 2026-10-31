@@ -3,6 +3,7 @@ import LoginPage from '@/features/auth/pages/LoginPage'
 import RegisterPage from '@/features/auth/pages/RegisterPage'
 import { clearSession, getSession } from '@/features/auth/session'
 import type { LoginLocationState } from '@/features/auth/types'
+import ApprovalsPage from '@/features/approvals/pages/ApprovalsPage'
 import DashboardPage from '@/features/dashboard/pages/DashboardPage'
 import DepartmentsPage from '@/features/departments/pages/DepartmentsPage'
 import PurchaseRequestsPage from '@/features/purchase-requests/pages/PurchaseRequestsPage'
@@ -33,6 +34,7 @@ export const router = createBrowserRouter([
           { index: true, element: <Navigate to="/dashboard" replace /> },
           { path: 'dashboard', element: <DashboardPage /> },
           { path: 'purchases', element: <PurchaseRequestsPage /> },
+          { path: 'approvals', element: <ApprovalsPage /> },
           { path: 'departments', element: <DepartmentsPage /> },
           { path: 'users', element: <UsersPage /> },
         ],
