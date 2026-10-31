@@ -2,6 +2,7 @@
 using ProcureFlow.Application.Auth;
 using ProcureFlow.Application.Departments;
 using ProcureFlow.Application.PurchaseRequests;
+using ProcureFlow.Application.Seeding;
 using ProcureFlow.Application.Users;
 
 namespace ProcureFlow.Application
@@ -15,6 +16,7 @@ namespace ProcureFlow.Application
             services.AddScoped<UserUseCase>();
             services.AddScoped<DepartmentUseCase>();
             services.AddScoped<AuthUseCase>();
+            services.AddScoped<AdminSeeder>();
             return services;
         }
     }
