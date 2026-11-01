@@ -47,7 +47,7 @@ const STATUS_OPTIONS: { value: ActiveValue; label: string }[] = [
 
 const ROLE_OPTIONS = USER_ROLES_ORDER.map((role) => ({
   value: String(role),
-  label: USER_ROLE_INFO[role].label,
+  label: USER_ROLE_INFO[role].selectLabel,
 }))
 
 interface FieldErrors {
