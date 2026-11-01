@@ -1,18 +1,13 @@
 import { useId, useState, type SyntheticEvent } from 'react'
-import { Check, CircleAlert } from 'lucide-react'
+import { Building, Building2, Check, CircleAlert } from 'lucide-react'
 import { Link } from 'react-router'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
-  DialogHeader,
-  DialogTitle,
 } from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
@@ -21,6 +16,9 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { isSessionError } from '@/features/dashboard/dashboardErrors'
+import FormDialogHeader from '@/shared/components/FormDialogHeader'
+import FormFieldLabel from '@/shared/components/FormFieldLabel'
+import IconInput from '@/shared/components/IconInput'
 import {
   activateDepartment,
   createDepartment,
@@ -118,70 +116,83 @@ function DepartmentFormDialog({ department, onSaved, onClose }: DepartmentFormDi
 
   return (
     <Dialog open onOpenChange={handleOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{isEditing ? 'Editar departamento' : 'Crear nuevo departamento'}</DialogTitle>
-          <DialogDescription>
-            {isEditing
+      <DialogContent
+        showCloseButton={false}
+        overlayClassName="bg-[#131b2e]/40 supports-backdrop-filter:backdrop-blur-sm"
+        className="max-h-[90vh] gap-0 overflow-y-auto rounded-2xl p-0 sm:max-w-xl"
+      >
+        <FormDialogHeader
+          icon={Building2}
+          title={isEditing ? 'Editar departamento' : 'Crear nuevo departamento'}
+          badge={isEditing ? 'Edición' : 'Nuevo'}
+          description={
+            isEditing
               ? 'Actualiza el nombre o el estado del departamento.'
-              : 'Registra una nueva unidad organizativa de la empresa.'}
-          </DialogDescription>
-        </DialogHeader>
+              : 'Registra una nueva unidad organizativa de la empresa.'
+          }
+          onClose={() => onClose(failure !== null)}
+          closeDisabled={isSaving}
+        />
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          {failure && (
-            <Alert variant="destructive">
-              <CircleAlert aria-hidden="true" />
-              <AlertDescription>
-                {getDepartmentErrorMessage(failure.error, failure.operation)}
-                {isSessionError(failure.error) && (
-                  <>
-                    {' '}
-                    <Link to="/login">Iniciar sesión</Link>
-                  </>
-                )}
-              </AlertDescription>
-            </Alert>
-          )}
+        <form onSubmit={handleSubmit}>
+          <div className="flex flex-col gap-4 p-6">
+            {failure && (
+              <Alert variant="destructive">
+                <CircleAlert aria-hidden="true" />
+                <AlertDescription>
+                  {getDepartmentErrorMessage(failure.error, failure.operation)}
+                  {isSessionError(failure.error) && (
+                    <>
+                      {' '}
+                      <Link to="/login">Iniciar sesión</Link>
+                    </>
+                  )}
+                </AlertDescription>
+              </Alert>
+            )}
 
-          <div className="space-y-1.5">
-            <Label htmlFor={nameId}>Nombre del departamento</Label>
-            <Input
-              id={nameId}
-              value={name}
-              maxLength={MAX_NAME_LENGTH}
-              placeholder="ej. Ingeniería de Software y DevOps"
-              disabled={isSaving}
-              autoFocus
-              required
-              onChange={(event) => setName(event.target.value)}
-            />
+            <div className="space-y-1.5">
+              <FormFieldLabel htmlFor={nameId} required>
+                Nombre del departamento
+              </FormFieldLabel>
+              <IconInput
+                icon={Building}
+                id={nameId}
+                value={name}
+                maxLength={MAX_NAME_LENGTH}
+                placeholder="ej. Ingeniería de Software y DevOps"
+                disabled={isSaving}
+                autoFocus
+                required
+                onChange={(event) => setName(event.target.value)}
+              />
+            </div>
+
+            {isEditing && (
+              <div className="space-y-1.5">
+                <FormFieldLabel htmlFor={statusId}>Estado</FormFieldLabel>
+                <Select
+                  items={STATUS_OPTIONS}
+                  value={status}
+                  disabled={isSaving}
+                  onValueChange={(value) => setStatus((value ?? 'active') as ActiveValue)}
+                >
+                  <SelectTrigger id={statusId} className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {STATUS_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
           </div>
 
-          {isEditing && (
-            <div className="space-y-1.5">
-              <Label htmlFor={statusId}>Estado</Label>
-              <Select
-                items={STATUS_OPTIONS}
-                value={status}
-                disabled={isSaving}
-                onValueChange={(value) => setStatus((value ?? 'active') as ActiveValue)}
-              >
-                <SelectTrigger id={statusId} className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {STATUS_OPTIONS.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
-
-          <DialogFooter>
+          <DialogFooter className="mx-0 mb-0 rounded-b-2xl px-6 py-4">
             <Button
               type="button"
               variant="outline"
