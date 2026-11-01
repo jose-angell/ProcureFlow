@@ -1,18 +1,20 @@
 import { useId, useState, type SyntheticEvent } from 'react'
-import { Check, CircleAlert, Info } from 'lucide-react'
+import {
+  Building2,
+  Check,
+  CircleAlert,
+  IdCard,
+  Info,
+  Lock,
+  Mail,
+  ShieldCheck,
+  UserPen,
+  UserPlus,
+} from 'lucide-react'
 import { Link } from 'react-router'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { Dialog, DialogContent, DialogFooter } from '@/components/ui/dialog'
 import {
   Select,
   SelectContent,
@@ -23,6 +25,9 @@ import {
 import { UserRole } from '@/features/auth/types'
 import { isSessionError } from '@/features/dashboard/dashboardErrors'
 import type { Department } from '@/features/departments/types'
+import FormDialogHeader from '@/shared/components/FormDialogHeader'
+import FormFieldLabel from '@/shared/components/FormFieldLabel'
+import IconInput from '@/shared/components/IconInput'
 import { activateUser, createUser, deactivateUser, updateUser } from '../api/users'
 import {
   getUserCreatedMessage,
@@ -49,6 +54,10 @@ const ROLE_OPTIONS = USER_ROLES_ORDER.map((role) => ({
   value: String(role),
   label: USER_ROLE_INFO[role].selectLabel,
 }))
+
+// Mismo fondo y borde que `IconInput`, para los selectores que llevan icono.
+const ICON_SELECT_TRIGGER_CLASS = 'w-full border-[#dce9ff] bg-[#eff4ff]'
+const ICON_SELECT_ICON_CLASS = 'size-4 text-muted-foreground'
 
 interface FieldErrors {
   email?: string
@@ -195,189 +204,223 @@ function UserFormDialog({
     }
   }
 
+  // Al crear va en la fila del correo; al editar, en fila completa al final.
+  const passwordField = (
+    <div className="space-y-1.5">
+      <FormFieldLabel htmlFor={passwordId} required={!isEditing}>
+        {isEditing ? 'Nueva contraseña' : 'Contraseña'}
+      </FormFieldLabel>
+      <IconInput
+        icon={Lock}
+        id={passwordId}
+        type="password"
+        value={password}
+        maxLength={500}
+        placeholder="Mínimo 8 caracteres"
+        autoComplete="new-password"
+        disabled={isSaving}
+        required={!isEditing}
+        aria-invalid={showErrors && fieldErrors.password ? true : undefined}
+        aria-describedby={
+          showErrors && fieldErrors.password
+            ? `${passwordId}-error`
+            : isEditing
+              ? `${passwordId}-help`
+              : undefined
+        }
+        onChange={(event) => setPassword(event.target.value)}
+      />
+      {isEditing && (
+        <p id={`${passwordId}-help`} className="text-xs text-muted-foreground">
+          Déjala vacía para conservar la actual.
+        </p>
+      )}
+      {showErrors && fieldErrors.password && (
+        <p id={`${passwordId}-error`} className="text-xs text-destructive">
+          {fieldErrors.password}
+        </p>
+      )}
+    </div>
+  )
+
   return (
     <Dialog open onOpenChange={handleOpenChange}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{isEditing ? 'Editar usuario' : 'Crear nuevo usuario'}</DialogTitle>
-          <DialogDescription>
-            Configura los datos del usuario, su rol y su departamento.
-          </DialogDescription>
-        </DialogHeader>
+      <DialogContent
+        showCloseButton={false}
+        overlayClassName="bg-[#131b2e]/40 supports-backdrop-filter:backdrop-blur-sm"
+        className="max-h-[90vh] gap-0 overflow-y-auto rounded-2xl p-0 sm:max-w-xl"
+      >
+        <FormDialogHeader
+          icon={isEditing ? UserPen : UserPlus}
+          title={isEditing ? 'Editar usuario' : 'Crear nuevo usuario'}
+          badge={isEditing ? 'Edición' : 'Nuevo'}
+          description="Configura los datos del usuario, su rol y su departamento."
+          onClose={() => onClose(failure !== null)}
+          closeDisabled={isSaving}
+        />
 
-        <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
-          {failure && (
-            <Alert variant="destructive">
-              <CircleAlert aria-hidden="true" />
-              <AlertDescription>
-                {getUserErrorMessage(failure.error, failure.operation)}
-                {isSessionError(failure.error) && (
-                  <>
-                    {' '}
-                    <Link to="/login">Iniciar sesión</Link>
-                  </>
-                )}
-              </AlertDescription>
-            </Alert>
-          )}
-
-          {departmentsError !== null && (
-            <Alert variant="destructive">
-              <CircleAlert aria-hidden="true" />
-              <AlertDescription>
-                {getUserErrorMessage(departmentsError, 'load')}
-                {isSessionError(departmentsError) && (
-                  <>
-                    {' '}
-                    <Link to="/login">Iniciar sesión</Link>
-                  </>
-                )}
-              </AlertDescription>
-            </Alert>
-          )}
-
-          <div className="space-y-1.5">
-            <Label htmlFor={fullNameId}>Nombre completo</Label>
-            <Input
-              id={fullNameId}
-              value={fullName}
-              maxLength={FULL_NAME_MAX_LENGTH}
-              placeholder="ej. Carlos Mendoza"
-              disabled={isSaving}
-              autoFocus
-              required
-              onChange={(event) => setFullName(event.target.value)}
-            />
-          </div>
-
-          <div className="space-y-1.5">
-            <Label htmlFor={emailId}>Correo electrónico</Label>
-            <Input
-              id={emailId}
-              type="email"
-              value={email}
-              maxLength={EMAIL_MAX_LENGTH}
-              placeholder="ejemplo@empresa.com"
-              disabled={isSaving}
-              required
-              aria-invalid={showErrors && fieldErrors.email ? true : undefined}
-              aria-describedby={showErrors && fieldErrors.email ? `${emailId}-error` : undefined}
-              onChange={(event) => setEmail(event.target.value)}
-            />
-            {showErrors && fieldErrors.email && (
-              <p id={`${emailId}-error`} className="text-xs text-destructive">
-                {fieldErrors.email}
-              </p>
+        <form onSubmit={handleSubmit} noValidate>
+          <div className="flex flex-col gap-4 p-6">
+            {failure && (
+              <Alert variant="destructive">
+                <CircleAlert aria-hidden="true" />
+                <AlertDescription>
+                  {getUserErrorMessage(failure.error, failure.operation)}
+                  {isSessionError(failure.error) && (
+                    <>
+                      {' '}
+                      <Link to="/login">Iniciar sesión</Link>
+                    </>
+                  )}
+                </AlertDescription>
+              </Alert>
             )}
-          </div>
 
-          <div className="space-y-1.5">
-            <Label htmlFor={passwordId}>{isEditing ? 'Nueva contraseña' : 'Contraseña'}</Label>
-            <Input
-              id={passwordId}
-              type="password"
-              value={password}
-              maxLength={500}
-              placeholder="Mínimo 8 caracteres"
-              autoComplete="new-password"
-              disabled={isSaving}
-              required={!isEditing}
-              aria-invalid={showErrors && fieldErrors.password ? true : undefined}
-              aria-describedby={
-                showErrors && fieldErrors.password
-                  ? `${passwordId}-error`
-                  : isEditing
-                    ? `${passwordId}-help`
-                    : undefined
-              }
-              onChange={(event) => setPassword(event.target.value)}
-            />
-            {isEditing && (
-              <p id={`${passwordId}-help`} className="text-xs text-muted-foreground">
-                Déjala vacía para conservar la actual.
-              </p>
+            {departmentsError !== null && (
+              <Alert variant="destructive">
+                <CircleAlert aria-hidden="true" />
+                <AlertDescription>
+                  {getUserErrorMessage(departmentsError, 'load')}
+                  {isSessionError(departmentsError) && (
+                    <>
+                      {' '}
+                      <Link to="/login">Iniciar sesión</Link>
+                    </>
+                  )}
+                </AlertDescription>
+              </Alert>
             )}
-            {showErrors && fieldErrors.password && (
-              <p id={`${passwordId}-error`} className="text-xs text-destructive">
-                {fieldErrors.password}
-              </p>
-            )}
-          </div>
 
-          {isEditing && (
             <div className="space-y-1.5">
-              <Label htmlFor={statusId}>Estado</Label>
-              <Select
-                items={STATUS_OPTIONS}
-                value={status}
-                disabled={isSaving || isSelf}
-                onValueChange={(value) => setStatus((value ?? 'active') as ActiveValue)}
-              >
-                <SelectTrigger id={statusId} className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {STATUS_OPTIONS.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <FormFieldLabel htmlFor={fullNameId} required>
+                Nombre completo
+              </FormFieldLabel>
+              <IconInput
+                icon={IdCard}
+                id={fullNameId}
+                value={fullName}
+                maxLength={FULL_NAME_MAX_LENGTH}
+                placeholder="ej. Carlos Mendoza"
+                disabled={isSaving}
+                autoFocus
+                required
+                onChange={(event) => setFullName(event.target.value)}
+              />
             </div>
-          )}
 
-          <div className="space-y-1.5">
-            <Label htmlFor={departmentId}>Departamento</Label>
-            <Select
-              items={departmentOptions}
-              value={selectedDepartmentId}
-              disabled={isSaving}
-              onValueChange={setSelectedDepartmentId}
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-1.5">
+                <FormFieldLabel htmlFor={emailId} required>
+                  Correo electrónico
+                </FormFieldLabel>
+                <IconInput
+                  icon={Mail}
+                  id={emailId}
+                  type="email"
+                  value={email}
+                  maxLength={EMAIL_MAX_LENGTH}
+                  placeholder="ejemplo@empresa.com"
+                  disabled={isSaving}
+                  required
+                  aria-invalid={showErrors && fieldErrors.email ? true : undefined}
+                  aria-describedby={showErrors && fieldErrors.email ? `${emailId}-error` : undefined}
+                  onChange={(event) => setEmail(event.target.value)}
+                />
+                {showErrors && fieldErrors.email && (
+                  <p id={`${emailId}-error`} className="text-xs text-destructive">
+                    {fieldErrors.email}
+                  </p>
+                )}
+              </div>
+
+              {isEditing ? (
+                <div className="space-y-1.5">
+                  <FormFieldLabel htmlFor={statusId}>Estado</FormFieldLabel>
+                  <Select
+                    items={STATUS_OPTIONS}
+                    value={status}
+                    disabled={isSaving || isSelf}
+                    onValueChange={(value) => setStatus((value ?? 'active') as ActiveValue)}
+                  >
+                    <SelectTrigger id={statusId} className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {STATUS_OPTIONS.map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              ) : (
+                passwordField
+              )}
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-1.5">
+                <FormFieldLabel htmlFor={departmentId} required>
+                  Departamento
+                </FormFieldLabel>
+                <Select
+                  items={departmentOptions}
+                  value={selectedDepartmentId}
+                  disabled={isSaving}
+                  onValueChange={setSelectedDepartmentId}
+                >
+                  <SelectTrigger id={departmentId} className={ICON_SELECT_TRIGGER_CLASS}>
+                    <Building2 aria-hidden="true" className={ICON_SELECT_ICON_CLASS} />
+                    <SelectValue placeholder="Selecciona un departamento" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {departmentOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-1.5">
+                <FormFieldLabel htmlFor={roleId} required>
+                  Rol
+                </FormFieldLabel>
+                <Select
+                  items={ROLE_OPTIONS}
+                  value={String(role)}
+                  disabled={isSaving || isSelf}
+                  onValueChange={(value) => setRole(Number(value ?? UserRole.Requester) as UserRole)}
+                >
+                  <SelectTrigger id={roleId} className={ICON_SELECT_TRIGGER_CLASS}>
+                    <ShieldCheck aria-hidden="true" className={ICON_SELECT_ICON_CLASS} />
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {ROLE_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {isEditing && passwordField}
+
+            <div
+              aria-live="polite"
+              className="flex items-start gap-2 rounded-lg border border-[#dce9ff] bg-[#eff4ff] p-3 text-xs text-foreground"
             >
-              <SelectTrigger id={departmentId} className="w-full">
-                <SelectValue placeholder="Selecciona un departamento" />
-              </SelectTrigger>
-              <SelectContent>
-                {departmentOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-secondary" />
+              <p>{USER_ROLE_INFO[role].description}</p>
+            </div>
           </div>
 
-          <div className="space-y-1.5">
-            <Label htmlFor={roleId}>Rol</Label>
-            <Select
-              items={ROLE_OPTIONS}
-              value={String(role)}
-              disabled={isSaving || isSelf}
-              onValueChange={(value) => setRole(Number(value ?? UserRole.Requester) as UserRole)}
-            >
-              <SelectTrigger id={roleId} className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {ROLE_OPTIONS.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div
-            aria-live="polite"
-            className="flex items-start gap-2 rounded-lg bg-[#dce9ff] p-3 text-sm text-foreground"
-          >
-            <Info aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
-            <p>{USER_ROLE_INFO[role].description}</p>
-          </div>
-
-          <DialogFooter>
+          <DialogFooter className="mx-0 mb-0 rounded-b-2xl px-6 py-4">
             <Button
               type="button"
               variant="outline"
