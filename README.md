@@ -520,6 +520,42 @@ Crear una migración:
 dotnet ef migrations add MigrationName --project ProcureFlow.Infrastructure --startup-project ProcureFlow.Api --output-dir Persistence/Migrations
 ```
 
+### 7.5. Administrador inicial
+
+El registro público solo crea usuarios `Requester`. Para tener un primer `Admin`, la API puede crearlo al arrancar a partir de la sección `AdminSeed`.
+
+| Clave | Descripción |
+| --- | --- |
+| `AdminSeed:Enabled` | `false` en `appsettings.json`, `true` en `appsettings.Development.json`. |
+| `AdminSeed:Email` | Correo del administrador. Obligatorio si `Enabled` es `true`. |
+| `AdminSeed:Password` | Contraseña de al menos 8 caracteres. Obligatoria si `Enabled` es `true`. **Nunca va en un archivo versionado.** |
+| `AdminSeed:FullName` | Nombre completo. Por defecto `Administrador`. |
+| `AdminSeed:DepartmentName` | Departamento del admin; se crea si no existe. Por defecto `Administración`. |
+
+Reglas:
+
+- Solo crea el administrador si no existe ningún usuario `Admin`, esté activo o no. Nunca modifica ni reactiva usuarios existentes.
+- Si `Enabled` es `true` y la configuración es inválida, la API no arranca. Eso incluye una contraseña ausente o corta, y un correo que ya usa un usuario que no es administrador.
+- No aplica migraciones: ejecuta antes `dotnet ef database update` (sección 7.4).
+
+La contraseña se pasa con secretos de desarrollo o con una variable de entorno.
+
+**Secretos de desarrollo:**
+
+```bash
+dotnet user-secrets set "AdminSeed:Password" "TU_CLAVE_SEGURA" --project ProcureFlow.Api
+```
+
+**Variable de entorno (PowerShell), por ejemplo en producción:**
+
+```powershell
+$Env:AdminSeed__Enabled="true"
+$Env:AdminSeed__Email="admin@tu-dominio.com"
+$Env:AdminSeed__Password="TU_CLAVE_SEGURA"
+```
+
+> **Seguridad:** no escribas `AdminSeed:Password` en ningún `appsettings*.json`. La validación corre en cada arranque, así que mientras `Enabled` sea `true` la contraseña debe seguir configurada. Cuando el admin ya existe, puedes poner `Enabled` en `false`.
+
 ## 8. Configuración y ejecución del frontend (planificadas)
 
 La app web aún no está terminada. Se creará con **Node.js compatible con la versión elegida de Vite** y npm.

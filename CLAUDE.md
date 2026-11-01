@@ -28,6 +28,8 @@ The existing migrations are in `ProcureFlow.Infrastructure/Migrations`. The READ
 
 Configuration: the connection string is `ConnectionStrings:DefaultConnection` and the JWT settings are the `Jwt` section (`SecretKey`, `Issuer`, `Audience`, `ExpirationMinutes`). Both can be overridden with env vars such as `ConnectionStrings__DefaultConnection` and `Jwt__SecretKey`.
 
+Initial admin: the `AdminSeed` section (`Enabled`, `Email`, `FullName`, `DepartmentName`, `Password`) makes `Program.cs` call `AdminSeeder` at startup. It creates an Admin and its department only when no Admin exists, and aborts startup if `Enabled` is true and the config is invalid. `Enabled` is true only in `appsettings.Development.json`. Never put `AdminSeed:Password` in a versioned file: use `dotnet user-secrets set "AdminSeed:Password" "<value>" --project ProcureFlow.Api` or the `AdminSeed__Password` env var.
+
 ## Architecture
 
 Dependencies point inward: `Api → Application → Domain`, and `Infrastructure → Application`. Each layer has a `DependencyInjection.cs` that provides an extension method: `AddApplication()`, `AddInfrastructure(config)` or `AddApi(config)`. `Program.cs` calls all three.

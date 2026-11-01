@@ -1,6 +1,6 @@
 # SPEC 11 — Administrador inicial al arrancar la API
 
-> **Estado:** aprobado
+> **Estado:** implementado
 > **Depende de:** ninguna
 > **Fecha:** 2026-10-31
 > **Objetivo:** Crear al arrancar la API, si la sección `AdminSeed` lo habilita y no existe ningún usuario Admin, un administrador inicial con su departamento, a partir de configuración y con la contraseña fuera del repositorio.
@@ -145,21 +145,21 @@ Nuevos tests en `ProcureFlow.Tests/Application/AdminSeederTests.cs` (`TestDbCont
 
 ## Criterios de aceptación
 
-- [ ] `dotnet build` y `dotnet test` pasan, incluidos los tests de integración existentes sin cambios.
-- [ ] Con BD vacía, `Enabled: true`, email válido y contraseña de 8 o más caracteres, al arrancar existe un usuario `Admin` activo en el departamento "Administración".
-- [ ] `POST /api/auth/login` con ese email y contraseña responde 200 y `role` es `2` (`Admin`).
-- [ ] Al arrancar una segunda vez no se crea otro usuario ni otro departamento.
-- [ ] Si ya existe un departamento "Administración", el admin se asigna a él y no se crea otro.
-- [ ] Si ya existe cualquier Admin, activo o inactivo, no se crea ninguno y el log dice "Ya existe un administrador; se omite la creación del administrador inicial.".
-- [ ] Con `Enabled: true` y sin `Password`, la API no arranca y el error muestra el mensaje de la tabla.
-- [ ] Con una contraseña de 7 caracteres, la API no arranca.
-- [ ] Si el email lo usa un Requester y no hay Admin, la API no arranca y el usuario existente no cambia.
-- [ ] Con `Enabled: false` (por defecto en `appsettings.json`), no se lee la BD para el seed y no hay logs del seed.
-- [ ] `PasswordHash` del admin creado no es la contraseña en claro y `PasswordHashService.Verify` lo valida.
-- [ ] Ningún `appsettings*.json` ni archivo versionado contiene `Password` dentro de `AdminSeed`.
-- [ ] Ningún log contiene la contraseña.
-- [ ] `README.md` y `CLAUDE.md` documentan `AdminSeed`, user-secrets y `AdminSeed__Password`.
-- [ ] No hay paquetes NuGet nuevos ni migraciones nuevas.
+- [x] `dotnet build` y `dotnet test` pasan, incluidos los tests de integración existentes sin cambios.
+- [x] Con BD vacía, `Enabled: true`, email válido y contraseña de 8 o más caracteres, al arrancar existe un usuario `Admin` activo en el departamento "Administración".
+- [x] `POST /api/auth/login` con ese email y contraseña responde 200 y `role` es `2` (`Admin`).
+- [x] Al arrancar una segunda vez no se crea otro usuario ni otro departamento.
+- [x] Si ya existe un departamento "Administración", el admin se asigna a él y no se crea otro.
+- [x] Si ya existe cualquier Admin, activo o inactivo, no se crea ninguno y el log dice "Ya existe un administrador; se omite la creación del administrador inicial.".
+- [x] Con `Enabled: true` y sin `Password`, la API no arranca y el error muestra el mensaje de la tabla.
+- [x] Con una contraseña de 7 caracteres, la API no arranca.
+- [x] Si el email lo usa un Requester y no hay Admin, la API no arranca y el usuario existente no cambia.
+- [x] Con `Enabled: false` (por defecto en `appsettings.json`), no se lee la BD para el seed y no hay logs del seed.
+- [x] `PasswordHash` del admin creado no es la contraseña en claro y `PasswordHashService.Verify` lo valida.
+- [x] Ningún `appsettings*.json` ni archivo versionado contiene `Password` dentro de `AdminSeed`.
+- [x] Ningún log contiene la contraseña.
+- [x] `README.md` y `CLAUDE.md` documentan `AdminSeed`, user-secrets y `AdminSeed__Password`.
+- [x] No hay paquetes NuGet nuevos ni migraciones nuevas.
 
 ## Decisiones
 
