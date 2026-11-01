@@ -1,6 +1,6 @@
 # SPEC 12 — Diseño de los modales de usuario y departamento
 
-> **Estado:** aprobado
+> **Estado:** implementado
 > **Depende de:** SPEC 07, SPEC 08
 > **Fecha:** 2026-10-31
 > **Objetivo:** Rediseñar los modales de crear y editar usuario y departamento para que se parezcan a `design/userModal.html` y `design/departmentModa.html`, con piezas compartidas y sin cambiar su comportamiento.
@@ -107,26 +107,26 @@ Etiquetas de rol en el `Select`: se añade `selectLabel` en `USER_ROLE_INFO` (`s
 
 ## Criterios de aceptación
 
-- [ ] `npm run lint` y `npm run build` pasan.
-- [ ] Los modales de solicitudes y aprobaciones se ven igual que antes (mismo fondo, ancho y X).
-- [ ] Ambos modales miden hasta `max-w-xl` y el fondo es azul marino translúcido con desenfoque.
-- [ ] La cabecera muestra icono en recuadro, título, badge "Nuevo" al crear o "Edición" al editar, descripción, X y borde inferior.
-- [ ] Hay una sola X por modal; cierra igual que "Cancelar".
-- [ ] Mientras guarda, la X está deshabilitada.
-- [ ] Las etiquetas están en mayúsculas y los obligatorios llevan asterisco rojo.
-- [ ] El asterisco no lo lee el lector de pantalla (`aria-hidden`).
-- [ ] Nombre, correo, contraseña y nombre de departamento tienen icono a la izquierda.
-- [ ] Departamento y Rol muestran icono dentro del selector.
-- [ ] A ≥ 640px, crear usuario muestra Correo | Contraseña y Departamento | Rol en dos columnas.
-- [ ] A ≥ 640px, editar usuario muestra Correo | Estado, Departamento | Rol y "Nueva contraseña" en fila completa.
-- [ ] A 375px todos los campos están en una columna y no hay scroll horizontal.
-- [ ] El selector de rol muestra "Requester (Solicitante)", "Approver (Aprobador)" y "Admin (Administrador)".
-- [ ] La tabla y el filtro de usuarios siguen mostrando "Requester", "Approver" y "Admin".
-- [ ] El modal de departamento no tiene Código ni Descripción, y Estado solo aparece al editar.
-- [ ] Crear y editar usuario y departamento envían las mismas peticiones que antes.
-- [ ] Los errores de validación y de API se muestran como antes.
-- [ ] Ambos modales se usan solo con teclado; el foco inicial sigue en el primer campo.
-- [ ] No hay dependencias npm nuevas.
+- [x] `npm run lint` y `npm run build` pasan.
+- [x] Los modales de solicitudes y aprobaciones se ven igual que antes (mismo fondo, ancho y X).
+- [x] Ambos modales miden hasta `max-w-xl` y el fondo es azul marino translúcido con desenfoque.
+- [x] La cabecera muestra icono en recuadro, título, badge "Nuevo" al crear o "Edición" al editar, descripción, X y borde inferior.
+- [x] Hay una sola X por modal; cierra igual que "Cancelar".
+- [x] Mientras guarda, la X está deshabilitada.
+- [x] Las etiquetas están en mayúsculas y los obligatorios llevan asterisco rojo.
+- [x] El asterisco no lo lee el lector de pantalla (`aria-hidden`).
+- [x] Nombre, correo, contraseña y nombre de departamento tienen icono a la izquierda.
+- [x] Departamento y Rol muestran icono dentro del selector.
+- [x] A ≥ 640px, crear usuario muestra Correo | Contraseña y Departamento | Rol en dos columnas.
+- [x] A ≥ 640px, editar usuario muestra Correo | Estado, Departamento | Rol y "Nueva contraseña" en fila completa.
+- [x] A 375px todos los campos están en una columna y no hay scroll horizontal.
+- [x] El selector de rol muestra "Requester (Solicitante)", "Approver (Aprobador)" y "Admin (Administrador)".
+- [x] La tabla y el filtro de usuarios siguen mostrando "Requester", "Approver" y "Admin".
+- [x] El modal de departamento no tiene Código ni Descripción, y Estado solo aparece al editar.
+- [x] Crear y editar usuario y departamento envían las mismas peticiones que antes.
+- [x] Los errores de validación y de API se muestran como antes.
+- [x] Ambos modales se usan solo con teclado; el foco inicial sigue en el primer campo.
+- [x] No hay dependencias npm nuevas.
 
 ## Decisiones
 
