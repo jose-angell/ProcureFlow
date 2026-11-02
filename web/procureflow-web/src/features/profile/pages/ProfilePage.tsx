@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { isSessionError } from '@/features/dashboard/dashboardErrors'
 import { getMyProfile } from '../api/profile'
+import ChangePasswordCard from '../components/ChangePasswordCard'
 import ProfileDetailsCard from '../components/ProfileDetailsCard'
 import { getProfileErrorMessage } from '../profileErrors'
 import type { MyProfile } from '../types'
@@ -93,7 +94,10 @@ function ProfilePage() {
           <Skeleton className="h-96 w-full" />
         </div>
       ) : (
-        <ProfileDetailsCard profile={profile} onSaved={handleSaved} />
+        <>
+          <ProfileDetailsCard profile={profile} onSaved={handleSaved} />
+          <ChangePasswordCard />
+        </>
       )}
     </section>
   )

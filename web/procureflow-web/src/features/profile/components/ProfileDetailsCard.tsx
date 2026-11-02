@@ -219,7 +219,7 @@ function ProfileDetailsCard({ profile, onSaved }: ProfileDetailsCardProps) {
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-            <p role="status" className="flex items-center gap-2 text-sm text-on-tertiary-container">
+            <p role="status" className="flex items-center gap-2 text-sm text-[#005137]">
               {isSaved && (
                 <>
                   <CircleCheck aria-hidden="true" className="size-4" />
