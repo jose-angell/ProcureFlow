@@ -4,6 +4,7 @@ import { Link } from 'react-router'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { getPurchaseRequestSummary } from '@/features/purchase-requests/api/purchaseRequests'
+import PurchaseRequestFormDialog from '@/features/purchase-requests/components/PurchaseRequestFormDialog'
 import {
   PurchaseRequestStatus,
   type PurchaseRequest,
@@ -25,12 +26,13 @@ type SummaryState = { key: number } & (
   | { error: unknown }
 )
 
-type CancelResult = { success: string } | { error: unknown }
+type ActionResult = { success: string } | { error: unknown }
 
 function RequesterDashboard() {
   const [reloadKey, setReloadKey] = useState(0)
   const [summaryState, setSummaryState] = useState<SummaryState | null>(null)
-  const [cancelResult, setCancelResult] = useState<CancelResult | null>(null)
+  const [cancelResult, setCancelResult] = useState<ActionResult | null>(null)
+  const [isFormOpen, setIsFormOpen] = useState(false)
 
   useEffect(() => {
     let cancelled = false
@@ -49,6 +51,18 @@ function RequesterDashboard() {
   }, [reloadKey])
 
   const current = summaryState && summaryState.key === reloadKey ? summaryState : null
+
+  function handleSaved(message: string) {
+    setCancelResult({ success: message })
+    setIsFormOpen(false)
+    setReloadKey((key) => key + 1)
+  }
+
+  function handleFormClose(hasFailed: boolean) {
+    setIsFormOpen(false)
+    // Un guardado a medias deja la solicitud creada: la lista está desactualizada.
+    if (hasFailed) setReloadKey((key) => key + 1)
+  }
 
   function handleCancelled(requestNumber: string) {
     setCancelResult({ success: getCancelRequestSuccessMessage(requestNumber) })
@@ -95,7 +109,7 @@ function RequesterDashboard() {
           </p>
         </div>
 
-        <Button type="button" disabled>
+        <Button type="button" onClick={() => setIsFormOpen(true)}>
           <Plus aria-hidden="true" />
           Nueva solicitud
         </Button>
@@ -135,6 +149,14 @@ function RequesterDashboard() {
         renderActions={renderActions}
         reloadKey={reloadKey}
       />
+
+      {isFormOpen && (
+        <PurchaseRequestFormDialog
+          request={null}
+          onSaved={handleSaved}
+          onClose={handleFormClose}
+        />
+      )}
     </section>
   )
 }
