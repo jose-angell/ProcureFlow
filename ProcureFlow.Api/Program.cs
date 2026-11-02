@@ -2,6 +2,7 @@ using ProcureFlow.Api;
 using ProcureFlow.Application;
 using ProcureFlow.Application.Seeding;
 using ProcureFlow.Infrastructure;
+using ProcureFlow.Infrastructure.Persistence;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,12 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 var app = builder.Build();
+
+var dbOptions = app.Configuration.GetSection(DatabaseMigrationOptions.SectionName).Get<DatabaseMigrationOptions>() ?? new();
+using (var scope = app.Services.CreateScope())
+{
+    await scope.ServiceProvider.GetRequiredService<DatabaseMigrator>().MigrateAsync(dbOptions);
+}
 
 var adminSeed = app.Configuration.GetSection(AdminSeedOptions.SectionName).Get<AdminSeedOptions>() ?? new();
 using (var scope = app.Services.CreateScope())
