@@ -11,6 +11,7 @@ const PAGE_TITLES: Record<string, string> = {
   '/approvals': 'Aprobaciones',
   '/departments': 'Departamentos',
   '/users': 'Usuarios',
+  '/profile': 'Mi perfil',
 }
 
 const AUDIENCE_BY_ROLE: Record<UserRole, NavAudience> = {

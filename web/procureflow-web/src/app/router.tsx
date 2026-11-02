@@ -6,6 +6,7 @@ import type { LoginLocationState } from '@/features/auth/types'
 import ApprovalsPage from '@/features/approvals/pages/ApprovalsPage'
 import DashboardPage from '@/features/dashboard/pages/DashboardPage'
 import DepartmentsPage from '@/features/departments/pages/DepartmentsPage'
+import ProfilePage from '@/features/profile/pages/ProfilePage'
 import PurchaseRequestsPage from '@/features/purchase-requests/pages/PurchaseRequestsPage'
 import UsersPage from '@/features/users/pages/UsersPage'
 import { setUnauthorizedHandler } from '@/shared/api/httpClient'
@@ -37,6 +38,7 @@ export const router = createBrowserRouter([
           { path: 'approvals', element: <ApprovalsPage /> },
           { path: 'departments', element: <DepartmentsPage /> },
           { path: 'users', element: <UsersPage /> },
+          { path: 'profile', element: <ProfilePage /> },
         ],
       },
     ],
