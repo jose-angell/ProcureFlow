@@ -24,7 +24,9 @@ dotnet ef database update --project ProcureFlow.Infrastructure --startup-project
 dotnet ef migrations add <Name> --project ProcureFlow.Infrastructure --startup-project ProcureFlow.Api --output-dir Migrations
 ```
 
-The existing migrations are in `ProcureFlow.Infrastructure/Migrations`. The README says `Persistence/Migrations`, but the code uses `Migrations`.
+The existing migrations are in `ProcureFlow.Infrastructure/Migrations`.
+
+Automatic migrations: the `Database:MigrateOnStartup` setting makes `Program.cs` call `DatabaseMigrator` at startup, before `AdminSeeder`. It applies all pending migrations and aborts startup if they fail (no retries). It is `false` in `appsettings.json` and in `Testing` (tests use SQLite with `EnsureCreated`), and `true` only in `appsettings.Development.json`. Override with `Database__MigrateOnStartup`.
 
 Configuration: the connection string is `ConnectionStrings:DefaultConnection` and the JWT settings are the `Jwt` section (`SecretKey`, `Issuer`, `Audience`, `ExpirationMinutes`). Both can be overridden with env vars such as `ConnectionStrings__DefaultConnection` and `Jwt__SecretKey`.
 

@@ -1,6 +1,6 @@
 # SPEC 13 — Migraciones automáticas al arrancar la API
 
-> **Estado:** aprobado
+> **Estado:** implementado
 > **Depende de:** SPEC 11
 > **Fecha:** 2026-11-01
 > **Objetivo:** Aplicar al arrancar la API las migraciones de EF Core pendientes, cuando `Database:MigrateOnStartup` lo habilita, antes del seed del administrador inicial.
@@ -102,19 +102,19 @@ using (var scope = app.Services.CreateScope())
 
 ## Criterios de aceptación
 
-- [ ] `dotnet build` y `dotnet test` pasan, y los tests existentes no cambian.
-- [ ] Con un volumen de Postgres nuevo (`docker compose down -v` + `up -d`) y el entorno Development, `dotnet run --project ProcureFlow.Api` arranca sin ejecutar `dotnet ef database update`.
-- [ ] Después de ese arranque, la tabla `__EFMigrationsHistory` contiene `20260920062417_craciondeTablas`.
-- [ ] Después de ese arranque, `POST /api/auth/login` con el admin del seed responde 200.
-- [ ] El log del primer arranque contiene "Aplicando 1 migraciones pendientes: 20260920062417_craciondeTablas.".
-- [ ] En un segundo arranque, el log contiene "La base de datos está al día; no hay migraciones pendientes." y no se aplica nada.
-- [ ] Con `Database__MigrateOnStartup=false`, no aparece ningún log del migrador.
-- [ ] Con Postgres detenido y `MigrateOnStartup: true`, la API no arranca y el log contiene "No se pudieron aplicar las migraciones de la base de datos.".
-- [ ] `appsettings.json` tiene `Database:MigrateOnStartup` en `false`, y `appsettings.Development.json` lo tiene en `true`.
-- [ ] La migración se ejecuta antes que `AdminSeeder` en `Program.cs`.
-- [ ] El README ya no contiene `Persistence/Migrations` ni la frase "No aplica migraciones".
-- [ ] `README.md` y `CLAUDE.md` documentan `Database:MigrateOnStartup`.
-- [ ] No hay paquetes NuGet nuevos ni migraciones nuevas.
+- [x] `dotnet build` y `dotnet test` pasan, y los tests existentes no cambian.
+- [x] Con un volumen de Postgres nuevo (`docker compose down -v` + `up -d`) y el entorno Development, `dotnet run --project ProcureFlow.Api` arranca sin ejecutar `dotnet ef database update`.
+- [x] Después de ese arranque, la tabla `__EFMigrationsHistory` contiene `20260920062417_craciondeTablas`.
+- [x] Después de ese arranque, `POST /api/auth/login` con el admin del seed responde 200.
+- [x] El log del primer arranque contiene "Aplicando 1 migraciones pendientes: 20260920062417_craciondeTablas.".
+- [x] En un segundo arranque, el log contiene "La base de datos está al día; no hay migraciones pendientes." y no se aplica nada.
+- [x] Con `Database__MigrateOnStartup=false`, no aparece ningún log del migrador.
+- [x] Con Postgres detenido y `MigrateOnStartup: true`, la API no arranca y el log contiene "No se pudieron aplicar las migraciones de la base de datos.".
+- [x] `appsettings.json` tiene `Database:MigrateOnStartup` en `false`, y `appsettings.Development.json` lo tiene en `true`.
+- [x] La migración se ejecuta antes que `AdminSeeder` en `Program.cs`.
+- [x] El README ya no contiene `Persistence/Migrations` ni la frase "No aplica migraciones".
+- [x] `README.md` y `CLAUDE.md` documentan `Database:MigrateOnStartup`.
+- [x] No hay paquetes NuGet nuevos ni migraciones nuevas.
 
 ## Decisiones
 

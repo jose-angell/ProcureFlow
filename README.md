@@ -517,8 +517,20 @@ dotnet ef database update --project ProcureFlow.Infrastructure --startup-project
 Crear una migración:
 
 ```bash
-dotnet ef migrations add MigrationName --project ProcureFlow.Infrastructure --startup-project ProcureFlow.Api --output-dir Persistence/Migrations
+dotnet ef migrations add MigrationName --project ProcureFlow.Infrastructure --startup-project ProcureFlow.Api --output-dir Migrations
 ```
+
+**Migraciones automáticas al arrancar.** La API puede aplicar las migraciones pendientes al iniciar, antes de crear el administrador inicial (sección 7.5). Se controla con la clave `Database:MigrateOnStartup`:
+
+| Entorno | Valor | Efecto |
+| --- | --- | --- |
+| `appsettings.json` (por defecto) | `false` | No migra. Ejecuta `dotnet ef database update` a mano. |
+| `appsettings.Development.json` | `true` | Aplica las migraciones pendientes en cada arranque. |
+| `Testing` | `false` | Los tests usan SQLite con `EnsureCreated`. |
+
+Se puede sobrescribir con la variable de entorno `Database__MigrateOnStartup`. Con ella en `true`, `dotnet ef database update` pasa a ser opcional.
+
+Si Postgres no responde o una migración falla, se registra un log de error y la API no arranca. No hay reintentos.
 
 ### 7.5. Administrador inicial
 
@@ -536,7 +548,7 @@ Reglas:
 
 - Solo crea el administrador si no existe ningún usuario `Admin`, esté activo o no. Nunca modifica ni reactiva usuarios existentes.
 - Si `Enabled` es `true` y la configuración es inválida, la API no arranca. Eso incluye una contraseña ausente o corta, y un correo que ya usa un usuario que no es administrador.
-- No aplica migraciones: ejecuta antes `dotnet ef database update` (sección 7.4).
+- Necesita que las tablas existan. Si `Database:MigrateOnStartup` es `true`, las migraciones se aplican antes del seed; si no, ejecuta antes `dotnet ef database update` (sección 7.4).
 
 La contraseña se pasa con secretos de desarrollo o con una variable de entorno.
 
