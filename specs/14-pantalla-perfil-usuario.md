@@ -1,6 +1,6 @@
 # SPEC 14 — Pantalla de perfil del usuario
 
-> **Estado:** aprobado
+> **Estado:** implementado
 > **Depende de:** SPEC 06, SPEC 08
 > **Fecha:** 2026-11-01
 > **Objetivo:** Permitir que cualquier usuario con sesión activa vea y edite su nombre y correo y cambie su contraseña desde `/profile`, siguiendo `design/userConfig.html`.
@@ -187,30 +187,30 @@ Mostrar u ocultar contraseña: botón con `aria-label` "Mostrar contraseña"/"Oc
 
 ## Criterios de aceptación
 
-- [ ] `dotnet build`, `dotnet test`, `npm run lint` y `npm run build` pasan.
-- [ ] `GET api/users/me` con token de Requester, Approver o Admin responde 200 con sus propios datos y `departmentName`.
-- [ ] `GET api/users/me` sin token responde 401.
-- [ ] `GET api/users`, `POST`, `PUT {id}`, `DELETE {id}` y los `PATCH` siguen respondiendo 403 a un Requester y 2xx a un Admin.
-- [ ] `PUT api/users/me` con un correo de otro usuario responde 409 y no cambia nada.
-- [ ] `PUT api/users/me` no cambia rol, departamento, estado ni contraseña.
-- [ ] `PUT api/users/me/password` con la contraseña actual incorrecta responde 400 y no cierra la sesión en el frontend.
-- [ ] `PUT api/users/me/password` con una nueva de menos de 8 caracteres responde 400.
-- [ ] Tras cambiar la contraseña, el login con la anterior responde 401 y con la nueva 200.
-- [ ] Un usuario inactivo con token aún vigente recibe 403 en los tres endpoints.
-- [ ] Cualquier rol llega a `/profile` desde "Configuración" del sidebar y desde "Mi perfil" del menú de usuario.
-- [ ] El breadcrumb muestra "Inicio > Mi perfil".
-- [ ] Departamento y rol se muestran y no se pueden editar.
-- [ ] Tras guardar nombre o correo, el header muestra los nuevos valores sin recargar, y siguen ahí tras recargar.
-- [ ] La sesión actualizada queda en el mismo almacenamiento (localStorage o sessionStorage) que antes.
-- [ ] "Descartar" devuelve los valores cargados; "Guardar cambios" está deshabilitado sin cambios.
-- [ ] Con confirmación distinta, nueva < 8 o nueva igual a la actual, no se envía la petición y se muestra el error junto al campo.
-- [ ] Tras cambiar la contraseña, la sesión sigue activa y los tres campos quedan vacíos.
-- [ ] El medidor muestra 0, 1, 2 o 3 barras según la longitud y su texto se anuncia con `aria-live`.
-- [ ] Cada campo de contraseña tiene un botón accesible de mostrar u ocultar.
-- [ ] A 375px todo está en una columna y no hay scroll horizontal.
-- [ ] La pantalla se usa solo con teclado.
-- [ ] No aparecen la columna derecha, foto de perfil, "Último acceso" ni "¿Olvidaste tu contraseña?".
-- [ ] No hay paquetes npm o NuGet nuevos ni migraciones nuevas.
+- [x] `dotnet build`, `dotnet test`, `npm run lint` y `npm run build` pasan.
+- [x] `GET api/users/me` con token de Requester, Approver o Admin responde 200 con sus propios datos y `departmentName`.
+- [x] `GET api/users/me` sin token responde 401.
+- [x] `GET api/users`, `POST`, `PUT {id}`, `DELETE {id}` y los `PATCH` siguen respondiendo 403 a un Requester y 2xx a un Admin.
+- [x] `PUT api/users/me` con un correo de otro usuario responde 409 y no cambia nada.
+- [x] `PUT api/users/me` no cambia rol, departamento, estado ni contraseña.
+- [x] `PUT api/users/me/password` con la contraseña actual incorrecta responde 400 y no cierra la sesión en el frontend.
+- [x] `PUT api/users/me/password` con una nueva de menos de 8 caracteres responde 400.
+- [x] Tras cambiar la contraseña, el login con la anterior responde 401 y con la nueva 200.
+- [x] Un usuario inactivo con token aún vigente recibe 403 en los tres endpoints.
+- [x] Cualquier rol llega a `/profile` desde "Configuración" del sidebar y desde "Mi perfil" del menú de usuario.
+- [x] El breadcrumb muestra "Inicio > Mi perfil".
+- [x] Departamento y rol se muestran y no se pueden editar.
+- [x] Tras guardar nombre o correo, el header muestra los nuevos valores sin recargar, y siguen ahí tras recargar.
+- [x] La sesión actualizada queda en el mismo almacenamiento (localStorage o sessionStorage) que antes.
+- [x] "Descartar" devuelve los valores cargados; "Guardar cambios" está deshabilitado sin cambios.
+- [x] Con confirmación distinta, nueva < 8 o nueva igual a la actual, no se envía la petición y se muestra el error junto al campo.
+- [x] Tras cambiar la contraseña, la sesión sigue activa y los tres campos quedan vacíos.
+- [x] El medidor muestra 0, 1, 2 o 3 barras según la longitud y su texto se anuncia con `aria-live`.
+- [x] Cada campo de contraseña tiene un botón accesible de mostrar u ocultar.
+- [x] A 375px todo está en una columna y no hay scroll horizontal.
+- [x] La pantalla se usa solo con teclado.
+- [x] No aparecen la columna derecha, foto de perfil, "Último acceso" ni "¿Olvidaste tu contraseña?".
+- [x] No hay paquetes npm o NuGet nuevos ni migraciones nuevas.
 
 ## Decisiones
 
