@@ -1,4 +1,5 @@
 import { LogOut } from 'lucide-react'
+import { useEffect, useReducer } from 'react'
 import { useNavigate } from 'react-router'
 import {
   DropdownMenu,
@@ -6,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { clearSession, getSession } from '../session'
+import { SESSION_UPDATED_EVENT, clearSession, getSession } from '../session'
 import { UserRole } from '../types'
 
 const ROLE_LABELS: Record<UserRole, string> = {
@@ -27,6 +28,14 @@ function getInitials(fullName: string): string {
 /** Iniciales, nombre, rol y departamento del usuario de la sesión. Sin sesión no muestra nada. */
 function CurrentUser() {
   const navigate = useNavigate()
+  const [, refresh] = useReducer((count: number) => count + 1, 0)
+
+  // Vuelve a leer la sesión cuando otra pantalla cambia nombre o correo.
+  useEffect(() => {
+    window.addEventListener(SESSION_UPDATED_EVENT, refresh)
+    return () => window.removeEventListener(SESSION_UPDATED_EVENT, refresh)
+  }, [])
+
   const session = getSession()
   if (!session) return null
 

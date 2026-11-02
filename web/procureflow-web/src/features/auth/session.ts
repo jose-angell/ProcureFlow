@@ -60,6 +60,36 @@ export function getValidSession(): StoredSession | null {
   return session && !isTokenExpired(session.accessToken) ? session : null
 }
 
+/** Evento que se emite en `window` cuando cambian los datos del usuario de la sesión. */
+export const SESSION_UPDATED_EVENT = 'procureflow.session-updated'
+
+/**
+ * Actualiza nombre y correo de la sesión guardada, en el mismo almacenamiento
+ * donde está (no cambia "Recordar sesión"), y avisa con `SESSION_UPDATED_EVENT`.
+ * Sin sesión no hace nada.
+ */
+export function updateSessionUser(changes: Pick<StoredSession['user'], 'fullName' | 'email'>): void {
+  const session = getSession()
+  if (!session) return
+
+  const storage = [localStorage, sessionStorage].find((candidate) => {
+    const raw = candidate.getItem(SESSION_KEY)
+    if (!raw) return false
+
+    try {
+      const stored = JSON.parse(raw) as Partial<StoredSession> | null
+      return typeof stored?.accessToken === 'string' && !!stored.user
+    } catch {
+      return false
+    }
+  })
+  if (!storage) return
+
+  const updated: StoredSession = { ...session, user: { ...session.user, ...changes } }
+  storage.setItem(SESSION_KEY, JSON.stringify(updated))
+  window.dispatchEvent(new Event(SESSION_UPDATED_EVENT))
+}
+
 /**
  * Guarda la sesión en localStorage (recordar) o sessionStorage (no recordar)
  * y borra la clave del otro almacenamiento para que nunca haya dos sesiones.
