@@ -41,7 +41,7 @@ namespace ProcureFlow.Tests.Application
             }
 
             using var context = db.CreateContext();
-            var useCase = new UserUseCase(context, new FakePasswordHashService());
+            var useCase = new UserUseCase(context, new FakePasswordHashService(), new FakeCurrentUserService(user.Id, UserRole.Admin));
 
             var request = new UpdateUserRequest
             {
@@ -86,7 +86,7 @@ namespace ProcureFlow.Tests.Application
             }
 
             using var context = db.CreateContext();
-            var useCase = new UserUseCase(context, new FakePasswordHashService());
+            var useCase = new UserUseCase(context, new FakePasswordHashService(), new FakeCurrentUserService(user.Id, UserRole.Admin));
 
             var request = new UpdateUserRequest
             {

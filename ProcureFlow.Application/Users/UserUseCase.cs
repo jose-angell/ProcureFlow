@@ -4,6 +4,7 @@ using ProcureFlow.Application.Abstractions.Security;
 using ProcureFlow.Application.Exceptions;
 using ProcureFlow.Application.Users.Dtos;
 using ProcureFlow.Domain.Entities;
+using ProcureFlow.Domain.Exceptions;
 
 namespace ProcureFlow.Application.Users
 {
@@ -11,10 +12,65 @@ namespace ProcureFlow.Application.Users
     {
         private readonly IApplicationDbContext _context;
         private readonly IPasswordHashService _passwordHashService;
-        public UserUseCase(IApplicationDbContext context, IPasswordHashService passwordHashService)
+        private readonly ICurrentUserService _currentUser;
+        public UserUseCase(IApplicationDbContext context, IPasswordHashService passwordHashService, ICurrentUserService currentUser)
         {
             _context = context;
             _passwordHashService = passwordHashService;
+            _currentUser = currentUser;
+        }
+        public async Task<UserDto> GetMe()
+        {
+            var user = await _context.Users.AsNoTracking()
+                .Include(u => u.Department)
+                .FirstOrDefaultAsync(u => u.Id == _currentUser.UserId);
+            EnsureUserIsActive(user);
+
+            return new UserDto
+            {
+                Id = user!.Id,
+                FullName = user.FullName,
+                Email = user.Email,
+                Role = user.Role,
+                IsActive = user.IsActive,
+                DepartmentId = user.DepartmentId,
+                DepartmentName = user.Department?.Name,
+                CreatedAt = user.CreatedAt,
+            };
+        }
+        public async Task UpdateMe(UpdateMyProfileRequest request)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == _currentUser.UserId);
+            EnsureUserIsActive(user);
+
+            var fullName = request.FullName!.Trim();
+            var email = request.Email!.Trim();
+
+            var existEmail = await _context.Users.AnyAsync(u => u.Id != user!.Id && u.Email == email);
+            if (existEmail) throw new ConflictException("El correo no esta disponible.");
+
+            user!.Update(fullName, email, user.PasswordHash, user.Role, user.DepartmentId);
+            await _context.SaveChangesAsync();
+        }
+        public async Task ChangeMyPassword(ChangeMyPasswordRequest request)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == _currentUser.UserId);
+            EnsureUserIsActive(user);
+
+            if (!_passwordHashService.Verify(request.CurrentPassword!, user!.PasswordHash))
+                throw new DomainException("La contraseña actual no es correcta.");
+
+            if (request.NewPassword == request.CurrentPassword)
+                throw new DomainException("La nueva contraseña debe ser distinta de la actual.");
+
+            var passwordHash = _passwordHashService.Hash(request.NewPassword!);
+            user.Update(user.FullName, user.Email, passwordHash, user.Role, user.DepartmentId);
+            await _context.SaveChangesAsync();
+        }
+        private static void EnsureUserIsActive(User? user)
+        {
+            if (user == null) throw new NotFoundException("El usuario no esta en el sistema.");
+            if (!user.IsActive) throw new ForbiddenException("El usuario está inactivo.");
         }
         public async Task<UserDto> Create(CreateUserRequest request)
         {
