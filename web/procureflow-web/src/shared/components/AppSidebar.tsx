@@ -33,7 +33,7 @@ const navItems: NavItem[] = [
 
 const footerNavItems: NavItem[] = [
   { label: 'Centro de ayuda', icon: CircleHelp },
-  { label: 'Configuración', icon: Settings },
+  { label: 'Configuración', icon: Settings, to: '/profile' },
 ]
 
 const itemClassName =

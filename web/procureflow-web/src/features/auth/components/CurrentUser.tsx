@@ -1,4 +1,4 @@
-import { LogOut } from 'lucide-react'
+import { CircleUser, LogOut } from 'lucide-react'
 import { useEffect, useReducer } from 'react'
 import { useNavigate } from 'react-router'
 import {
@@ -67,6 +67,10 @@ function CurrentUser() {
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-44">
+        <DropdownMenuItem onClick={() => navigate('/profile')}>
+          <CircleUser aria-hidden="true" />
+          Mi perfil
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={handleLogout}>
           <LogOut aria-hidden="true" />
           Cerrar sesión
