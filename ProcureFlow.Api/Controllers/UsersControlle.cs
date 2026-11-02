@@ -16,6 +16,24 @@ namespace ProcureFlow.Api.Controllers
             _useCase = useCase;
         }
 
+        [HttpGet("me")]
+        public async Task<IActionResult> GetMe()
+        {
+            var user = await _useCase.GetMe();
+            return Ok(user);
+        }
+        [HttpPut("me")]
+        public async Task<IActionResult> UpdateMe([FromBody] UpdateMyProfileRequest request)
+        {
+            await _useCase.UpdateMe(request);
+            return NoContent();
+        }
+        [HttpPut("me/password")]
+        public async Task<IActionResult> ChangeMyPassword([FromBody] ChangeMyPasswordRequest request)
+        {
+            await _useCase.ChangeMyPassword(request);
+            return NoContent();
+        }
         [Authorize(Roles = "Admin")]
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById(Guid id)
