@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ProcureFlow.Application.Abstractions.Security;
+using ProcureFlow.Application.Auth.Dtos;
 using ProcureFlow.Application.Exceptions;
 using ProcureFlow.Application.Users;
 using ProcureFlow.Application.Users.Dtos;
@@ -17,6 +18,11 @@ namespace ProcureFlow.Tests.Application
         {
             public string Hash(string password) => $"hash:{password}";
             public bool Verify(string password, string passwordHash) => passwordHash == Hash(password);
+        }
+
+        private class FakeJwtTokenGenerator : IJwtTokenGenerator
+        {
+            public string Generate(User user) => $"token:{user.Id}:{user.SecurityStamp}";
         }
 
         [Theory]
@@ -44,7 +50,7 @@ namespace ProcureFlow.Tests.Application
             }
 
             using var context = db.CreateContext();
-            var useCase = new UserUseCase(context, new FakePasswordHashService(), new FakeCurrentUserService(user.Id, UserRole.Admin));
+            var useCase = new UserUseCase(context, new FakePasswordHashService(), new FakeCurrentUserService(user.Id, UserRole.Admin), new FakeJwtTokenGenerator());
 
             var request = new UpdateUserRequest
             {
@@ -89,7 +95,7 @@ namespace ProcureFlow.Tests.Application
             }
 
             using var context = db.CreateContext();
-            var useCase = new UserUseCase(context, new FakePasswordHashService(), new FakeCurrentUserService(user.Id, UserRole.Admin));
+            var useCase = new UserUseCase(context, new FakePasswordHashService(), new FakeCurrentUserService(user.Id, UserRole.Admin), new FakeJwtTokenGenerator());
 
             var request = new UpdateUserRequest
             {
@@ -136,7 +142,7 @@ namespace ProcureFlow.Tests.Application
         }
 
         private static UserUseCase CreateUseCase(AppDbContext context, Guid currentUserId) =>
-            new(context, new FakePasswordHashService(), new FakeCurrentUserService(currentUserId, UserRole.Requester));
+            new(context, new FakePasswordHashService(), new FakeCurrentUserService(currentUserId, UserRole.Requester), new FakeJwtTokenGenerator());
 
         [Fact]
         public async Task GetMe_ShouldReturnCurrentUserWithDepartmentName()
@@ -247,9 +253,10 @@ namespace ProcureFlow.Tests.Application
             using var db = new TestDbContextFactory();
             var (_, user) = await SeedUserAsync(db);
 
+            AuthResponse response;
             using (var context = db.CreateContext())
             {
-                await CreateUseCase(context, user.Id).ChangeMyPassword(new ChangeMyPasswordRequest
+                response = await CreateUseCase(context, user.Id).ChangeMyPassword(new ChangeMyPasswordRequest
                 {
                     CurrentPassword = CurrentPassword,
                     NewPassword = "OtraClave456!"
@@ -261,6 +268,12 @@ namespace ProcureFlow.Tests.Application
 
             Assert.Equal("hash:OtraClave456!", saved.PasswordHash);
             Assert.Equal("usuario@test.com", saved.Email);
+
+            // El token nuevo se emite con el sello ya regenerado, no con el anterior.
+            Assert.NotEqual(user.SecurityStamp, saved.SecurityStamp);
+            Assert.Equal($"token:{user.Id}:{saved.SecurityStamp}", response.AccessToken);
+            Assert.Equal(user.Id, response.UserId);
+            Assert.Equal("IT", response.DepartmentName);
         }
 
         [Fact]

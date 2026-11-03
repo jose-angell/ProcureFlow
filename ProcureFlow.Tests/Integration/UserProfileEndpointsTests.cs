@@ -125,7 +125,11 @@ public class UserProfileEndpointsTests : IntegrationTestBase
             NewPassword = "NuevaClave456!"
         });
 
-        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        var body = await response.Content.ReadFromJsonAsync<AuthResponse>();
+        Assert.NotNull(body);
+        Assert.False(string.IsNullOrWhiteSpace(body.AccessToken));
 
         var oldLogin = await Client.PostAsJsonAsync("/api/auth/login", new LoginCustomerRequest
         {

@@ -31,8 +31,8 @@ namespace ProcureFlow.Api.Controllers
         [HttpPut("me/password")]
         public async Task<IActionResult> ChangeMyPassword([FromBody] ChangeMyPasswordRequest request)
         {
-            await _useCase.ChangeMyPassword(request);
-            return NoContent();
+            var response = await _useCase.ChangeMyPassword(request);
+            return Ok(response);
         }
         [Authorize(Roles = "Admin")]
         [HttpGet("{id:guid}")]

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProcureFlow.Application.Abstractions.Persistence;
 using ProcureFlow.Application.Abstractions.Security;
+using ProcureFlow.Application.Auth.Dtos;
 using ProcureFlow.Application.Exceptions;
 using ProcureFlow.Application.Users.Dtos;
 using ProcureFlow.Domain.Entities;
@@ -13,11 +14,13 @@ namespace ProcureFlow.Application.Users
         private readonly IApplicationDbContext _context;
         private readonly IPasswordHashService _passwordHashService;
         private readonly ICurrentUserService _currentUser;
-        public UserUseCase(IApplicationDbContext context, IPasswordHashService passwordHashService, ICurrentUserService currentUser)
+        private readonly IJwtTokenGenerator _jwtTokenGenerator;
+        public UserUseCase(IApplicationDbContext context, IPasswordHashService passwordHashService, ICurrentUserService currentUser, IJwtTokenGenerator jwtTokenGenerator)
         {
             _context = context;
             _passwordHashService = passwordHashService;
             _currentUser = currentUser;
+            _jwtTokenGenerator = jwtTokenGenerator;
         }
         public async Task<UserDto> GetMe()
         {
@@ -52,9 +55,10 @@ namespace ProcureFlow.Application.Users
             user!.Update(fullName, email, user.PasswordHash, user.Role, user.DepartmentId);
             await _context.SaveChangesAsync();
         }
-        public async Task ChangeMyPassword(ChangeMyPasswordRequest request)
+        public async Task<AuthResponse> ChangeMyPassword(ChangeMyPasswordRequest request)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == _currentUser.UserId);
+            var user = await _context.Users.Include(u => u.Department)
+                .FirstOrDefaultAsync(u => u.Id == _currentUser.UserId);
             EnsureUserIsActive(user);
 
             if (!_passwordHashService.Verify(request.CurrentPassword!, user!.PasswordHash))
@@ -66,6 +70,17 @@ namespace ProcureFlow.Application.Users
             var passwordHash = _passwordHashService.Hash(request.NewPassword!);
             user.Update(user.FullName, user.Email, passwordHash, user.Role, user.DepartmentId);
             await _context.SaveChangesAsync();
+
+            return new AuthResponse
+            {
+                AccessToken = _jwtTokenGenerator.Generate(user),
+                UserId = user.Id,
+                FullName = user.FullName,
+                Email = user.Email,
+                Role = user.Role,
+                DepartmentId = user.DepartmentId,
+                DepartmentName = user.Department?.Name
+            };
         }
         private static void EnsureUserIsActive(User? user)
         {
