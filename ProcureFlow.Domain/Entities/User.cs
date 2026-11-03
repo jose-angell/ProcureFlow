@@ -13,6 +13,7 @@ namespace ProcureFlow.Domain.Entities
         public Guid DepartmentId { get; private set; }
         public bool IsActive { get; private set; }
         public DateTime CreatedAt { get; private set; }
+        public Guid SecurityStamp { get; private set; }
 
         public Department Department { get; private set; } = null!;
 
@@ -29,10 +30,12 @@ namespace ProcureFlow.Domain.Entities
             DepartmentId = departmentId;
             IsActive = true;
             CreatedAt = DateTime.UtcNow;
+            SecurityStamp = Guid.NewGuid();
         }
         public void Update(string fullName, string email, string passwordHash, UserRole role, Guid departmentId)
         {
             Validate(fullName, email, passwordHash, role, departmentId);
+            if (passwordHash != PasswordHash) SecurityStamp = Guid.NewGuid();
             FullName = fullName;
             Email = email;
             PasswordHash = passwordHash;

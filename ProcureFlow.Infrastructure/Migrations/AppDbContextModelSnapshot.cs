@@ -25,7 +25,6 @@ namespace ProcureFlow.Infrastructure.Migrations
             modelBuilder.Entity("ProcureFlow.Domain.Entities.ApprovalDecision", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("ApproverUserId")
@@ -57,7 +56,6 @@ namespace ProcureFlow.Infrastructure.Migrations
             modelBuilder.Entity("ProcureFlow.Domain.Entities.Department", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<bool>("IsActive")
@@ -79,7 +77,6 @@ namespace ProcureFlow.Infrastructure.Migrations
             modelBuilder.Entity("ProcureFlow.Domain.Entities.PurchaseRequest", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<DateTime?>("ApprovedAt")
@@ -137,7 +134,6 @@ namespace ProcureFlow.Infrastructure.Migrations
             modelBuilder.Entity("ProcureFlow.Domain.Entities.PurchaseRequestItem", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<string>("Description")
@@ -164,7 +160,6 @@ namespace ProcureFlow.Infrastructure.Migrations
             modelBuilder.Entity("ProcureFlow.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
@@ -193,6 +188,9 @@ namespace ProcureFlow.Infrastructure.Migrations
 
                     b.Property<int>("Role")
                         .HasColumnType("integer");
+
+                    b.Property<Guid>("SecurityStamp")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 

@@ -42,6 +42,9 @@ namespace ProcureFlow.Infrastructure.Configurations
             builder.Property(user => user.CreatedAt)
                 .IsRequired();
 
+            builder.Property(user => user.SecurityStamp)
+                .IsRequired();
+
             builder.HasOne(user => user.Department)
                 .WithMany()
                 .HasForeignKey(user => user.DepartmentId)
