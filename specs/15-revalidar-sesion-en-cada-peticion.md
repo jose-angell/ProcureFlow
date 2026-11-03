@@ -1,6 +1,6 @@
 # SPEC 15 — Revalidar la sesión en cada petición autenticada
 
-> **Estado:** aprobado
+> **Estado:** implementado
 > **Depende de:** SPEC 06, SPEC 14
 > **Fecha:** 2026-11-02
 > **Objetivo:** Rechazar con 401 cualquier JWT cuyo usuario se desactivó o se eliminó, cuyo departamento se desactivó, o cuyo rol, departamento o contraseña cambiaron después de emitirse el token, mediante una única comprobación central contra la BD en cada petición.
@@ -179,22 +179,22 @@ Las comprobaciones de `null` se mantienen. Las que validan a terceros, como el d
 
 ## Criterios de aceptación
 
-- [ ] `dotnet build`, `dotnet test`, `npm run lint` y `npm run build` pasan.
-- [ ] Un usuario desactivado con token vigente recibe 401 en cualquier endpoint autenticado, incluidos `api/purchases`, `api/users/me` y `api/departments`.
-- [ ] Un usuario cuyo departamento se desactiva recibe 401 con su token vigente.
-- [ ] Un usuario al que el Admin le cambia el rol recibe 401 con su token viejo, y tras volver a entrar opera con el rol nuevo.
-- [ ] Un usuario al que el Admin le cambia el departamento recibe 401 con su token viejo.
-- [ ] Un usuario eliminado recibe 401 con su token vigente.
-- [ ] Tras `PUT api/users/{id}` con contraseña nueva hecho por el Admin, el token anterior de ese usuario recibe 401.
-- [ ] Tras `PUT api/users/{id}` sin contraseña, sin cambiar rol ni departamento, el token del usuario sigue respondiendo 200.
-- [ ] `PUT api/users/me/password` responde 200 con un `AuthResponse`. El token anterior recibe 401 y el nuevo 200.
-- [ ] En `/profile`, tras cambiar la contraseña la sesión sigue activa sin volver a entrar, y la sesión guardada tiene el token nuevo en el mismo almacenamiento.
-- [ ] Un token sin `department_id` o sin `security_stamp`, aunque esté bien firmado, recibe 401.
-- [ ] El login de un usuario activo con departamento inactivo responde 403.
-- [ ] En el frontend, un 401 por revalidación borra la sesión y lleva a `/login` con `reason: 'expired'`, igual que un token vencido.
-- [ ] Ningún use case comprueba ya `IsActive` del usuario que llama ni de su departamento.
-- [ ] `Jwt:ExpirationMinutes` sigue en 60.
-- [ ] Existe exactamente una migración nueva (`AddUserSecurityStamp`) y no hay paquetes NuGet ni npm nuevos.
+- [x] `dotnet build`, `dotnet test`, `npm run lint` y `npm run build` pasan.
+- [x] Un usuario desactivado con token vigente recibe 401 en cualquier endpoint autenticado, incluidos `api/purchases`, `api/users/me` y `api/departments`.
+- [x] Un usuario cuyo departamento se desactiva recibe 401 con su token vigente.
+- [x] Un usuario al que el Admin le cambia el rol recibe 401 con su token viejo, y tras volver a entrar opera con el rol nuevo.
+- [x] Un usuario al que el Admin le cambia el departamento recibe 401 con su token viejo.
+- [x] Un usuario eliminado recibe 401 con su token vigente.
+- [x] Tras `PUT api/users/{id}` con contraseña nueva hecho por el Admin, el token anterior de ese usuario recibe 401.
+- [x] Tras `PUT api/users/{id}` sin contraseña, sin cambiar rol ni departamento, el token del usuario sigue respondiendo 200.
+- [x] `PUT api/users/me/password` responde 200 con un `AuthResponse`. El token anterior recibe 401 y el nuevo 200.
+- [x] En `/profile`, tras cambiar la contraseña la sesión sigue activa sin volver a entrar, y la sesión guardada tiene el token nuevo en el mismo almacenamiento.
+- [x] Un token sin `department_id` o sin `security_stamp`, aunque esté bien firmado, recibe 401.
+- [x] El login de un usuario activo con departamento inactivo responde 403.
+- [x] En el frontend, un 401 por revalidación borra la sesión y lleva a `/login` con `reason: 'expired'`, igual que un token vencido.
+- [x] Ningún use case comprueba ya `IsActive` del usuario que llama ni de su departamento.
+- [x] `Jwt:ExpirationMinutes` sigue en 60.
+- [x] Existe exactamente una migración nueva (`AddUserSecurityStamp`) y no hay paquetes NuGet ni npm nuevos.
 
 ## Decisiones
 
