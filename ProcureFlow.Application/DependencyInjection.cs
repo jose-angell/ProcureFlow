@@ -16,6 +16,7 @@ namespace ProcureFlow.Application
             services.AddScoped<UserUseCase>();
             services.AddScoped<DepartmentUseCase>();
             services.AddScoped<AuthUseCase>();
+            services.AddScoped<TokenSessionValidator>();
             services.AddScoped<AdminSeeder>();
             return services;
         }
