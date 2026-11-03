@@ -59,6 +59,9 @@ namespace ProcureFlow.Application.Auth
             if (!user.IsActive)
                 throw new ForbiddenException("El usuario está inactivo.");
 
+            if (user.Department is { IsActive: false })
+                throw new ForbiddenException("El departamento del usuario está inactivo.");
+
             var isValidPassword = _passwordHashService.Verify(
                 request.Password!,
                 user.PasswordHash);
