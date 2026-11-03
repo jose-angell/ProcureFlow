@@ -120,8 +120,7 @@ namespace ProcureFlow.Tests.Application
 
         private static async Task<(Department Department, User User)> SeedUserAsync(
             TestDbContextFactory db,
-            string email = "usuario@test.com",
-            bool isActive = true)
+            string email = "usuario@test.com")
         {
             var department = new Department("IT");
             var user = new User(
@@ -130,8 +129,6 @@ namespace ProcureFlow.Tests.Application
                 $"hash:{CurrentPassword}",
                 UserRole.Requester,
                 department.Id);
-
-            if (!isActive) user.Deactivate();
 
             using var seedContext = db.CreateContext();
             seedContext.Departments.Add(department);
@@ -316,28 +313,6 @@ namespace ProcureFlow.Tests.Application
             }));
 
             Assert.Equal("La nueva contraseña debe ser distinta de la actual.", exception.Message);
-        }
-
-        [Fact]
-        public async Task ProfileMethods_ShouldThrowForbidden_WhenUserIsInactive()
-        {
-            using var db = new TestDbContextFactory();
-            var (_, user) = await SeedUserAsync(db, isActive: false);
-
-            using var context = db.CreateContext();
-            var useCase = CreateUseCase(context, user.Id);
-
-            await Assert.ThrowsAsync<ForbiddenException>(() => useCase.GetMe());
-            await Assert.ThrowsAsync<ForbiddenException>(() => useCase.UpdateMe(new UpdateMyProfileRequest
-            {
-                FullName = "Nombre Nuevo",
-                Email = "nuevo@test.com"
-            }));
-            await Assert.ThrowsAsync<ForbiddenException>(() => useCase.ChangeMyPassword(new ChangeMyPasswordRequest
-            {
-                CurrentPassword = CurrentPassword,
-                NewPassword = "OtraClave456!"
-            }));
         }
     }
 }

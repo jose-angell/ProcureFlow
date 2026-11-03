@@ -27,7 +27,7 @@ namespace ProcureFlow.Application.Users
             var user = await _context.Users.AsNoTracking()
                 .Include(u => u.Department)
                 .FirstOrDefaultAsync(u => u.Id == _currentUser.UserId);
-            EnsureUserIsActive(user);
+            EnsureUserExists(user);
 
             return new UserDto
             {
@@ -44,7 +44,7 @@ namespace ProcureFlow.Application.Users
         public async Task UpdateMe(UpdateMyProfileRequest request)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == _currentUser.UserId);
-            EnsureUserIsActive(user);
+            EnsureUserExists(user);
 
             var fullName = request.FullName!.Trim();
             var email = request.Email!.Trim();
@@ -59,7 +59,7 @@ namespace ProcureFlow.Application.Users
         {
             var user = await _context.Users.Include(u => u.Department)
                 .FirstOrDefaultAsync(u => u.Id == _currentUser.UserId);
-            EnsureUserIsActive(user);
+            EnsureUserExists(user);
 
             if (!_passwordHashService.Verify(request.CurrentPassword!, user!.PasswordHash))
                 throw new DomainException("La contraseña actual no es correcta.");
@@ -82,10 +82,9 @@ namespace ProcureFlow.Application.Users
                 DepartmentName = user.Department?.Name
             };
         }
-        private static void EnsureUserIsActive(User? user)
+        private static void EnsureUserExists(User? user)
         {
             if (user == null) throw new NotFoundException("El usuario no esta en el sistema.");
-            if (!user.IsActive) throw new ForbiddenException("El usuario está inactivo.");
         }
         public async Task<UserDto> Create(CreateUserRequest request)
         {

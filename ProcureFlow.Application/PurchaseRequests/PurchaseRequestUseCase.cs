@@ -38,11 +38,9 @@ namespace ProcureFlow.Application.PurchaseRequests
             var currentUserId = _currentUserService.UserId;
             var user = await _context.Users.FindAsync(currentUserId);
             if (user == null) throw new ForbiddenException("Usuario no encontrado.");
-            if (!user.IsActive) throw new ConflictException("Usuario inactivo no puede crear solicitudes de compra.");
 
             var userDepartment = await _context.Departments.FirstOrDefaultAsync(d => d.Id == user.DepartmentId);
             if (userDepartment == null) throw new NotFoundException("Departamento no encontrado.");
-            if (!userDepartment.IsActive) throw new ConflictException("Departamento inactivo no puede crear solicitudes de compra.");
 
             var priority = request.Priority ?? PurchaseRequestPriority.Low;
             var newPurchaseRequest = new PurchaseRequest(
@@ -231,8 +229,7 @@ namespace ProcureFlow.Application.PurchaseRequests
             var currentUserId = _currentUserService.UserId;
             var user = await _context.Users.FindAsync(currentUserId);
             if (user == null) throw new ForbiddenException("Usuario no encontrado.");
-            if (!user.IsActive) throw new ConflictException("Usuario inactivo no puede aprovarsolicitudes de compra.");
-            
+
             var purchaseRequest = await _context.PurchaseRequests.FindAsync(id);
             if (purchaseRequest == null) throw new NotFoundException("Solicitud de compra no encontrada.");
 
@@ -253,7 +250,6 @@ namespace ProcureFlow.Application.PurchaseRequests
 
             var user = await _context.Users.FindAsync(currentUserId);
             if (user == null) throw new ForbiddenException("Usuario no encontrado.");
-            if (!user.IsActive) throw new ConflictException("Usuario inactivo no puede aprovarsolicitudes de compra.");
 
             var purchaseRequest = await _context.PurchaseRequests.FindAsync(id);
             if (purchaseRequest == null) throw new NotFoundException("Solicitud de compra no encontrada.");
