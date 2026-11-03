@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using ProcureFlow.Api.Authentication;
 using ProcureFlow.Application.Abstractions.Security;
+using ProcureFlow.Application.Auth;
 using ProcureFlow.Infrastructure.Security;
 using System.Security.Claims;
 using System.Text;
@@ -56,6 +57,37 @@ namespace ProcureFlow.Api
                         RoleClaimType =
                             ClaimTypes.Role
                     };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = async context =>
+                    {
+                        const string failureMessage = "La sesión ya no es válida.";
+
+                        var principal = context.Principal;
+                        var userIdValue = principal?.FindFirstValue(ClaimTypes.NameIdentifier);
+                        var role = principal?.FindFirstValue(ClaimTypes.Role);
+                        var departmentIdValue = principal?.FindFirstValue(ProcureFlowClaimTypes.DepartmentId);
+                        var securityStampValue = principal?.FindFirstValue(ProcureFlowClaimTypes.SecurityStamp);
+
+                        if (!Guid.TryParse(userIdValue, out var userId)
+                            || string.IsNullOrEmpty(role)
+                            || !Guid.TryParse(departmentIdValue, out var departmentId)
+                            || !Guid.TryParse(securityStampValue, out var securityStamp))
+                        {
+                            context.Fail(failureMessage);
+                            return;
+                        }
+
+                        var validator = context.HttpContext.RequestServices
+                            .GetRequiredService<TokenSessionValidator>();
+
+                        var isValid = await validator.IsValidAsync(
+                            new TokenSessionClaims(userId, role, departmentId, securityStamp));
+
+                        if (!isValid) context.Fail(failureMessage);
+                    }
+                };
             });
 
             services.AddAuthorization();
