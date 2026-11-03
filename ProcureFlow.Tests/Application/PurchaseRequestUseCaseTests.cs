@@ -335,6 +335,127 @@ namespace ProcureFlow.Tests.Application
         }
 
         [Fact]
+        public async Task GetItemById_ShouldReturnItem_ForOwnerRequester()
+        {
+            // Arrange
+            using var db = new TestDbContextFactory();
+            var department = new Department("IT");
+            var user = new User("Solicitante IT", "req-it@test.com", "hashed-password", UserRole.Requester, department.Id);
+            var request = new PurchaseRequest(user.Id, department.Id, PurchaseRequestPriority.High, "Equipo para nuevo colaborador");
+            var laptop = request.AddItem("Laptop", 2, 1500m);
+
+            using (var seedContext = db.CreateContext())
+            {
+                seedContext.Departments.Add(department);
+                seedContext.Users.Add(user);
+                seedContext.PurchaseRequests.Add(request);
+                await seedContext.SaveChangesAsync();
+            }
+
+            using var context = db.CreateContext();
+            var useCase = new PurchaseRequestUseCase(context, new FakeCurrentUserService(user.Id, UserRole.Requester));
+
+            // Act
+            var result = await useCase.GetItemById(laptop.Id);
+
+            // Assert
+            Assert.Equal(laptop.Id, result.Id);
+            Assert.Equal(request.Id, result.PurchaseRequestId);
+            Assert.Equal("Laptop", result.Description);
+            Assert.Equal(2, result.Quantity);
+            Assert.Equal(1500m, result.UnitPrice);
+        }
+
+        [Fact]
+        public async Task GetItemById_ShouldReturnItem_ForApproverOfSameDepartment()
+        {
+            // Arrange
+            using var db = new TestDbContextFactory();
+            var department = new Department("IT");
+            var requester = new User("Solicitante IT", "req-it@test.com", "hashed-password", UserRole.Requester, department.Id);
+            var approver = new User("Aprobador IT", "app-it@test.com", "hashed-password", UserRole.Approver, department.Id);
+            var request = new PurchaseRequest(requester.Id, department.Id, PurchaseRequestPriority.High, "Equipo para nuevo colaborador");
+            var laptop = request.AddItem("Laptop", 2, 1500m);
+
+            using (var seedContext = db.CreateContext())
+            {
+                seedContext.Departments.Add(department);
+                seedContext.Users.AddRange(requester, approver);
+                seedContext.PurchaseRequests.Add(request);
+                await seedContext.SaveChangesAsync();
+            }
+
+            using var context = db.CreateContext();
+            var useCase = new PurchaseRequestUseCase(context, new FakeCurrentUserService(approver.Id, UserRole.Approver));
+
+            // Act
+            var result = await useCase.GetItemById(laptop.Id);
+
+            // Assert
+            Assert.Equal(laptop.Id, result.Id);
+            Assert.Equal(request.Id, result.PurchaseRequestId);
+        }
+
+        [Fact]
+        public async Task GetItemById_ShouldThrowNotFound_WhenRequesterIsNotOwner()
+        {
+            // Arrange
+            using var db = new TestDbContextFactory();
+            var department = new Department("IT");
+            var owner = new User("Solicitante IT", "req-it@test.com", "hashed-password", UserRole.Requester, department.Id);
+            var other = new User("Otro solicitante", "other-it@test.com", "hashed-password", UserRole.Requester, department.Id);
+            var request = new PurchaseRequest(owner.Id, department.Id, PurchaseRequestPriority.High, "Equipo para nuevo colaborador");
+            var laptop = request.AddItem("Laptop", 2, 1500m);
+
+            using (var seedContext = db.CreateContext())
+            {
+                seedContext.Departments.Add(department);
+                seedContext.Users.AddRange(owner, other);
+                seedContext.PurchaseRequests.Add(request);
+                await seedContext.SaveChangesAsync();
+            }
+
+            using var context = db.CreateContext();
+            var useCase = new PurchaseRequestUseCase(context, new FakeCurrentUserService(other.Id, UserRole.Requester));
+
+            // Act
+            Func<Task> act = () => useCase.GetItemById(laptop.Id);
+
+            // Assert
+            await Assert.ThrowsAsync<NotFoundException>(act);
+        }
+
+        [Fact]
+        public async Task GetItemById_ShouldThrowNotFound_WhenApproverIsFromOtherDepartment()
+        {
+            // Arrange
+            using var db = new TestDbContextFactory();
+            var it = new Department("IT");
+            var hr = new Department("RRHH");
+            var requester = new User("Solicitante IT", "req-it@test.com", "hashed-password", UserRole.Requester, it.Id);
+            var approverHr = new User("Aprobador RRHH", "app-hr@test.com", "hashed-password", UserRole.Approver, hr.Id);
+            var request = new PurchaseRequest(requester.Id, it.Id, PurchaseRequestPriority.High, "Equipo para nuevo colaborador");
+            var laptop = request.AddItem("Laptop", 2, 1500m);
+
+            using (var seedContext = db.CreateContext())
+            {
+                seedContext.Departments.AddRange(it, hr);
+                seedContext.Users.AddRange(requester, approverHr);
+                seedContext.PurchaseRequests.Add(request);
+                await seedContext.SaveChangesAsync();
+            }
+
+            using var context = db.CreateContext();
+            var useCase = new PurchaseRequestUseCase(context, new FakeCurrentUserService(approverHr.Id, UserRole.Approver));
+
+            // Act
+            Func<Task> act = () => useCase.GetItemById(laptop.Id);
+
+            // Assert
+            await Assert.ThrowsAsync<NotFoundException>(act);
+        }
+
+        [Fact]
         public async Task GetAll_ShouldFilterByPriority()
         {
             // Arrange
