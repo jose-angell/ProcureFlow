@@ -131,6 +131,22 @@ export async function putJson<TBody>(
   })
 }
 
+/** PUT con cuerpo JSON que devuelve JSON (la API responde 200 con cuerpo). */
+export function putJsonWithResponse<TBody, TResponse>(
+  path: string,
+  body: TBody,
+  options?: GetJsonOptions,
+): Promise<TResponse> {
+  return requestJson<TResponse>(path, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(options?.token ? { Authorization: `Bearer ${options.token}` } : {}),
+    },
+    body: JSON.stringify(body),
+  })
+}
+
 /** DELETE sin cuerpo; no parsea la respuesta (la API responde 204). */
 export async function deleteRequest(
   path: string,

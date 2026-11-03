@@ -4,6 +4,7 @@ import { Link } from 'react-router'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { replaceSessionToken } from '@/features/auth/session'
 import { isSessionError } from '@/features/dashboard/dashboardErrors'
 import { changeMyPassword } from '../api/profile'
 import { getProfileErrorMessage, PASSWORD_UPDATED_MESSAGE } from '../profileErrors'
@@ -56,7 +57,9 @@ function ChangePasswordCard() {
     setIsUpdated(false)
 
     try {
-      await changeMyPassword({ currentPassword, newPassword })
+      const response = await changeMyPassword({ currentPassword, newPassword })
+      // El token anterior ya no vale: se guarda el nuevo para no perder la sesión.
+      replaceSessionToken(response)
     } catch (error) {
       setFailure(error)
       setIsSaving(false)
