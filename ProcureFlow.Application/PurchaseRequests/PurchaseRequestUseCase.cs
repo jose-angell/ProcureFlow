@@ -92,7 +92,24 @@ namespace ProcureFlow.Application.PurchaseRequests
         }
         public async Task<PurchaseRequestItemDto> GetItemById(Guid id)
         {
-            var result = await _context.PurchaseRequestItems.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
+            var currentRole = _currentUserService.Role;
+            var currentUserId = _currentUserService.UserId;
+            var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == currentUserId);
+            if (user == null) throw new NotFoundException("El usuario no fue encotrado");
+
+             IQueryable<PurchaseRequestItem> query = _context.PurchaseRequestItems.AsNoTracking();
+
+            if(currentRole == UserRole.Approver)
+            {
+                query = query.Where(pr => pr.PurchaseRequest.DepartmentId == user.DepartmentId);
+            }
+            if(currentRole == UserRole.Requester)
+            {
+                query = query.Where(pr => pr.PurchaseRequest.RequestedByUserId == user.Id);
+            }
+            
+            var result = await query.FirstOrDefaultAsync(p => p.Id == id);
+
             if (result == null) throw new NotFoundException("Solicitud de compra no encontrada.");
             return new PurchaseRequestItemDto
             {
