@@ -2,14 +2,14 @@
 
 **ProcureFlow** es un sistema de gestión de **solicitudes internas de compra y aprobaciones**. Permite que los colaboradores de una organización creen solicitudes, administren sus partidas y las envíen a revisión, mientras que los aprobadores toman decisiones según su rol y departamento.
 
-El proyecto tiene un enfoque **full-stack** y se construye en un único repositorio con dos aplicaciones independientes:
+El proyecto tiene un enfoque **full-stack** y vive en un único repositorio con dos aplicaciones independientes:
 
 - **Backend:** API REST con **.NET 10, ASP.NET Core, EF Core y PostgreSQL**, organizada mediante **Clean Architecture pragmática**.
 - **Frontend:** aplicación web con **React, TypeScript, Vite y shadcn/ui**, organizada por funcionalidades e integrada con la API.
 
 El objetivo es implementar un flujo empresarial real con reglas de dominio, autorización contextual, persistencia relacional, pruebas automatizadas y una interfaz mantenible, sin introducir complejidad arquitectónica innecesaria.
 
-> **Estado:** el backend cuenta con una implementación inicial y pruebas de dominio, aplicación e integración. **El frontend está planificado, pendiente de implementación.** Las carpetas, pantallas y herramientas web descritas en este documento representan la estructura y el proceso de trabajo acordados; no indican funcionalidades ya terminadas.
+> **Estado:** la V1 está implementada de extremo a extremo. El backend expone la API con pruebas de dominio, aplicación e integración, y el frontend consume esa API con inicio de sesión, registro, dashboards por rol, solicitudes, aprobaciones, gestión de usuarios y departamentos, y perfil de usuario. Las 15 especificaciones de `specs/` figuran como implementadas.
 
 ## 1. Funcionalidad y reglas de negocio
 
@@ -27,7 +27,7 @@ Submitted ── Cancel ──> Cancelled
 
 Una solicitud comienza en estado `Draft`, con justificación, prioridad y un importe inicial de cero. Mientras permanece en ese estado, el solicitante puede agregar, actualizar o quitar partidas. El importe total se calcula a partir de ellas; no lo establece directamente el cliente.
 
-Para enviarse (`Submit`), la solicitud debe contener partidas válidas. Una vez enviada, puede aprobarse o rechazarse según las reglas de acceso. En la **V1**, `Approved`, `Rejected` y `Cancelled` son estados finales.
+Para enviarse (`Submit`), la solicitud debe contener partidas válidas. Una vez enviada, puede aprobarse o rechazarse según las reglas de acceso. El rechazo exige un comentario. En la **V1**, `Approved`, `Rejected` y `Cancelled` son estados finales.
 
 ### Roles
 
@@ -37,20 +37,21 @@ Para enviarse (`Submit`), la solicitud debe contener partidas válidas. Una vez 
 | **Approver** | Consultar solicitudes pendientes de su departamento y aprobarlas o rechazarlas cuando esté autorizado. |
 | **Admin** | Administrar usuarios y departamentos, consultar solicitudes e intervenir en operaciones permitidas por las reglas administrativas. |
 
-La autorización no depende únicamente del rol: también considera **propiedad de la solicitud, departamento y estado del proceso**.
+La autorización no depende únicamente del rol: también considera **propiedad de la solicitud, departamento y estado del proceso**. El registro público solo crea usuarios `Requester`; el primer `Admin` se crea al arrancar la API (sección 7.6).
 
 ## 2. Tecnologías
 
 | Área | Stack |
 | --- | --- |
 | Backend | C#, .NET 10, ASP.NET Core Web API |
-| Persistencia | Entity Framework Core, Npgsql, PostgreSQL |
-| Seguridad | JWT Bearer, password hashing, claims, autorización por rol y contexto |
+| Persistencia | Entity Framework Core, Npgsql, PostgreSQL 16 |
+| Seguridad | JWT Bearer, hashing de contraseñas, claims, autorización por rol y contexto, revalidación de sesión |
 | Pruebas backend | xUnit, SQLite In-Memory, `WebApplicationFactory` |
-| Frontend **(planificado)** | React, TypeScript, Vite, React Router |
-| UI **(planificada)** | shadcn/ui y Tailwind CSS |
-| Comunicación frontend–API | HTTP/JSON con Fetch API y contratos tipados |
-| Diseño visual y desarrollo asistido **(planificados)** | Google Stitch, Claude Code, especificaciones Markdown |
+| Frontend | React 19, TypeScript, Vite, React Router 7 |
+| UI | shadcn/ui (sobre Base UI), Tailwind CSS 4, lucide-react |
+| Comunicación frontend–API | HTTP/JSON con `fetch` a través de un cliente propio (`src/shared/api/httpClient.ts`) |
+| Infraestructura local | Docker Compose (PostgreSQL 16) |
+| Desarrollo asistido | Claude Code, skills `/spec` y `/spec-impl`, especificaciones Markdown en `specs/` |
 
 ## 3. Arquitectura general y repositorio
 
@@ -59,29 +60,36 @@ ProcureFlow mantiene **backend y frontend independientes dentro del mismo reposi
 ```text
 ProcureFlow/
 ├── README.md
-├── CLAUDE.md                         # Instrucciones generales para Claude (planificado)
+├── CLAUDE.md                          # Guía del repositorio para Claude Code
+├── docker-compose.yml                 # PostgreSQL 16 local (lee .env)
+├── ProcureFlow.slnx
 │
 ├── ProcureFlow.Domain/
-│   ├── Entities/
+│   ├── Entities/                      # User, Department, PurchaseRequest, PurchaseRequestItem, ApprovalDecision
 │   ├── Enums/
 │   └── Exceptions/
 │
 ├── ProcureFlow.Application/
-│   ├── Abstractions/
-│   ├── Auth/
+│   ├── Abstractions/                  # Persistence, Security
+│   ├── Auth/                          # AuthUseCase, TokenSessionValidator
 │   ├── Departments/
 │   ├── Users/
 │   ├── PurchaseRequests/
+│   ├── Seeding/                       # AdminSeeder
+│   ├── Common/                        # PagedResult
 │   └── Exceptions/
 │
 ├── ProcureFlow.Infrastructure/
-│   ├── Persistence/
-│   └── Security/
+│   ├── Configurations/                # Fluent API
+│   ├── Migrations/
+│   ├── Persistence/                   # AppDbContext, DatabaseMigrator
+│   └── Security/                      # JwtTokenGenerator, PasswordHashService
 │
 ├── ProcureFlow.Api/
 │   ├── Controllers/
-│   ├── Authentication/
-│   └── ExceptionHandling/
+│   ├── Authentication/                # CurrentUserService
+│   ├── GlobalExceptionHandler.cs
+│   └── Program.cs
 │
 ├── ProcureFlow.Tests/
 │   ├── Domain/
@@ -89,46 +97,32 @@ ProcureFlow/
 │   ├── Integration/
 │   └── TestSupport/
 │
+├── docs/decisions/                    # ADR-001: comunicación frontend ↔ API y autenticación
+├── specs/                             # Especificaciones 01–15 (una por archivo, con su estado)
+├── .claude/skills/                    # Skills spec y spec-impl
+│
 └── web/
-    └── procureflow-web/             # Frontend: estructura objetivo
-        ├── CLAUDE.md                # Reglas específicas de React/TypeScript
-        ├── components.json          # Configuración de shadcn/ui
+    └── procureflow-web/
+        ├── CLAUDE.md                  # Reglas específicas de React/TypeScript
+        ├── components.json            # Configuración de shadcn/ui
         ├── package.json
-        ├── tsconfig.json
-        ├── vite.config.ts
         ├── .env.example
-        ├── index.html
-        ├── public/
-        ├── design/
-        │   └── stitch/              # HTML/CSS y recursos de referencia
-        ├── specs/
-        │   ├── 001-auth/
-        │   │   ├── spec.md
-        │   │   └── tasks.md
-        │   ├── 002-dashboard/
-        │   └── 003-purchase-requests/
+        ├── design/                    # HTML de referencia visual
         └── src/
-            ├── app/
-            │   ├── App.tsx
-            │   └── router.tsx
+            ├── app/                   # App, router, ProtectedRoute, GuestRoute
             ├── features/
             │   ├── auth/
+            │   ├── dashboard/
             │   ├── purchase-requests/
+            │   ├── approvals/
             │   ├── departments/
-            │   └── users/
-            ├── components/
-            │   └── ui/              # Componentes base de shadcn/ui
-            ├── shared/
-            │   ├── api/
-            │   ├── components/
-            │   ├── layouts/
-            │   └── styles/
+            │   ├── users/
+            │   └── profile/
+            ├── components/ui/         # Componentes base de shadcn/ui
+            ├── shared/                # api, components, layouts, lib
             ├── lib/
-            │   └── utils.ts
             └── main.tsx
 ```
-
-> El árbol indica **responsabilidades y ubicaciones previstas**, no la obligación de crear todos los directorios desde el inicio. La estructura del frontend se completará conforme aparezcan funcionalidades reales.
 
 ---
 
@@ -159,9 +153,11 @@ En términos de referencias:
 | `Infrastructure` | `Application` y `Domain` |
 | `Api` | `Application` e `Infrastructure` (composición) |
 
+Cada capa expone su registro de servicios en un `DependencyInjection.cs` (`AddApplication()`, `AddInfrastructure(config)`, `AddApi(config)`), que `Program.cs` invoca.
+
 ### 4.1. Domain — modelo y reglas de negocio
 
-Contiene **entidades, enums, excepciones y comportamientos del dominio**. No debería depender de ASP.NET Core, controllers, DTOs HTTP, PostgreSQL, JWT ni configuraciones de EF Core.
+Contiene **entidades, enums, excepciones y comportamientos del dominio**. No depende de ASP.NET Core, controllers, DTOs HTTP, PostgreSQL, JWT ni configuraciones de EF Core. Las entidades tienen setters privados y todo cambio de estado pasa por métodos.
 
 El agregado principal es:
 
@@ -176,22 +172,23 @@ PurchaseRequest  (Aggregate Root)
 - `AddItem`, `UpdateItem`, `RemoveItem`: modifican partidas cuando la solicitud lo permite y mantienen el total consistente.
 - `Submit`: valida que el borrador cumpla las condiciones para enviarse.
 - `Approve`, `Reject`: aplican las transiciones válidas y registran la decisión.
-- `Cancel`: permite la cancelación desde estados autorizados.
+- `Cancel`: permite la cancelación desde `Draft` o `Submitted`.
 
 **Invariantes relevantes:**
 
 - Una solicitud enviada debe contener partidas válidas.
 - El `TotalAmount` se deriva de las partidas y no se recibe como un valor arbitrario del cliente.
 - Las partidas solo pueden editarse mientras la solicitud está en `Draft`.
-- Solo una solicitud `Submitted` puede aprobarse o rechazarse.
-- La aprobación o rechazo debe conservar una `ApprovalDecision` consistente con el estado.
+- Solo una solicitud `Submitted` puede aprobarse o rechazarse, y el rechazo requiere comentario.
+- La aprobación o rechazo conserva una `ApprovalDecision` consistente con el estado.
 - Los estados finales no se reabren en la V1.
+- `RequestNumber` se genera con el formato `PR-{año}-{8 hex}`.
 
-Las reglas que pertenecen a una sola solicitud se concentran aquí, en vez de duplicarse en controllers y servicios.
+Las violaciones de reglas lanzan `DomainException`. Las reglas que pertenecen a una sola solicitud se concentran aquí, en vez de duplicarse en controllers y servicios.
 
 ### 4.2. Application — casos de uso y contexto
 
-Coordina los flujos de negocio mediante **casos de uso explícitos** organizados por funcionalidad (`Auth`, `Users`, `Departments`, `PurchaseRequests`).
+Coordina los flujos de negocio mediante **casos de uso explícitos**, una clase `*UseCase` por funcionalidad (`Auth`, `Users`, `Departments`, `PurchaseRequests`), registrada como scoped.
 
 Sus responsabilidades incluyen:
 
@@ -199,7 +196,7 @@ Sus responsabilidades incluyen:
 - Validar existencia y condiciones externas al agregado (por ejemplo, un departamento activo).
 - Aplicar autorización contextual: **ownership**, rol y pertenencia a departamento.
 - Invocar comportamientos del dominio y persistir cambios.
-- Definir contratos de entrada y salida (requests, queries y DTOs).
+- Definir contratos de entrada y salida (requests, queries y DTOs, mapeados a mano).
 - Expresar errores esperados mediante excepciones de aplicación.
 
 El flujo típico de una operación es:
@@ -214,7 +211,7 @@ UseCase (Application)
     └── guarda cambios y devuelve DTO
 ```
 
-Application define abstracciones para sus dependencias externas, por ejemplo:
+Application define abstracciones para sus dependencias externas:
 
 ```text
 IApplicationDbContext
@@ -223,14 +220,16 @@ IPasswordHashService
 IJwtTokenGenerator
 ```
 
-Se utiliza **`IApplicationDbContext`** en lugar de crear un repositorio genérico por entidad. Es una elección deliberada: Application puede trabajar con las abstracciones de EF Core, **sin conocer `AppDbContext`, Npgsql ni PostgreSQL**. Este acoplamiento acotado a EF Core forma parte de la variante pragmática adoptada.
+Se utiliza **`IApplicationDbContext`** en lugar de crear un repositorio genérico por entidad. Es una elección deliberada: Application trabaja con las abstracciones de EF Core, **sin conocer `AppDbContext`, Npgsql ni PostgreSQL**. No se usan MediatR ni AutoMapper.
+
+Application contiene además `AdminSeeder` (creación del administrador inicial) y `TokenSessionValidator` (revalidación de sesión, sección 4.6).
 
 ### 4.3. Infrastructure — persistencia y servicios técnicos
 
 Implementa los contratos que Application necesita para comunicarse con recursos técnicos:
 
-- **`AppDbContext`** y mapeos de entidades mediante **Fluent API**.
-- Migraciones de Entity Framework Core.
+- **`AppDbContext`** y mapeos de entidades mediante **Fluent API** (`Configurations/`).
+- Migraciones de Entity Framework Core (`Migrations/`) y `DatabaseMigrator`, que las aplica al arrancar si se configura (sección 7.5).
 - Proveedor **Npgsql** para PostgreSQL.
 - Implementación de hashing y verificación de contraseñas.
 - Emisión y firma de JWT mediante `JwtTokenGenerator`.
@@ -238,28 +237,40 @@ Implementa los contratos que Application necesita para comunicarse con recursos 
 
 La persistencia define, entre otras restricciones, **índices únicos** para email, nombre de departamento y `RequestNumber`; precisión decimal para importes; y comportamientos de eliminación orientados a preservar el historial y la composición del agregado.
 
-La configuración de una relación o índice permanece en Infrastructure: no contamina el modelo de dominio con detalles de base de datos.
+La configuración de una relación o índice permanece en Infrastructure. Como los tests crean el esquema con `EnsureCreated` sobre SQLite, las configuraciones deben funcionar tanto en PostgreSQL como en SQLite.
 
 ### 4.4. API — interfaz HTTP y composición
 
-Expone los recursos REST y traduce las solicitudes HTTP a casos de uso.
+Expone los recursos REST y traduce las solicitudes HTTP a casos de uso. Los controllers son delgados y no capturan excepciones.
 
 Sus responsabilidades incluyen:
 
 - Controllers, routing y respuestas HTTP.
-- Configuración de **JWT Bearer Authentication**.
-- Autorización general por rol mediante `[Authorize]`.
+- Configuración de **JWT Bearer Authentication** y de la política **CORS `"Frontend"`**.
+- Autorización general por rol mediante `[Authorize(Roles = "...")]`.
 - `CurrentUserService`, que interpreta los claims del usuario autenticado.
-- Manejo global de excepciones y respuestas de error.
 - Registro y composición de servicios en `Program.cs`.
 
-La API **no debería contener las reglas internas del agregado** ni sustituir las validaciones de autorización contextual que pertenecen a Application.
+**Manejo de errores.** Los casos de uso lanzan excepciones tipadas y `GlobalExceptionHandler` las traduce a `ProblemDetails`:
+
+| Excepción | HTTP |
+| --- | --- |
+| `UnauthorizedException` | 401 |
+| `ForbiddenException` | 403 |
+| `NotFoundException` | 404 |
+| `ConflictException` | 409 |
+| `DomainException` | 400 |
+| Cualquier otra | 500 |
+
+**CORS.** La política `"Frontend"` se alimenta de `Cors:AllowedOrigins` (vacía en `appsettings.json`; `http://localhost:5173` en Development). `UseCors` va antes de `UseAuthentication`.
+
+La API **no contiene las reglas internas del agregado** ni sustituye las validaciones de autorización contextual que pertenecen a Application.
 
 ### 4.5. Modelo de datos principal
 
 | Entidad | Propósito | Campos destacados |
 | --- | --- | --- |
-| `User` | Identidad y rol de un colaborador | `Id`, `FullName`, `Email`, `PasswordHash`, `Role`, `DepartmentId`, `IsActive` |
+| `User` | Identidad y rol de un colaborador | `Id`, `FullName`, `Email`, `PasswordHash`, `SecurityStamp`, `Role`, `DepartmentId`, `IsActive` |
 | `Department` | Unidad organizacional | `Id`, `Name`, `IsActive` |
 | `PurchaseRequest` | Solicitud y estado del flujo | `Id`, `RequestNumber`, `RequestedByUserId`, `DepartmentId`, `Priority`, `Status`, `Justification`, `TotalAmount`, fechas de transición |
 | `PurchaseRequestItem` | Partida de una solicitud | `Id`, `Description`, `Quantity`, `UnitPrice`, `PurchaseRequestId` |
@@ -269,7 +280,7 @@ El identificador técnico de una solicitud es un `Guid`, mientras que `RequestNu
 
 ### 4.6. Autenticación y autorización
 
-Al iniciar sesión correctamente, la API genera un JWT con datos de identidad y rol. La validación de los tokens se realiza en la capa HTTP; los casos de uso utilizan `ICurrentUserService` para consultar al usuario actual.
+Al iniciar sesión correctamente, la API genera un JWT con los claims `NameIdentifier`, `Role`, `department_id` y `security_stamp`. Los casos de uso utilizan `ICurrentUserService` para consultar al usuario actual.
 
 ```text
 Login
@@ -280,7 +291,7 @@ JWT
   ↓
 Authorization: Bearer <token>
   ↓
-JwtBearer (API)
+JwtBearer (API) ── OnTokenValidated ──> TokenSessionValidator (Application)
   ↓
 HttpContext.User / CurrentUserService
   ↓
@@ -292,118 +303,129 @@ Se distinguen dos niveles:
 - **Autorización por rol:** por ejemplo, permitir operaciones de aprobación a `Approver` o `Admin`.
 - **Autorización contextual:** comprobar que un solicitante sea propietario de la solicitud o que un aprobador pertenezca al departamento correspondiente.
 
+**Revalidación de sesión.** En cada petición autenticada, `TokenSessionValidator` compara los claims del token con la base de datos, sin caché. Responde 401 si:
+
+- el usuario no existe o está inactivo;
+- el departamento del usuario está inactivo;
+- cambió su rol o su departamento;
+- cambió su `SecurityStamp`, que se regenera solo cuando cambia el `PasswordHash`.
+
+Por eso los cambios administrativos y el cambio de contraseña invalidan los tokens ya emitidos. `PUT api/users/me/password` devuelve un `AuthResponse` nuevo con un token vigente. Todo punto que emita un token debe usar `JwtTokenGenerator.Generate`, para que incluya estos claims.
+
 Una pantalla React puede adaptar sus controles según el rol, pero **la API sigue siendo la autoridad final para permitir o denegar operaciones**.
 
 ---
 
-## 5. Arquitectura del frontend (planificada)
+## 5. Arquitectura del frontend
 
-El frontend se creará con **React + TypeScript mediante Vite** y utilizará **shadcn/ui + Tailwind CSS** para construir la interfaz a partir de los diseños de Google Stitch.
-
-La estructura seguirá el criterio **Feature-Based Architecture**: cada módulo organiza juntos sus páginas, componentes particulares, tipos y llamadas HTTP, sin replicar las capas del backend.
+El frontend está hecho con **React + TypeScript mediante Vite** y utiliza **shadcn/ui + Tailwind CSS**. Sigue una **Feature-Based Architecture**: cada módulo organiza juntos sus páginas, componentes, tipos y llamadas HTTP, sin replicar las capas del backend.
 
 ### 5.1. Organización por funcionalidades
 
-Ejemplo del módulo principal:
+Ejemplo del módulo de solicitudes:
 
 ```text
 src/features/purchase-requests/
 ├── api/
-│   └── purchaseRequestsApi.ts
+│   └── purchaseRequests.ts
 ├── components/
-│   ├── PurchaseRequestForm.tsx
-│   └── PurchaseRequestItemsTable.tsx
+│   ├── PurchaseRequestFormDialog.tsx
+│   ├── PurchaseRequestItemsEditor.tsx
+│   ├── PurchaseRequestsTable.tsx
+│   ├── PurchaseRequestStatsCards.tsx
+│   ├── PriorityBadge.tsx
+│   └── StatusBadge.tsx
 ├── pages/
-│   ├── PurchaseRequestsPage.tsx
-│   └── PurchaseRequestDetailsPage.tsx
+│   └── PurchaseRequestsPage.tsx
+├── purchaseRequestErrors.ts
+├── purchaseRequestItems.ts
 └── types.ts
 ```
 
-Los directorios tienen responsabilidades diferenciadas:
-
 | Ubicación | Responsabilidad |
 | --- | --- |
-| `src/app/` | Composición de la app, router y configuración general. |
-| `src/features/` | Código de una funcionalidad concreta: autenticación, solicitudes, usuarios o departamentos. |
-| `src/components/ui/` | Componentes base incorporados por **shadcn/ui** (`Button`, `Input`, `Dialog`, `Table`, etc.). |
-| `src/shared/components/` | Componentes creados por el proyecto y reutilizados entre varias funcionalidades. |
-| `src/shared/layouts/` | Estructura visual común: navegación, encabezado y layout. |
-| `src/shared/api/` | Cliente HTTP y manejo común de respuestas/errores. |
-| `src/lib/` | Utilidades técnicas realmente compartidas. |
-| `design/stitch/` | Referencias visuales originales exportadas desde Stitch. |
-| `specs/` | Requisitos y tareas por funcionalidad para el desarrollo asistido por IA. |
+| `src/app/` | Composición de la app, router y guards de rutas. |
+| `src/features/` | Código de una funcionalidad: autenticación, dashboard, solicitudes, aprobaciones, departamentos, usuarios y perfil. |
+| `src/components/ui/` | Componentes base incorporados por **shadcn/ui**. |
+| `src/shared/components/` | Componentes propios reutilizados entre funcionalidades (`AppSidebar`, `NotFoundPage`, piezas de formularios modales). |
+| `src/shared/layouts/` | Estructura visual común (`AppLayout`). |
+| `src/shared/api/` | Cliente HTTP y errores comunes. |
+| `src/lib/` | Utilidades técnicas compartidas. |
+| `web/procureflow-web/design/` | HTML de referencia visual, separado de `src/`. |
 
-Los componentes **no se extraerán a `shared` por anticipado**: primero vivirán dentro de una feature y solo se moverán cuando haya una reutilización real.
+Los componentes no se extraen a `shared` por anticipado: primero viven dentro de una feature y se mueven solo cuando hay reutilización real.
 
-### 5.2. Integración con la API
+### 5.2. Pantallas y rutas
 
-El frontend consumirá los endpoints existentes mediante **Fetch API**, con tipos TypeScript alineados con los JSON que devuelve la API. Los contratos reales del backend serán la referencia; **no se inventarán endpoints ni propiedades** a partir del HTML de Stitch.
+| Ruta | Pantalla | Acceso |
+| --- | --- | --- |
+| `/login` | Inicio de sesión | Público (`GuestRoute`) |
+| `/register` | Registro de solicitantes | Público (`GuestRoute`) |
+| `/dashboard` | Dashboard, con vista según el rol (solicitante, aprobador o resumen general) | Autenticado |
+| `/purchases` | Gestión de solicitudes: listado, creación, edición de partidas, envío y cancelación | Autenticado |
+| `/approvals` | Bandeja de aprobaciones: aprobar y rechazar | Autenticado |
+| `/departments` | Gestión de departamentos | Autenticado |
+| `/users` | Gestión de usuarios | Autenticado |
+| `/profile` | Perfil y cambio de contraseña | Autenticado |
+| `*` | Página 404 | Todos |
 
-Se priorizarán:
+Las rutas autenticadas pasan por `ProtectedRoute`, que exige una sesión con token no vencido, y se renderizan dentro de `AppLayout` (barra lateral con menú de usuario y cierre de sesión). Las operaciones de cada pantalla las autoriza el backend según el rol.
 
-- Estado local para formularios, filtros y modales.
-- Un mecanismo sencillo y acotado para la sesión del usuario.
-- Manejo centralizado de la URL base y de los errores HTTP comunes.
-- Componentes y vistas que distingan entre presentación y acceso a datos.
+### 5.3. Integración con la API
 
-No se agregarán desde el inicio Redux, un cliente HTTP alternativo ni capas genéricas sin una necesidad concreta. La estrategia para persistir la sesión JWT se decidirá considerando sus implicaciones de seguridad; **no se incluirán secretos en variables `VITE_*`**, ya que estas forman parte del bundle del navegador.
+El frontend consume los endpoints mediante `fetch`, con tipos TypeScript alineados con los JSON de la API. Los contratos reales del backend son la referencia: no se inventan endpoints ni propiedades a partir del HTML de diseño.
 
-### 5.3. Google Stitch y referencia visual
+- **URL base:** `VITE_API_URL`. Las llamadas pasan por `src/shared/api/httpClient.ts` (`ApiError`, `NetworkError`); las features no usan `fetch` directo.
+- **Errores:** los mensajes se fijan por código HTTP en el frontend (400/401/403…); no se muestra el `detail` del `ProblemDetails`. Por eso cambiar el tipo de excepción que lanza un caso de uso cambia lo que ve el usuario.
+- **Sesión:** se guarda bajo `procureflow.session` en `localStorage` si el usuario marca "Recordar sesión" y en `sessionStorage` si no. Es una decisión de MVP, no definitiva (ver `docs/decisions/ADR-001-auth-api.md`).
+- **401:** una petición con token que recibe 401 cierra la sesión y lleva a `/login`, conservando la ruta de origen.
+- **Cambio de contraseña:** la API responde con un token nuevo y el cliente reemplaza el guardado, porque el anterior deja de ser válido.
+- **Roles:** `UserRole` viaja como número en el JSON y la copia del frontend debe coincidir con `ProcureFlow.Domain/Enums/UserRole.cs`.
+- **Secretos:** no se incluyen secretos en variables `VITE_*`, que forman parte del bundle del navegador.
 
-**Google Stitch** se utilizará para diseñar pantallas y producir HTML/CSS estático de referencia. Los recursos exportados permanecerán en `design/stitch/`, separados de `src/`.
+### 5.4. Referencia visual
 
-Claude Code los analizará para identificar layouts, patrones visuales y posibles componentes reutilizables, pero el código React final deberá:
+Las pantallas se diseñaron en Google Stitch y su HTML de referencia está en `web/procureflow-web/design/`. El código React respeta el diseño sin copiar el HTML estático, usa componentes de shadcn/ui cuando son adecuados y se adapta a los datos y reglas reales de la API.
 
-- Respetar el diseño sin copiar indiscriminadamente el HTML estático.
-- Utilizar los componentes disponibles de **shadcn/ui** cuando sean adecuados.
-- Adaptarse a los datos, estados y reglas reales de la API.
-- Mantener accesibilidad y comportamiento responsive.
+### 5.5. Desarrollo asistido por IA: Spec-Driven Development
 
-### 5.4. Desarrollo asistido por IA: SDD ligero
-
-Se utilizará **Spec-Driven Development** de forma ligera, sin adoptar de inicio una herramienta o proceso documental complejo.
+El proyecto usa **Spec-Driven Development** ligero con Claude Code:
 
 ```text
-Diseño en Stitch + contrato de la API
+Diseño de referencia + contrato de la API
                   ↓
-            specs/<feature>/spec.md
+        /spec  →  specs/NN-nombre.md
                   ↓
-       Plan técnico propuesto por Claude
+        Revisión / aprobación humana
                   ↓
-      Revisión / aprobación humana
+   /spec-impl  →  rama spec-NN-nombre, implementación y verificación
                   ↓
-            specs/<feature>/tasks.md
-                  ↓
-      Implementación por tareas pequeñas
-                  ↓
-        Verificación y aceptación
+        Estado de la spec: implementado
 ```
 
-El contenido de cada artefacto será distinto:
+- **`specs/NN-nombre.md`:** una especificación por archivo, con su estado, alcance, comportamiento y criterios de aceptación.
+- **`CLAUDE.md`:** convenciones persistentes. Hay dos niveles: `ProcureFlow/CLAUDE.md` (arquitectura, contratos y límites entre backend y frontend) y `web/procureflow-web/CLAUDE.md` (React, TypeScript, shadcn/ui y sesión).
+- **`docs/decisions/`:** decisiones arquitectónicas (ADR). Las nuevas decisiones se documentan ahí.
 
-- **`spec.md`:** objetivo, alcance, comportamiento, restricciones y criterios de aceptación.
-- **`tasks.md`:** secuencia de trabajo pequeña y verificable, derivada de la especificación aprobada.
-- **`CLAUDE.md`:** convenciones persistentes del repositorio y límites de actuación del agente.
+### 5.6. Especificaciones implementadas
 
-Se mantendrán **dos niveles de contexto**:
-
-1. **`ProcureFlow/CLAUDE.md`**: descripción global, arquitectura, contratos, límites entre backend y frontend y reglas de cambios.
-2. **`web/procureflow-web/CLAUDE.md`**: convenciones de React, TypeScript, shadcn/ui, Feature-Based Architecture y trabajo con Stitch.
-
-No se necesita inicialmente un tercer `CLAUDE.md` para la API; las reglas generales del backend pueden documentarse en el archivo raíz y ampliarse cuando el flujo de trabajo lo requiera.
-
-### 5.5. Fases previstas
-
-| Fase | Entregable |
-| --- | --- |
-| **0. Fundación** | Inicializar React + TypeScript con Vite, configurar Tailwind, shadcn/ui, estructura y `CLAUDE.md`. |
-| **1. Diseño visual** | Definir referencias Stitch, layout, estilos base y navegación. |
-| **2. Autenticación** | Login, sesión y rutas protegidas. |
-| **3. Dashboard** | Estructura principal y visualización de información. |
-| **4. Solicitudes** | Listado, detalle, borradores, partidas, envío y cancelación. |
-| **5. Aprobaciones** | Bandeja de pendientes, aprobar y rechazar. |
-| **6. Administración** | Interfaces esenciales para usuarios y departamentos. |
-| **7. Validación** | Integración con API, comportamiento responsive, revisión visual y build. |
+| Spec | Funcionalidad | Estado |
+| --- | --- | --- |
+| 01 | Pantalla de login | Implementada |
+| 02 | Pantalla de registro | Implementada |
+| 03 | Dashboard principal | Implementada |
+| 04 | Dashboard del solicitante | Implementada |
+| 05 | Dashboard del aprobador | Implementada |
+| 06 | Guard de rutas y logout | Implementada |
+| 07 | Gestión de departamentos | Implementada |
+| 08 | Gestión de usuarios | Implementada |
+| 09 | Gestión de solicitudes | Implementada |
+| 10 | Gestión de aprobaciones | Implementada |
+| 11 | Administrador inicial al arrancar | Implementada |
+| 12 | Diseño de modales de usuarios y departamentos | Implementada |
+| 13 | Migraciones al arrancar | Implementada |
+| 14 | Pantalla de perfil de usuario | Implementada |
+| 15 | Revalidar la sesión en cada petición | Implementada |
 
 ---
 
@@ -413,8 +435,8 @@ El backend concentra sus pruebas en **un único proyecto `ProcureFlow.Tests`**, 
 
 | Tipo | Qué valida | Herramientas |
 | --- | --- | --- |
-| **Domain** | Invariantes del agregado y transiciones sin infraestructura. | xUnit |
-| **Application** | Casos de uso, ownership, permisos y consultas con dependencias controladas. | xUnit, SQLite In-Memory, fakes |
+| **Domain** | Invariantes de `PurchaseRequest` y `User`, y transiciones, sin infraestructura. | xUnit |
+| **Application** | Casos de uso, ownership, permisos, consultas, `AdminSeeder` y `TokenSessionValidator`, con dependencias controladas. | xUnit, SQLite In-Memory, `TestDbContextFactory`, `FakeCurrentUserService` |
 | **Integration** | Flujo HTTP real a través de middleware JWT, controllers, Application y EF Core. | xUnit, `WebApplicationFactory`, SQLite In-Memory |
 
 Escenarios representativos:
@@ -429,22 +451,23 @@ Domain
 Application
   Requester no modifica solicitudes ajenas
   Approver solo opera solicitudes de su departamento
+  AdminSeeder solo crea el admin si no existe ninguno
+  TokenSessionValidator rechaza tokens con claims desactualizados
 
 Integration
   Login válido → JWT
   Sin token → 401
-  Requester autenticado → Create Draft
   Create → AddItem → Submit
   Requester intenta aprobar → 403
-  Aprobador autorizado / departamento no permitido
+  Perfil: actualizar datos y cambiar contraseña
+  Revalidación de sesión: usuario desactivado, rol cambiado o contraseña cambiada → 401
 ```
 
-Las pruebas de integración utilizan **SQLite en memoria** para reemplazar PostgreSQL durante la ejecución; esto permite verificar el recorrido HTTP sin modificar la base de datos de desarrollo. SQLite no sustituye completamente a PostgreSQL en la validación de comportamientos específicos de proveedor.
-
-Ejecutar desde la raíz del repositorio:
+Las pruebas de integración reemplazan PostgreSQL por una conexión SQLite en memoria compartida y la base se reinicia antes de cada prueba. No hace falta tener Postgres para ejecutarlas. SQLite no sustituye por completo a PostgreSQL en comportamientos específicos del proveedor.
 
 ```bash
-dotnet test
+dotnet test                                                         # todas las pruebas
+dotnet test --filter "FullyQualifiedName~PurchaseRequestTests"      # una clase
 ```
 
 ---
@@ -454,28 +477,43 @@ dotnet test
 ### Requisitos
 
 - **.NET 10 SDK**.
-- **PostgreSQL** para ejecutar la aplicación en desarrollo.
-- Herramienta **`dotnet-ef`** para trabajar con migraciones (opcional si no vas a administrarlas).
+- **PostgreSQL 16**, por ejemplo con el `docker-compose.yml` incluido (requiere Docker).
+- Herramienta **`dotnet-ef`** para trabajar con migraciones (opcional).
 
 ### 7.1. Configurar PostgreSQL
 
-Definir `ConnectionStrings:DefaultConnection` mediante una variable de entorno o secretos de desarrollo.
+**Con Docker Compose.** Crea un archivo `.env` en la raíz (ignorado por Git) con:
+
+```dotenv
+DB_NAME=procureflow
+DB_USER=tu_usuario
+DB_PASSWORD=tu_contraseña
+DB_PORT=5437
+```
+
+y levanta la base:
+
+```bash
+docker compose up -d
+```
+
+La connection string debe coincidir con esos valores. Define `ConnectionStrings:DefaultConnection` mediante variable de entorno o secretos de desarrollo.
 
 **PowerShell (Windows):**
 
 ```powershell
-$Env:ConnectionStrings__DefaultConnection="Host=localhost;Port=5432;Database=procureflow;Username=postgres;Password=YOUR_PASSWORD"
+$Env:ConnectionStrings__DefaultConnection="Host=localhost;Port=5437;Database=procureflow;Username=tu_usuario;Password=tu_contraseña"
 ```
 
 **Linux / macOS:**
 
 ```bash
-export ConnectionStrings__DefaultConnection="Host=localhost;Port=5432;Database=procureflow;Username=postgres;Password=YOUR_PASSWORD"
+export ConnectionStrings__DefaultConnection="Host=localhost;Port=5437;Database=procureflow;Username=tu_usuario;Password=tu_contraseña"
 ```
 
 ### 7.2. Configurar JWT
 
-Además de los valores de emisor, audiencia y expiración, configura una **clave secreta robusta** mediante una fuente segura.
+Configura la sección `Jwt` (`Issuer`, `Audience`, `SecretKey`, `ExpirationMinutes`). Usa una **clave secreta robusta** desde una fuente segura.
 
 **PowerShell:**
 
@@ -490,7 +528,15 @@ Los separadores `__` de las variables de entorno corresponden a secciones de con
 
 > **Seguridad:** no subas a Git contraseñas reales, claves JWT, archivos `.env` con secretos ni connection strings sensibles.
 
-### 7.3. Compilar y ejecutar
+### 7.3. Configurar CORS
+
+La política `"Frontend"` permite los orígenes de `Cors:AllowedOrigins`. En `appsettings.json` está vacía, así que ningún origen queda permitido; `appsettings.Development.json` permite `http://localhost:5173`. Para otros entornos:
+
+```powershell
+$Env:Cors__AllowedOrigins__0="https://tu-frontend.example.com"
+```
+
+### 7.4. Compilar y ejecutar
 
 Desde la raíz del repositorio:
 
@@ -500,7 +546,9 @@ dotnet build
 dotnet run --project ProcureFlow.Api
 ```
 
-### 7.4. Migraciones
+En local usa el perfil `http` de `launchSettings.json` (`http://localhost:5285`): `UseHttpsRedirection` redirige las peticiones y rompe el preflight de CORS del frontend.
+
+### 7.5. Migraciones
 
 Instalar la herramienta de EF Core, si hace falta:
 
@@ -520,7 +568,7 @@ Crear una migración:
 dotnet ef migrations add MigrationName --project ProcureFlow.Infrastructure --startup-project ProcureFlow.Api --output-dir Migrations
 ```
 
-**Migraciones automáticas al arrancar.** La API puede aplicar las migraciones pendientes al iniciar, antes de crear el administrador inicial (sección 7.5). Se controla con la clave `Database:MigrateOnStartup`:
+**Migraciones automáticas al arrancar.** La API puede aplicar las migraciones pendientes al iniciar, antes de crear el administrador inicial (sección 7.6). Se controla con la clave `Database:MigrateOnStartup`:
 
 | Entorno | Valor | Efecto |
 | --- | --- | --- |
@@ -532,7 +580,7 @@ Se puede sobrescribir con la variable de entorno `Database__MigrateOnStartup`. C
 
 Si Postgres no responde o una migración falla, se registra un log de error y la API no arranca. No hay reintentos.
 
-### 7.5. Administrador inicial
+### 7.6. Administrador inicial
 
 El registro público solo crea usuarios `Requester`. Para tener un primer `Admin`, la API puede crearlo al arrancar a partir de la sección `AdminSeed`.
 
@@ -548,7 +596,7 @@ Reglas:
 
 - Solo crea el administrador si no existe ningún usuario `Admin`, esté activo o no. Nunca modifica ni reactiva usuarios existentes.
 - Si `Enabled` es `true` y la configuración es inválida, la API no arranca. Eso incluye una contraseña ausente o corta, y un correo que ya usa un usuario que no es administrador.
-- Necesita que las tablas existan. Si `Database:MigrateOnStartup` es `true`, las migraciones se aplican antes del seed; si no, ejecuta antes `dotnet ef database update` (sección 7.4).
+- Necesita que las tablas existan. Si `Database:MigrateOnStartup` es `true`, las migraciones se aplican antes del seed; si no, ejecuta antes `dotnet ef database update` (sección 7.5).
 
 La contraseña se pasa con secretos de desarrollo o con una variable de entorno.
 
@@ -568,77 +616,116 @@ $Env:AdminSeed__Password="TU_CLAVE_SEGURA"
 
 > **Seguridad:** no escribas `AdminSeed:Password` en ningún `appsettings*.json`. La validación corre en cada arranque, así que mientras `Enabled` sea `true` la contraseña debe seguir configurada. Cuando el admin ya existe, puedes poner `Enabled` en `false`.
 
-## 8. Configuración y ejecución del frontend (planificadas)
+---
 
-La app web aún no está terminada. Se creará con **Node.js compatible con la versión elegida de Vite** y npm.
+## 8. Configuración y ejecución del frontend
 
-### 8.1. Inicialización manual
+Requiere **Node.js** compatible con la versión de Vite del proyecto y npm.
 
-Desde `ProcureFlow/web/`:
+### 8.1. Variables de entorno
 
-```bash
-npm create vite@latest procureflow-web -- --template react-ts
-cd procureflow-web
-npm install
-```
-
-A continuación se configurarán **Tailwind CSS**, el alias `@/` a `src/` y **shadcn/ui**, siguiendo su guía oficial para Vite. Se agregarán únicamente los componentes necesarios para cada pantalla.
-
-### 8.2. Variables de entorno
-
-Ejemplo de `.env.example` (URL ilustrativa; sustituir por la dirección real de la API):
+Copia `web/procureflow-web/.env.example` a `.env.local` (o ajusta `.env.development`) y apunta a la API:
 
 ```dotenv
-VITE_API_BASE_URL=http://localhost:5000
+VITE_API_URL=http://localhost:5285
 ```
 
-**No incluir secretos en `VITE_*`**. Si el frontend y la API utilizan orígenes distintos, configurar los orígenes permitidos mediante **CORS** en la API.
+Vite fija este valor al compilar, así que cada entorno necesita su propio build. **No incluyas secretos en `VITE_*`.** Si el frontend y la API usan orígenes distintos, la API debe permitir el origen del frontend (sección 7.3).
 
-### 8.3. Servidor de desarrollo
-
-Una vez creado el frontend:
+### 8.2. Servidor de desarrollo y comandos
 
 ```bash
 cd web/procureflow-web
 npm install
-npm run dev
+npm run dev        # servidor de desarrollo en http://localhost:5173
+npm run build      # tsc -b && vite build
+npm run lint       # ESLint
 ```
 
-La verificación de compilación se realizará con:
+### 8.3. Puesta en marcha rápida
 
-```bash
-npm run build
-```
+1. `docker compose up -d` para levantar PostgreSQL (con el `.env` de la sección 7.1).
+2. `dotnet run --project ProcureFlow.Api`. En Development aplica las migraciones y crea el administrador inicial (configura `AdminSeed:Password` con `user-secrets`).
+3. `cd web/procureflow-web && npm install && npm run dev`.
+4. Abre `http://localhost:5173` e inicia sesión con el administrador del seed. Desde `/departments` y `/users` puedes crear departamentos y usuarios `Approver`; los `Requester` también pueden registrarse en `/register`.
 
 ---
 
 ## 9. Recursos principales de la API
 
-```text
-/api/auth
-/api/departments
-/api/users
-/api/purchases
-```
+Todas las rutas cuelgan de `/api`. Salvo `register` y `login`, requieren `Authorization: Bearer <token>`.
 
-Las operaciones están enfocadas en autenticación; administración de usuarios y departamentos; creación, consulta y modificación de solicitudes; administración de partidas; y transiciones `Submit`, `Cancel`, `Approve` y `Reject`.
+### `/api/auth`
 
-Los paths HTTP concretos, verbos y DTOs deben consultarse en los controllers de la versión correspondiente antes de integrar una pantalla. **La referencia de Stitch no define el contrato de la API.**
+| Método | Ruta | Acceso | Descripción |
+| --- | --- | --- | --- |
+| POST | `/register` | Anónimo | Registra un usuario `Requester`. |
+| POST | `/login` | Anónimo | Inicia sesión y devuelve un `AuthResponse` con el JWT. |
+
+### `/api/departments`
+
+| Método | Ruta | Acceso | Descripción |
+| --- | --- | --- | --- |
+| GET | `/` | Autenticado | Lista departamentos. |
+| GET | `/active` | Autenticado | Lista departamentos activos. |
+| GET | `/{id}` | Autenticado | Detalle de un departamento. |
+| POST | `/` | Admin | Crea un departamento. |
+| PUT | `/{id}` | Admin | Actualiza un departamento. |
+| DELETE | `/{id}` | Admin | Elimina un departamento. |
+| PATCH | `/{id}/activate` · `/{id}/deactivate` | Admin | Activa o desactiva un departamento. |
+
+### `/api/users`
+
+| Método | Ruta | Acceso | Descripción |
+| --- | --- | --- | --- |
+| GET | `/me` | Autenticado | Datos del usuario actual. |
+| PUT | `/me` | Autenticado | Actualiza el perfil propio. |
+| PUT | `/me/password` | Autenticado | Cambia la contraseña y devuelve un `AuthResponse` nuevo. |
+| GET | `/` | Admin | Lista usuarios con filtros y paginación. |
+| GET | `/{id}` | Admin | Detalle de un usuario. |
+| POST | `/` | Admin | Crea un usuario. |
+| PUT | `/{id}` | Admin | Actualiza un usuario. |
+| DELETE | `/{id}` | Admin | Elimina un usuario. |
+| PATCH | `/{id}/activate` · `/{id}/deactivate` | Admin | Activa o desactiva un usuario. |
+| PATCH | `/{id}/change-department/{departmentId}` | Admin | Cambia el departamento de un usuario. |
+
+### `/api/purchases`
+
+| Método | Ruta | Acceso | Descripción |
+| --- | --- | --- | --- |
+| GET | `/` | Autenticado | Lista solicitudes según el alcance del usuario. |
+| GET | `/summary` | Autenticado | Resumen para los dashboards. |
+| GET | `/{id}` | Autenticado | Detalle de una solicitud. |
+| GET | `/item/{id}` | Autenticado | Detalle de una partida. |
+| POST | `/` | Requester, Admin | Crea una solicitud en `Draft`. |
+| PUT | `/{id}` | Requester, Admin | Actualiza una solicitud. |
+| POST | `/{id}/add-item` | Requester, Admin | Agrega una partida. |
+| PUT | `/{id}/update-item/{itemId}` | Requester, Admin | Actualiza una partida. |
+| PUT | `/{id}/delete-item/{itemId}` | Requester, Admin | Quita una partida. |
+| PATCH | `/{id}/submit` | Autenticado | Envía la solicitud a revisión. |
+| PATCH | `/{id}/cancel` | Autenticado | Cancela la solicitud. |
+| GET | `/pendingApprovals` | Approver, Admin | Solicitudes pendientes de decisión. |
+| PATCH | `/{id}/approve` · `/{id}/reject` | Approver, Admin | Aprueba o rechaza (el rechazo exige comentario). |
+
+Además del rol, los casos de uso aplican autorización contextual (propiedad de la solicitud, departamento del aprobador, estado). Los verbos, rutas y DTOs exactos están en `ProcureFlow.Api/Controllers/`, y `ProcureFlow.Api/ProcureFlow.Api.http` incluye ejemplos de peticiones. `UserRole` se serializa como número.
 
 ## 10. Decisiones arquitectónicas
 
 El proyecto prioriza **claridad, encapsulación y crecimiento gradual**:
 
-- En el **backend** se eligió Clean Architecture pragmática, un agregado de dominio, casos de uso explícitos e `IApplicationDbContext`. No se añadieron Generic Repository, Unit of Work personalizado, MediatR, CQRS completo, Event Bus ni microservicios.
+- En el **backend** se eligió Clean Architecture pragmática, un agregado de dominio, casos de uso explícitos e `IApplicationDbContext`. No se añadieron Generic Repository, Unit of Work personalizado, MediatR, AutoMapper, CQRS completo, Event Bus ni microservicios.
+- La **sesión se revalida en cada petición** contra la base de datos, sin caché, para que desactivar a un usuario o cambiar su rol, departamento o contraseña surta efecto de inmediato (spec 15).
 - En el **frontend** se eligió una organización por funcionalidades, con componentes base shadcn/ui y reutilización justificada por casos reales, en lugar de trasladar automáticamente la arquitectura del backend a React.
-- Para **desarrollo con IA**, las especificaciones contienen los requisitos, `CLAUDE.md` contiene las reglas persistentes y las decisiones arquitectónicas permanecen sujetas a revisión humana.
 - El **backend** es la fuente de verdad de reglas y permisos; el frontend ofrece la experiencia de usuario y consume los contratos publicados por la API.
+- Para **desarrollo con IA**, las especificaciones contienen los requisitos, `CLAUDE.md` contiene las reglas persistentes y las decisiones arquitectónicas quedan sujetas a revisión humana.
+
+El detalle y las decisiones pendientes de la comunicación frontend ↔ API y la autenticación (guardado del JWT, expiración, cabecera `Authorization`) están en [`docs/decisions/ADR-001-auth-api.md`](docs/decisions/ADR-001-auth-api.md).
 
 ## 11. Alcance y evolución
 
-La **V1** se enfoca en autenticación, usuarios, departamentos, solicitudes con partidas y un flujo de aprobación de un nivel, acompañado de una interfaz web mínima.
+La **V1** cubre autenticación, usuarios, departamentos, solicitudes con partidas y un flujo de aprobación de un nivel, con la interfaz web que lo acompaña.
 
-Quedan fuera del MVP: proveedores, cotizaciones, órdenes de compra, presupuestos, adjuntos, notificaciones, aprobaciones multinivel, refresh tokens, OAuth/OpenID Connect y microservicios.
+Quedan fuera del MVP: proveedores, cotizaciones, órdenes de compra, presupuestos, adjuntos, notificaciones, aprobaciones multinivel, refresh tokens, OAuth/OpenID Connect y microservicios. El almacenamiento del JWT en Web Storage es una decisión de MVP que debe revisarse antes de producción.
 
 Una futura evolución del dominio podría ampliar el flujo:
 
@@ -646,8 +733,8 @@ Una futura evolución del dominio podría ampliar el flujo:
 Approved → Quoted → Ordered → Received → Closed
 ```
 
-con gestión de proveedores, cotizaciones y órdenes de compra. Esa evolución **no es requisito para finalizar la interfaz web de la V1**.
+con gestión de proveedores, cotizaciones y órdenes de compra.
 
 ## 12. Objetivo técnico
 
-ProcureFlow busca demostrar la capacidad de **analizar reglas empresariales, modelar un dominio, diseñar límites entre componentes, implementar seguridad contextual y verificar el sistema mediante pruebas**. El frontend complementará esa base con React/TypeScript, una interfaz basada en diseño y un proceso de desarrollo asistido por IA con **Spec-Driven Development y Context Engineering**.
+ProcureFlow busca demostrar la capacidad de **analizar reglas empresariales, modelar un dominio, diseñar límites entre componentes, implementar seguridad contextual y verificar el sistema mediante pruebas**. El frontend complementa esa base con React/TypeScript, una interfaz basada en diseño y un proceso de desarrollo asistido por IA con **Spec-Driven Development y Context Engineering**.
